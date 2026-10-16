@@ -1,0 +1,49 @@
+{
+  "name": "urbantalk-api",
+  "version": "1.0.0",
+  "description": "API do UrbanTalk",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "start": "tsx src/server.ts",
+    "migrate": "tsx src/scripts/migrate.ts",
+    "migrate:rollback": "tsx src/scripts/migrate.ts --rollback",
+    "admin:create": "tsx src/scripts/create-admin.ts --role admin",
+    "staff:create": "tsx src/scripts/create-admin.ts",
+    "demo:seed": "tsx src/scripts/seed-demo.ts",
+    "demo:reset": "tsx src/scripts/seed-demo.ts --reset",
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "license": "UNLICENSED",
+  "dependencies": {
+    "cookie-parser": "^1.4.7",
+    "dotenv": "^18.0.8",
+    "express": "^5.3.0",
+    "express-rate-limit": "^8.7.1",
+    "helmet": "^8.3.0",
+    "jsonwebtoken": "^9.0.3",
+    "knex": "^3.3.0",
+    "multer": "^2.4.0",
+    "pdfkit": "^0.20.2",
+    "sharp": "^0.35.5",
+    "tsx": "^4.23.15",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@types/cookie-parser": "^1.4.10",
+    "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/multer": "^2.3.0",
+    "@types/node": "^26.6.5",
+    "@types/pdfkit": "^0.17.6",
+    "@types/supertest": "^7.2.1",
+    "supertest": "^7.3.1",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.4"
+  },
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.13"
+  }
+}

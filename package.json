@@ -1,0 +1,22 @@
+{
+  "name": "urbantalk",
+  "version": "1.0.0",
+  "private": true,
+  "description": "UrbanTalk: registro e acompanhamento de problemas urbanos em Sorocaba (projeto UPX, grupo EcoGestor)",
+  "engines": {
+    "node": ">=22.13"
+  },
+  "scripts": {
+    "setup": "node scripts/setup.mjs",
+    "dev": "node scripts/dev.mjs",
+    "build": "npm --prefix web run build",
+    "start": "npm run build && npm --prefix api start",
+    "serve": "npm --prefix api start",
+    "test": "npm --prefix api test && npm --prefix web test -- --watch=false",
+    "migrate": "npm --prefix api run migrate",
+    "admin:create": "npm --prefix api run admin:create --",
+    "staff:create": "npm --prefix api run staff:create --",
+    "demo:seed": "npm --prefix api run demo:seed",
+    "demo:reset": "npm --prefix api run demo:reset"
+  }
+}
