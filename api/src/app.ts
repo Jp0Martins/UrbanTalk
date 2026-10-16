@@ -26,7 +26,7 @@ export interface AppOptions {
 export function createApp({ db, uploadDir, webDist }: AppOptions) {
   const app = express();
   app.disable('x-powered-by');
-  app.set('trust proxy', 'loopback');
+  app.set('trust proxy', config.trustProxy);
 
   app.use(
     helmet({

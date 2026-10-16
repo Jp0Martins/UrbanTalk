@@ -28,6 +28,8 @@ export const config = {
   webDist: resolveFromApi(process.env.WEB_DIST ?? '../web/dist/web/browser'),
   jwtSecret: isTest ? 'test-secret-test-secret-test-secret-000' : jwtSecret,
   sessionDays: 7,
+  // quantos proxies confiar: 'loopback' local; em hospedagem na nuvem use 1 (TRUST_PROXY=1)
+  trustProxy: /^\d+$/.test(process.env.TRUST_PROXY ?? '') ? Number(process.env.TRUST_PROXY) : (process.env.TRUST_PROXY ?? 'loopback'),
   cookieSecure: process.env.COOKIE_SECURE === 'true',
   // origens extras liberadas no CORS; vazio = só mesma origem
   corsOrigins: (process.env.CORS_ORIGINS ?? '')

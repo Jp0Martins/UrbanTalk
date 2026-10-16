@@ -140,7 +140,11 @@ async function seed(db: Db) {
     });
     userIds.push(id);
   }
-  const adminPassword = crypto.randomBytes(9).toString('base64url') + '7a';
+  // senha fixa opcional por variável de ambiente (hospedagem na nuvem); senão é gerada na hora
+  const fixed = (v?: string) => (v && v.length >= 8 && v.length <= 128 && /[A-Za-z]/.test(v) && /\d/.test(v) ? v : null);
+  const adminFixed = fixed(process.env.DEMO_ADMIN_PASSWORD);
+  const staffFixed = fixed(process.env.DEMO_STAFF_PASSWORD);
+  const adminPassword = adminFixed ?? crypto.randomBytes(9).toString('base64url') + '7a';
   const [adminId] = await db('users').insert({
     name: 'Patrícia Gomes',
     email: `equipe${DEMO_DOMAIN}`,
@@ -148,7 +152,7 @@ async function seed(db: Db) {
     role: 'admin',
     created_at: new Date(now - 100 * 86_400_000).toISOString(),
   });
-  const staffPassword = crypto.randomBytes(9).toString('base64url') + '7a';
+  const staffPassword = staffFixed ?? crypto.randomBytes(9).toString('base64url') + '7a';
   const [staffId] = await db('users').insert({
     name: 'Diego Martins',
     email: `funcionario${DEMO_DOMAIN}`,
@@ -339,8 +343,8 @@ async function seed(db: Db) {
   console.log(`${created} ocorrências FICTÍCIAS criadas e marcadas como demonstração.`);
   console.log(`${PROPOSALS.length} propostas, 2 fóruns da comunidade e ${TOPICS.length} discussões fictícias criadas por contas de demonstração.`);
   console.log(`Contas de cidadão: cidadao1${DEMO_DOMAIN} até cidadao8${DEMO_DOMAIN}, senha ${demoPassword}`);
-  console.log(`Funcionário (administrador): equipe${DEMO_DOMAIN}, senha ${adminPassword}  (anote, não será mostrada de novo)`);
-  console.log(`Funcionário: funcionario${DEMO_DOMAIN}, senha ${staffPassword}  (anote, não será mostrada de novo)`);
+  console.log(adminFixed ? `Administrador: equipe${DEMO_DOMAIN}, senha definida em DEMO_ADMIN_PASSWORD` : `Funcionário (administrador): equipe${DEMO_DOMAIN}, senha ${adminPassword}  (anote, não será mostrada de novo)`);
+  console.log(staffFixed ? `Funcionário: funcionario${DEMO_DOMAIN}, senha definida em DEMO_STAFF_PASSWORD` : `Funcionário: funcionario${DEMO_DOMAIN}, senha ${staffPassword}  (anote, não será mostrada de novo)`);
 }
 
 const db = createDb(config.databaseFile);

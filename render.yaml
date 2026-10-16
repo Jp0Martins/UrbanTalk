@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: urbantalk
+    runtime: node
+    plan: free
+    buildCommand: npm install --include=dev --prefix api && npm install --include=dev --prefix web && npm run build
+    startCommand: npm run start:cloud
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: 22.13.0
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        generateValue: true
+      - key: COOKIE_SECURE
+        value: "true"
+      - key: TRUST_PROXY
+        value: "1"
+      - key: AUTO_DEMO
+        value: "true"
+      - key: DEMO_ADMIN_PASSWORD
+        sync: false
+      - key: DEMO_STAFF_PASSWORD
+        sync: false

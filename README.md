@@ -84,6 +84,7 @@ Roda os testes da API (Vitest + Supertest, banco em memória) e do front (Vitest
 | `npm run serve` | Sobe só a API, servindo o último build do site |
 | `npm run dev` | API + Angular com recarga automática (`localhost:4200`) |
 | `npm test` | Testes da API e do front |
+| `npm run start:cloud` | Início para hospedagem na nuvem (com `AUTO_DEMO=true` insere os dados de demonstração antes de subir) |
 | `npm run migrate` | Aplica migrações pendentes no banco |
 | `npm --prefix api run migrate:rollback` | Desfaz o último lote de migrações (a de localização e Comunidade não tem volta automática: use a cópia em `api/data/backups/`) |
 | `npm run admin:create -- --email ...` | Cria ou promove administrador |
@@ -97,6 +98,22 @@ Para começar o banco do zero: pare o servidor, apague a pasta `api/data/` e rod
 **Ícone do navegador:** o favicon agora é a placa azul do UrbanTalk. Se a aba ainda mostrar o ícone laranja antigo, é cache do navegador: recarregue com Ctrl+F5 (Cmd+Shift+R no Mac) ou abra uma aba anônima. Os arquivos de ícone são servidos com revalidação (`no-cache`) e com `?v=2` no endereço, então isso só acontece na primeira visita depois da atualização.
 
 ---
+
+## Publicar na internet (Render)
+
+O projeto já vem com o arquivo `render.yaml`. Fluxo: subir o código para o GitHub e conectar o repositório ao Render, que instala, compila e gera um link público (`https://nome.onrender.com`).
+
+Variáveis usadas na nuvem (já preenchidas no `render.yaml`, exceto as duas senhas):
+
+| Variável | Para que serve |
+| --- | --- |
+| `JWT_SECRET` | segredo das sessões, gerado pelo Render |
+| `COOKIE_SECURE=true` | cookie só por HTTPS |
+| `TRUST_PROXY=1` | confia no proxy do Render para ler o IP real (limite de requisições) |
+| `AUTO_DEMO=true` | a cada início insere os dados de demonstração, se ainda não existirem |
+| `DEMO_ADMIN_PASSWORD` / `DEMO_STAFF_PASSWORD` | senhas do administrador e do funcionário de demonstração (mínimo 8 caracteres, com letra e número) |
+
+No plano gratuito do Render o serviço dorme após 15 minutos sem acesso (a primeira abertura depois disso leva cerca de 1 minuto) e o disco é apagado a cada reinício, o que inclui o banco e as fotos enviadas. Por isso `AUTO_DEMO=true` recria os dados de exemplo a cada início. Para guardar dados de verdade é preciso disco persistente (plano pago) ou outro banco.
 
 ## Tecnologias e decisões
 
