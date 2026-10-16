@@ -118,7 +118,7 @@ import { VoteExplainerComponent } from '../shared/vote-explainer.component';
                 <a class="btn btn-texto" routerLink="/comunidade/f/ideias-propostas">Debater no fórum de ideias</a>
               }
               @if (p.canReport) { <ut-denunciar type="proposal" [targetId]="p.id" /> }
-              @if (p.canDelete) { <button type="button" class="btn btn-texto apagar" (click)="remove()">Remover minha proposta</button> }
+              @if (p.canDelete) { <button type="button" class="btn btn-texto apagar" (click)="remove()">{{ p.isMine ? 'Remover minha proposta' : 'Remover proposta (administração)' }}</button> }
             </div>
 
             @if (p.canChangeStatus) {
@@ -305,10 +305,11 @@ export class ProposalPage {
   }
 
   remove() {
-    if (!confirm('Remover sua proposta? Ela deixa de aparecer para todos.')) return;
+    const mine = this.p()!.isMine;
+    if (!confirm(mine ? 'Remover sua proposta? Ela deixa de aparecer para todos.' : 'Remover esta proposta por moderação? Ela deixa de aparecer para todos e pode ser restaurada na Moderação.')) return;
     this.api.deleteProposal(this.p()!.id).subscribe({
       next: () => {
-        this.toast.show('Proposta removida.', 'info');
+        this.toast.show(mine ? 'Proposta removida.' : 'Proposta removida por moderação.', 'info');
         this.router.navigate(['/propostas']);
       },
       error: (e) => this.toast.show(toApiError(e).message, 'erro'),

@@ -7,7 +7,7 @@ import { badRequest, conflict, forbidden, fromZod, notFound } from '../lib/error
 import { placeKey, placeName } from '../lib/text.js';
 import { isStaffRole, type SessionUser, type Status } from '../types.js';
 import { initialStatus } from './statuses.service.js';
-import { notify, staffIds } from './notifications.service.js';
+import { dropNoticesFor, notify, staffIds } from './notifications.service.js';
 import { addEvent, buildTimeline, notifyOccurrenceUpdate, openInfoRequest, resolutionSummary } from './tracking.service.js';
 
 // área aproximada do município de Sorocaba, com margem
@@ -687,4 +687,29 @@ export async function staffOverview(db: Db) {
   ]);
   const latest = await db('occurrences').max({ m: 'id' }).first();
   return { initialStatus: initial, waiting, open, stale, lastDay, total, latestId: Number(latest?.m ?? 0) };
+}
+
+// exclusão definitiva pelo administrador: some do mapa, das listas, dos indicadores e dos relatórios.
+// histórico, anotações, confirmações e evidências saem junto (chaves com ON DELETE CASCADE);
+// publicações e propostas que citavam a reclamação continuam, só sem a ligação.
+export async function deleteOccurrence(db: Db, admin: SessionUser, id: number) {
+  const occ = (await db('occurrences as o')
+    .join('categories as c', 'c.id', 'o.category_id')
+    .where('o.id', id)
+    .first('o.id', 'o.user_id', 'o.photo_path', 'o.status', 'o.scope', 'o.neighborhood_name', 'c.name as category')) as Record<string, unknown> | undefined;
+  if (!occ) throw notFound('Ocorrência não encontrada. Ela pode já ter sido excluída.');
+  const evidence = (await db('occurrence_evidence').where({ occurrence_id: id }).pluck('photo_path')) as string[];
+  await db.transaction(async (trx) => {
+    await trx('occurrences').where({ id }).delete();
+    // o registro some, então a auditoria guarda o resumo do que foi apagado
+    await audit(trx, admin.id, 'ocorrencia.excluida', 'occurrence', id, {
+      codigo: occCode(id),
+      categoria: occ.category,
+      local: occ.scope === 'cidade' ? 'Cidade toda' : occ.neighborhood_name,
+      status: occ.status,
+      autor: occ.user_id,
+    });
+    await dropNoticesFor(trx, [`/ocorrencias/${id}`, `/ocorrencias/${id}#pedido`]);
+  });
+  return { photos: [occ.photo_path as string | null, ...evidence].filter((p): p is string => Boolean(p)) };
 }

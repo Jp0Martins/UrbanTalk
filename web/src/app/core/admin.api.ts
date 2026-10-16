@@ -19,6 +19,11 @@ export class AdminApi {
   private http = inject(HttpClient);
   private readonly api = `${environment.apiUrl}/admin`;
 
+  // exclusão definitiva (só administrador)
+  deleteOccurrence(id: number) {
+    return this.http.delete<void>(`${this.api}/occurrences/${id}`);
+  }
+
   queue(f: QueueFilters, page = 1) {
     return this.http.get<QueuePage>(`${this.api}/queue`, { params: toParams({ ...f, page }) });
   }

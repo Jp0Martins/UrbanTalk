@@ -3,6 +3,7 @@ import { Location } from '@angular/common';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Router, RouterLink } from '@angular/router';
 import { ApiService } from '../core/api.service';
+import { AdminApi } from '../core/admin.api';
 import { toApiError } from '../core/api-error';
 import { DatePipe, RelativePipe } from '../core/format';
 import { MapMarker, OccurrenceDetail, Post, Scope, StaffOccurrenceDetail, addressLine } from '../core/models';
@@ -210,6 +211,14 @@ import { StaffTriageComponent } from '../shared/staff-triage.component';
                     <p class="dica">A correção fica registrada com seu nome no log da equipe.</p>
                   }
                 </div>
+
+                @if (session.isManager()) {
+                  <div class="sub-bloco excluir">
+                    <h3>Excluir reclamação</h3>
+                    <p class="dica">Apaga de vez a reclamação, o histórico, as anotações e as fotos. Ela some do mapa, das listas e dos relatórios. Publicações que a citavam continuam, sem a ligação.</p>
+                    <button type="button" class="btn btn-perigo" [disabled]="deleting()" (click)="removeOccurrence()"><ut-icon name="delete" [size]="18" />{{ deleting() ? 'Excluindo…' : 'Excluir reclamação' }}</button>
+                  </div>
+                }
               </section>
             }
 
@@ -315,6 +324,8 @@ import { StaffTriageComponent } from '../shared/staff-triage.component';
     .gestao h2 ut-icon { color: var(--placa); }
     .sub-bloco { display: flex; flex-direction: column; gap: var(--s-3); border-top: 1px solid var(--linha); padding-top: var(--s-4); }
     .sub-bloco h3 { font-size: var(--t-md); font-family: var(--fonte); font-weight: 700; }
+    .excluir h3 { color: var(--perigo); }
+    .excluir .btn { align-self: flex-start; }
     .quem-registrou { display: flex; flex-direction: column; gap: 2px; background: var(--superficie-2); border-radius: var(--r-1); padding: 10px 12px; }
     .email { font-size: var(--t-sm); overflow-wrap: anywhere; }
     .tipo-nota { border: 0; margin: 0; padding: 4px; display: grid; grid-template-columns: 1fr 1fr; gap: 4px; background: var(--superficie-2); border-radius: var(--r-1); border: 1px solid var(--linha); }
@@ -351,7 +362,9 @@ export class DetailPage {
   private toast = inject(ToastService);
   private location = inject(Location);
   private router = inject(Router);
+  private admin = inject(AdminApi);
   session = inject(SessionStore);
+  deleting = signal(false);
   catalog = inject(StatusCatalog);
 
   // vem do parâmetro da rota (withComponentInputBinding)
@@ -438,6 +451,25 @@ export class DetailPage {
     this.occ.set(o);
     if ('notes' in o) this.staff.set(o);
     this.newStatus.set('');
+  }
+
+  // só administradores; a API confere o papel de novo
+  removeOccurrence() {
+    const o = this.occ();
+    if (!o || this.deleting()) return;
+    if (!window.confirm(`Excluir a reclamação ${o.code} de vez? Isso não pode ser desfeito.`)) return;
+    this.deleting.set(true);
+    this.admin.deleteOccurrence(o.id).subscribe({
+      next: () => {
+        this.deleting.set(false);
+        this.toast.show(`Reclamação ${o.code} excluída.`, 'info');
+        this.router.navigate(['/admin/reclamacoes'], { replaceUrl: true });
+      },
+      error: (e) => {
+        this.deleting.set(false);
+        this.toast.show(toApiError(e).message, 'erro');
+      },
+    });
   }
 
   back() {

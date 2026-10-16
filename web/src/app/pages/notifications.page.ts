@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, effect, inject, signal, untracked } from '@angular/core';
 import { Router } from '@angular/router';
 import { toApiError } from '../core/api-error';
 import { DatePipe, RelativePipe } from '../core/format';
@@ -25,6 +25,8 @@ const ICON_BY_KIND: Record<string, string> = {
   'equipe.persiste': 'alert',
   'equipe.paradas': 'clock',
   'equipe.denuncias': 'shield',
+  'feed.curtida': 'heart',
+  'feed.comentario': 'chat',
 };
 
 @Component({
@@ -79,7 +81,7 @@ const ICON_BY_KIND: Record<string, string> = {
     .textos { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
     .titulo { font-weight: 600; }
     .nova .titulo { font-weight: 700; }
-    .vezes { font-weight: 500; color: var(--texto-2); font-size: var(--t-sm); }
+    .vezes { font-weight: 500; color: var(--texto-2); font-size: var(--t-sm); margin-left: 6px; }
     .corpo { color: var(--texto-2); font-size: var(--t-sm); overflow-wrap: anywhere; }
     .quando { color: var(--texto-3); font-size: var(--t-xs); }
     .ponto { width: 10px; height: 10px; border-radius: 50%; background: var(--placa); flex: none; margin-top: 6px; }
@@ -99,8 +101,32 @@ export class NotificationsPage implements OnInit {
 
   icon = (k: string) => ICON_BY_KIND[k] ?? 'info';
 
+  constructor() {
+    // novidade chegou pelo canal em tempo real: recarrega a primeira página sem piscar a tela
+    let seen: number | null = null;
+    effect(() => {
+      const v = this.notes.version();
+      if (seen !== null && v !== seen) untracked(() => this.refresh());
+      seen = v;
+    });
+  }
+
   ngOnInit() {
     this.load();
+  }
+
+  private refresh() {
+    if (this.loading()) return;
+    this.notes.list(this.filter()).subscribe({
+      next: (r) => {
+        // mantém as páginas antigas já carregadas abaixo da primeira
+        const fresh = new Set(r.items.map((n) => n.id));
+        const older = this.items().filter((n) => !fresh.has(n.id) && r.items.length > 0 && n.id < r.items[r.items.length - 1].id);
+        this.items.set([...r.items, ...older]);
+        if (older.length === 0) this.nextBefore.set(r.nextBefore);
+      },
+      error: () => undefined,
+    });
   }
 
   setFilter(f: 'todas' | 'nao-lidas') {

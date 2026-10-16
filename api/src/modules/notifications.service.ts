@@ -3,6 +3,7 @@ import { z } from 'zod';
 import type { Db } from '../db/knex.js';
 import { nowIso, todayLocal } from '../lib/dates.js';
 import { fromZod, notFound } from '../lib/errors.js';
+import { emitAfterCommit, emitUserChange } from '../lib/realtime.js';
 import { isStaffRole, type SessionUser } from '../types.js';
 
 export interface NoticeInput {
@@ -38,6 +39,19 @@ export async function notify(db: Knex, userIds: Iterable<number>, n: NoticeInput
       if (!String((err as Error).message).includes('UNIQUE')) throw err;
     }
   }
+  emitAfterCommit(db, targets);
+}
+
+// remove avisos que apontam para um conteúdo apagado e atualiza quem estava com eles abertos
+export async function dropNoticesFor(db: Knex, links: string[]) {
+  if (links.length === 0) return;
+  const users = (await db('notifications').whereIn('link', links).distinct('user_id')) as { user_id: number }[];
+  if (users.length === 0) return;
+  await db('notifications').whereIn('link', links).delete();
+  emitAfterCommit(
+    db,
+    users.map((u) => u.user_id),
+  );
 }
 
 export async function staffIds(db: Knex) {
@@ -79,6 +93,7 @@ export async function ensureStaleNotice(db: Db, user: SessionUser, staleDays: nu
       count: 1,
       created_at: nowIso(),
     });
+    emitUserChange([user.id]);
   } catch {
     // outra requisição criou o mesmo aviso ao mesmo tempo
   }
@@ -121,11 +136,28 @@ export async function unreadCount(db: Db, userId: number) {
 export async function markRead(db: Db, user: SessionUser, id: number) {
   const row = await db('notifications').where({ id, user_id: user.id }).first('id', 'read_at');
   if (!row) throw notFound('Notificação não encontrada.');
-  if (!row.read_at) await db('notifications').where({ id }).update({ read_at: nowIso() });
+  if (!row.read_at) {
+    await db('notifications').where({ id }).update({ read_at: nowIso() });
+    emitUserChange([user.id]);
+  }
   return { unread: await unreadCount(db, user.id) };
 }
 
 export async function markAllRead(db: Db, user: SessionUser) {
-  await db('notifications').where({ user_id: user.id }).whereNull('read_at').update({ read_at: nowIso() });
+  const n = await db('notifications').where({ user_id: user.id }).whereNull('read_at').update({ read_at: nowIso() });
+  if (n > 0) emitUserChange([user.id]);
   return { unread: 0 };
+}
+
+// o que a conexão em tempo real envia: contador e o aviso mais recente (para o alerta na tela)
+export async function liveSnapshot(db: Db, userId: number) {
+  const latest = (await db('notifications').where({ user_id: userId }).orderBy('created_at', 'desc').orderBy('id', 'desc').first('id', 'kind', 'title', 'link', 'count', 'created_at', 'read_at')) as
+    | Record<string, unknown>
+    | undefined;
+  return {
+    unread: await unreadCount(db, userId),
+    latest: latest
+      ? { id: latest.id as number, kind: latest.kind as string, title: latest.title as string, link: latest.link as string, count: Number(latest.count), createdAt: latest.created_at as string, read: latest.read_at !== null }
+      : null,
+  };
 }

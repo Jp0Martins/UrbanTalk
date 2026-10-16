@@ -177,6 +177,10 @@ export class ApiService {
     return this.http.post<Post>(`${this.api}/community/posts`, { body, occurrenceId });
   }
 
+  post(id: number) {
+    return this.http.get<Post>(`${this.api}/community/posts/${id}`);
+  }
+
   deletePost(id: number) {
     return this.http.delete<void>(`${this.api}/community/posts/${id}`);
   }

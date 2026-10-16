@@ -49,7 +49,7 @@ Opcional, para apresentar o sistema com o mapa preenchido:
 npm run demo:seed
 ```
 
-Cria 64 ocorrências **fictícias** (algumas com rua, algumas em "Outros", algumas resolvidas e com prioridade), anotações da equipe, 2 reclamações da cidade toda, conversas no feed, 4 propostas com apoios, 2 fóruns criados por moradores e 3 discussões com votos, 8 contas de cidadão (`cidadao1@demo.urbantalk.local` até `cidadao8@...`, senha `Demo1234`), um administrador (`equipe@demo.urbantalk.local`) e um funcionário (`funcionario@demo.urbantalk.local`), com senhas mostradas no terminal. Tudo fica marcado como demonstração na interface, nos indicadores e no PDF. Para apagar: `npm run demo:reset` (remove também o que as contas de demonstração criaram pelo site).
+Cria 64 ocorrências **fictícias** (algumas com rua, algumas em "Outros", algumas resolvidas e com prioridade), anotações da equipe, 2 reclamações da cidade toda, conversas no feed, 4 propostas com apoios, 2 fóruns criados por moradores e 3 discussões com votos, 8 contas de cidadão (`cidadao1@demo.urbantalk.local` até `cidadao8@...`, senha `Demo1234`), um administrador (`administrador@gmail.com`) e um funcionário (`funcionario@gmail.com`), com senhas mostradas no terminal. Tudo fica marcado como demonstração na interface, nos indicadores e no PDF. Para apagar: `npm run demo:reset` (remove também o que as contas de demonstração criaram pelo site).
 
 Agora rode:
 
@@ -262,6 +262,7 @@ Erros seguem sempre o formato:
 | `GET /admin/occurrences/:id` | Funcionário | Detalhe completo: quem registrou, anotações internas e públicas, autores do histórico |
 | `PATCH /admin/occurrences/:id/status` | Funcionário | `{ status, note }`; só status ativos; grava status anterior, novo, data, funcionário e mensagem |
 | `POST /admin/occurrences/:id/notes` | Funcionário | `{ visibility: 'interna' \| 'publica', body }` |
+| `DELETE /admin/occurrences/:id` | Administrador | Exclui a reclamação de vez (histórico, anotações, confirmações, evidências e fotos); publicações e propostas que a citavam ficam sem a ligação; grava resumo na auditoria e remove os avisos que apontavam para ela |
 | `PATCH /admin/occurrences/:id/address` | Funcionário | Corrige `scope`, `neighborhoodName`, `street`, `reference` (fica na auditoria; `cidade` apaga o bairro) |
 | `GET /admin/statuses` | Funcionário | Status com contagem de uso e `canManage` |
 | `POST /admin/statuses` | Administrador | Cria `{ name, description, color, isClosed }` |
@@ -274,7 +275,8 @@ Erros seguem sempre o formato:
 | `GET /community/posts` | Logado | Feed paginado por cursor: `filter` (`recentes`, `ocorrencias`, `minhas`), `occurrence`, `before`, `limit` |
 | `POST /community/posts` | Logado | `{ body, occurrenceId? }` (3 a 500 caracteres, até 2 links, sem repetir a mesma mensagem em 10 min) |
 | `DELETE /community/posts/:id` | Autor ou funcionário | Remove (funcionário remove por moderação, com auditoria) |
-| `PUT` / `DELETE /community/posts/:id/like` | Logado | Apoia ou retira o apoio; uma curtida por pessoa |
+| `PUT` / `DELETE /community/posts/:id/like` | Logado | Apoia ou retira o apoio; uma curtida por pessoa; a primeira curtida de cada pessoa avisa o autor |
+| `GET /community/posts/:id` | Logado | Uma publicação (usada pelo link dos avisos) |
 | `GET/POST /community/posts/:id/comments` | Logado | Lista e cria comentários (até 300 caracteres) |
 | `DELETE /community/comments/:id` | Autor ou funcionário | Remove comentário |
 
@@ -290,6 +292,7 @@ Erros seguem sempre o formato:
 | `POST /admin/occurrences/:id/evidence` | Funcionário | Multipart `kind` (`antes`, `depois`, `acompanhamento`), `caption`, `photos[]` |
 | `GET /notifications` | Logado | `filter` (`todas`, `nao-lidas`), `before`; só as próprias |
 | `GET /notifications/unread-count` | Logado | Contador |
+| `GET /notifications/stream` | Logado | Tempo real (Server-Sent Events): evento `notificacoes` com `{ unread, latest }` sempre que um aviso da pessoa é criado, lido ou removido |
 | `POST /notifications/:id/read`, `POST /notifications/read-all` | Logado | Marcar como lida |
 
 **Participação**
@@ -314,7 +317,7 @@ Erros seguem sempre o formato:
 | `PUT/DELETE /proposals/:id/vote` | Cliente | Apoia ou retira; bloqueado em fase final |
 | `PATCH /proposals/:id/status` | Funcionário | `{ status, note }`; fase final exige explicação |
 | `PUT/DELETE /proposals/:id/occurrences/:occ` | Autor ou funcionário | Relaciona reclamações |
-| `DELETE /proposals/:id` | Autor | Remove a própria proposta |
+| `DELETE /proposals/:id` | Autor ou administrador | Autor remove a própria; administrador remove qualquer uma por moderação (auditada, restaurável na Moderação) |
 | `GET/PUT /me/interests` | Logado | Bairros de interesse `{ neighborhoods: string[] }` (até 5, grafias iguais contam uma vez) |
 | `POST /reports` | Logado | Denúncia `{ targetType, targetId, reason, details }` (inclui `forum`; fóruns oficiais não são denunciáveis); uma por pessoa e conteúdo |
 
@@ -375,6 +378,7 @@ Migrações versionadas em `api/src/db/migrations/`; `npm run migrate` aplica as
 | `posts` | autor, reclamação ligada (opcional), texto, data, exclusão | exclusão lógica, com quem excluiu |
 | `post_comments` | publicação, autor, texto, data, exclusão | exclusão lógica |
 | `post_likes` | publicação, usuário, data | **chave primária (publicação, usuário)**: curtida não se repete |
+| `post_like_notices` | publicação, usuário, data | **chave primária (publicação, usuário)**: cada pessoa gera no máximo um aviso de curtida por publicação, mesmo descurtindo e curtindo de novo |
 | `audit_log` | quem, ação, alvo, detalhes, data | mudanças de status configurados, de equipe, de endereço, atribuição, prioridade, duplicata, moderação, categorias, fóruns, fases e configurações |
 | `occurrence_events` | ocorrência, autor, tipo, `interna`/`publica`, texto, dados, data | linha do tempo: atribuição, prioridade, evidência, resolução, avaliação, reabertura, duplicata, endereço |
 | `occurrence_info_requests` | ocorrência, quem pediu, pergunta, resposta, foto, datas | só um pedido aberto por vez; resposta só de quem registrou |
@@ -440,9 +444,14 @@ Não há nenhuma outra dependência externa.
 
 ## Testes
 
-Resultados da execução em 15/10/2026 (refinamento de localização e Comunidade):
+Resultados da execução em 15/10/2026 (administração e notificações em tempo real):
 
-- **API: 77 testes, todos passando** (`api/tests`). Novos ou reescritos nesta etapa:
+- **API: 82 testes, todos passando** (`api/tests`). `admin-notificacoes.test.ts` (5): administrador exclui reclamação de outra pessoa (visitante 401; cidadão, outro cidadão, funcionário comum e chamada sem o cabeçalho da aplicação 403), com confirmações, anotações, foto no disco e avisos removidos, publicação ligada preservada sem a ligação, auditoria e 404 depois; administrador remove publicação do feed e os avisos dela somem; administrador remove proposta (cidadão e funcionário comum 403); curtida e comentário avisam só o autor, sem aviso das próprias ações, sem duplicar ao descurtir e curtir de novo nem em curtidas simultâneas, agrupados, persistidos após novo login; canal em tempo real (401 sem sessão, evento ao curtir, ao comentar e ao ler em outra aba, nada vazando para outra pessoa).
+- **Ponta a ponta desta etapa** (Chromium, servidor real, três cidadãos, administrador e funcionário em sessões separadas): **31 verificações passando, sem erros de JavaScript**. Contador sobe sozinho em menos de meio segundo após curtida e comentário de outra pessoa, alerta na tela, central atualiza a lista aberta, clique abre a publicação com comentários, avisos continuam após novo login; administrador remove publicação (com confirmação e cancelamento) e o contador da autora volta sozinho; exclui reclamação pelo detalhe (confirmação com o código, cancelar não exclui), ela some da API, do mapa e da lista; funcionário comum não vê o botão e recebe 403. O canal também foi conferido pelo proxy do `npm run dev`. A suíte anterior de 80 verificações foi repetida sobre um banco antigo (migração nova aplicada com cópia de segurança) e continua passando.
+
+Etapa anterior (refinamento de localização e Comunidade):
+
+- **API: 77 testes** (`api/tests`). Novos ou reescritos naquela etapa:
   - `localizacao.test.ts` (4): reclamação da cidade toda sem bairro e sem ponto (o banco recusa bairro nela); bairro novo digitado aparecendo em detalhes, filtros (com e sem acento, maiúsculas, espaços extras), busca, sugestões, resumo por bairro, indicadores, fila, CSV e PDF, sem misturar "Jardim São Conrado" com "Jardim São Conrado II"; bairro obrigatório e com ponto; nenhum cadastro em tabela fechada; propostas com o mesmo bairro livre.
   - `participacao.test.ts` (8): só os 9 fóruns oficiais e nenhum fórum automático (nem ao registrar reclamação em bairro novo); pessoa cria fórum e outra o encontra (nome, bairro sem acento, tag), segue, abre discussão com tag, é avisada, responde em árvore; só quem criou edita e editar as regras não apaga tags nem bairro; votos de relevância únicos (inclusive simultâneos), nunca no próprio conteúdo, separados de confirmações e apoios, e ordenação por populares; aprovação prévia (só o administrador liga, pendente invisível para outros, aprovação pela equipe com aviso e auditoria); limite diário, denúncia de fórum, remoção de discussão auditada; bairros de interesse em texto, privados e limitados; propostas.
   - `perfis-status-feed.test.ts`: correção de endereço com bairro digitado e troca para cidade toda apagando o bairro no banco; cidadão recebe 403.
@@ -524,8 +533,9 @@ Antes de uma implantação pública:
 
 - **HTTPS**: em produção, sirva atrás de HTTPS e defina `COOKIE_SECURE=true`.
 - **Recuperação de senha e verificação de e-mail** não existem; exigiriam um serviço de envio de e-mail.
-- **Moderação de reclamações**: a equipe modera publicações, comentários, discussões e propostas, mas reclamações não têm botão de ocultar; podem ser marcadas como duplicata ou encerradas com um status próprio (ex.: "Cancelada").
-- **Notificações só dentro do site**: avisos aparecem na central e no contador da barra lateral (consultado a cada minuto). Envio por e-mail ou push no celular dependeria de um serviço externo.
+- **Moderação de reclamações**: reclamações não têm "ocultar"; o administrador pode excluí-las de vez, e a equipe pode marcá-las como duplicata ou encerrá-las com um status próprio (ex.: "Cancelada").
+- **Notificações só dentro do site**: avisos aparecem em tempo real na central, no contador da barra lateral e num alerta na tela, por Server-Sent Events (com consulta a cada minuto como reserva). O canal em tempo real vale para um único processo do servidor, como no Render gratuito; com várias instâncias seria preciso um intermediário (ex.: Redis). Envio por e-mail ou push no celular dependeria de um serviço externo.
+- **Exclusão de reclamação é definitiva**: não há lixeira; o resumo fica na auditoria. Publicações do feed, discussões e propostas removidas pela moderação continuam guardadas e podem ser restauradas.
 - **Avisos de reclamações paradas** são gerados uma vez por dia quando o funcionário abre a central, não por um agendador.
 - **Duplicatas** são sugeridas por categoria, distância (200 m) e data (90 dias); não há comparação do texto. Marcar não mescla confirmações nem históricos.
 - **Mapa de concentração** em grade de ~500 m desenhada pelo próprio sistema (sem plugin externo); é uma visão aproximada e não considera população nem tamanho dos bairros.

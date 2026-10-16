@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ApiService } from '../core/api.service';
 import { toApiError } from '../core/api-error';
@@ -80,6 +81,22 @@ const MAX = 500;
             </div>
           </form>
 
+          @if (focusId()) {
+            <section class="destaque" aria-labelledby="destaque-t">
+              <div class="destaque-topo">
+                <h2 id="destaque-t">Publicação do seu aviso</h2>
+                <button type="button" class="btn btn-texto btn-sm" (click)="clearFocus()">Fechar</button>
+              </div>
+              @if (focusPost(); as fp) {
+                <ut-publicacao [post]="fp" [startOpen]="true" (changed)="focusChanged($event)" (removed)="focusRemoved($event)" />
+              } @else if (focusError(); as fe) {
+                <p class="aviso aviso-info" role="status"><ut-icon name="info" />{{ fe }}</p>
+              } @else {
+                <p class="carregando">Abrindo publicação…</p>
+              }
+            </section>
+          }
+
           @if (occurrenceFilter(); as id) {
             <div class="aviso aviso-info filtro-ativo" role="status">
               <ut-icon name="info" />
@@ -148,6 +165,9 @@ const MAX = 500;
   `,
   styles: `
     :host { display: block; }
+    .destaque { display: flex; flex-direction: column; gap: var(--s-2); margin-bottom: var(--s-4); padding: var(--s-3); border: 2px solid var(--faixa); border-radius: var(--r-2); background: #fffdf5; }
+    .destaque-topo { display: flex; justify-content: space-between; align-items: center; gap: var(--s-2); }
+    .destaque-topo h2 { font-size: var(--t-md); }
     .convite-entrar { display: flex; gap: var(--s-4); align-items: flex-start; padding: var(--s-6) var(--s-5); border: 1px dashed var(--linha-forte); border-radius: var(--r-2); background: var(--superficie-2); max-width: 760px; }
     .convite-entrar ut-icon { color: var(--placa); }
     .acoes-convite { display: flex; gap: var(--s-2); flex-wrap: wrap; margin-top: var(--s-4); }
@@ -210,6 +230,7 @@ export class CommunityPage implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private toast = inject(ToastService);
+  private destroyRef = inject(DestroyRef);
   session = inject(SessionStore);
 
   max = MAX;
@@ -233,6 +254,11 @@ export class CommunityPage implements OnInit {
   linking = signal(false);
   code = signal('');
   linkError = signal<string | null>(null);
+
+  // publicação aberta por um aviso (?publicacao=ID)
+  focusId = signal<number | null>(null);
+  focusPost = signal<Post | null>(null);
+  focusError = signal<string | null>(null);
 
   remaining = computed(() => MAX - this.draft().length);
   myInitials = computed(() => {
@@ -258,6 +284,11 @@ export class CommunityPage implements OnInit {
 
   ngOnInit() {
     if (!this.session.user()) return;
+    // a mesma página pode receber outro aviso sem ser recriada
+    this.route.queryParamMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((q) => {
+      const pid = Number(q.get('publicacao'));
+      this.openFocus(Number.isInteger(pid) && pid > 0 ? pid : null);
+    });
     const f = this.route.snapshot.queryParamMap.get('filtro');
     if (f === 'minhas' || f === 'ocorrencias') this.filter.set(f);
     const id = Number(this.route.snapshot.queryParamMap.get('ocorrencia'));
@@ -361,6 +392,36 @@ export class CommunityPage implements OnInit {
         this.composeError.set(toApiError(e).message);
       },
     });
+  }
+
+  private openFocus(id: number | null) {
+    if (id === this.focusId()) return;
+    this.focusId.set(id);
+    this.focusPost.set(null);
+    this.focusError.set(null);
+    if (!id) return;
+    this.api.post(id).subscribe({
+      next: (p) => this.focusPost.set(p),
+      error: (e) => {
+        const err = toApiError(e);
+        this.focusError.set(err.status === 404 ? 'Esta publicação foi removida e não está mais disponível.' : err.message);
+      },
+    });
+  }
+
+  clearFocus() {
+    this.router.navigate([], { relativeTo: this.route, queryParams: { publicacao: null }, queryParamsHandling: 'merge', replaceUrl: true });
+  }
+
+  focusChanged(p: Post) {
+    this.focusPost.set(p);
+    this.replace(p);
+  }
+
+  focusRemoved(id: number) {
+    this.drop(id);
+    this.focusPost.set(null);
+    this.focusError.set('Publicação removida.');
   }
 
   replace(p: Post) {

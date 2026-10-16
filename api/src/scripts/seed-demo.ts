@@ -7,6 +7,10 @@ import { placeKey } from '../lib/text.js';
 // DADOS FICTÍCIOS para demonstração. Tudo criado aqui fica marcado com is_demo = true
 // e as contas usam o domínio @demo.urbantalk.local. Remova com: npm run demo:reset
 const DEMO_DOMAIN = '@demo.urbantalk.local';
+// contas da equipe de demonstração (não usam o domínio acima, então entram na lista à parte)
+const ADMIN_EMAIL = 'administrador@gmail.com';
+const STAFF_EMAIL = 'funcionario@gmail.com';
+const demoUserIds = (db: Db) => db('users').where('email', 'like', `%${DEMO_DOMAIN}`).orWhereIn('email', [ADMIN_EMAIL, STAFF_EMAIL]).select('id');
 
 // posições aproximadas, só para espalhar os pontos de forma plausível no mapa
 const AREAS: { name: string; lat: number; lng: number }[] = [
@@ -94,7 +98,7 @@ function rng(seed: number) {
 
 async function reset(db: Db) {
   const demoOcc = await db('occurrences').where({ is_demo: true }).count({ c: '*' }).first();
-  const demoUsers = db('users').where('email', 'like', `%${DEMO_DOMAIN}`).select('id');
+  const demoUsers = demoUserIds(db);
   // conversas e propostas criadas pelas contas fictícias saem junto, com tudo que depende delas
   const demoForums = db('forums').whereIn('created_by', demoUsers).select('id');
   const demoTopics = db('topics').where((w) => w.whereIn('author_id', demoUsers).orWhereIn('forum_id', demoForums)).select('id');
@@ -113,7 +117,7 @@ async function reset(db: Db) {
   await db('occurrences').where({ is_demo: true }).delete();
   // reclamações feitas pelo site com as contas de demonstração também saem
   await db('occurrences').whereIn('user_id', demoUsers).delete();
-  await db('users').where('email', 'like', `%${DEMO_DOMAIN}`).delete();
+  await db('users').where('email', 'like', `%${DEMO_DOMAIN}`).orWhereIn('email', [ADMIN_EMAIL, STAFF_EMAIL]).delete();
   console.log(`Dados de demonstração removidos (${demoOcc?.c ?? 0} ocorrências).`);
 }
 
@@ -146,16 +150,16 @@ async function seed(db: Db) {
   const staffFixed = fixed(process.env.DEMO_STAFF_PASSWORD);
   const adminPassword = adminFixed ?? crypto.randomBytes(9).toString('base64url') + '7a';
   const [adminId] = await db('users').insert({
-    name: 'Patrícia Gomes',
-    email: `equipe${DEMO_DOMAIN}`,
+    name: 'Gustavo Garcia',
+    email: ADMIN_EMAIL,
     password_hash: await hashPassword(adminPassword),
     role: 'admin',
     created_at: new Date(now - 100 * 86_400_000).toISOString(),
   });
   const staffPassword = staffFixed ?? crypto.randomBytes(9).toString('base64url') + '7a';
   const [staffId] = await db('users').insert({
-    name: 'Diego Martins',
-    email: `funcionario${DEMO_DOMAIN}`,
+    name: 'Funcionário 1',
+    email: STAFF_EMAIL,
     password_hash: await hashPassword(staffPassword),
     role: 'staff',
     created_at: new Date(now - 100 * 86_400_000).toISOString(),
@@ -343,8 +347,8 @@ async function seed(db: Db) {
   console.log(`${created} ocorrências FICTÍCIAS criadas e marcadas como demonstração.`);
   console.log(`${PROPOSALS.length} propostas, 2 fóruns da comunidade e ${TOPICS.length} discussões fictícias criadas por contas de demonstração.`);
   console.log(`Contas de cidadão: cidadao1${DEMO_DOMAIN} até cidadao8${DEMO_DOMAIN}, senha ${demoPassword}`);
-  console.log(adminFixed ? `Administrador: equipe${DEMO_DOMAIN}, senha definida em DEMO_ADMIN_PASSWORD` : `Funcionário (administrador): equipe${DEMO_DOMAIN}, senha ${adminPassword}  (anote, não será mostrada de novo)`);
-  console.log(staffFixed ? `Funcionário: funcionario${DEMO_DOMAIN}, senha definida em DEMO_STAFF_PASSWORD` : `Funcionário: funcionario${DEMO_DOMAIN}, senha ${staffPassword}  (anote, não será mostrada de novo)`);
+  console.log(adminFixed ? `Administrador: ${ADMIN_EMAIL}, senha definida em DEMO_ADMIN_PASSWORD` : `Administrador: ${ADMIN_EMAIL}, senha ${adminPassword}  (anote, não será mostrada de novo)`);
+  console.log(staffFixed ? `Funcionário: ${STAFF_EMAIL}, senha definida em DEMO_STAFF_PASSWORD` : `Funcionário: ${STAFF_EMAIL}, senha ${staffPassword}  (anote, não será mostrada de novo)`);
 }
 
 const db = createDb(config.databaseFile);

@@ -6,6 +6,11 @@ import { bodyField } from '../lib/text.js';
 import { HttpError, badRequest, forbidden, fromZod, notFound } from '../lib/errors.js';
 import { isStaffRole, type Role, type SessionUser } from '../types.js';
 import { occCode } from './occurrences.service.js';
+import { dropNoticesFor, notify } from './notifications.service.js';
+
+// link usado nos avisos do feed: abre a publicação em destaque na Comunidade
+export const postLink = (id: number) => `/comunidade?publicacao=${id}`;
+const clipText = (s: string, n = 140) => (s.length > n ? `${s.slice(0, n - 1)}…` : s);
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Row = Record<string, any>;
@@ -140,7 +145,7 @@ export async function createPost(db: Db, viewer: SessionUser, body: unknown) {
 }
 
 async function activePost(db: Db, id: number) {
-  const post = await db('posts').where({ id }).whereNull('deleted_at').whereNull('hidden_at').first('id', 'author_id');
+  const post = await db('posts').where({ id }).whereNull('deleted_at').whereNull('hidden_at').first('id', 'author_id', 'body');
   if (!post) throw notFound('Publicação não encontrada. Ela pode ter sido removida.');
   return post as Row;
 }
@@ -152,20 +157,50 @@ export async function deletePost(db: Db, viewer: SessionUser, id: number) {
   await db.transaction(async (trx) => {
     await trx('posts').where({ id }).update({ deleted_at: nowIso(), deleted_by: viewer.id });
     if (!own) await audit(trx, viewer.id, 'moderacao.publicacao', 'post', id, { autor: post.author_id });
+    // avisos de curtida/comentário sobre ela deixam de existir
+    await dropNoticesFor(trx, [postLink(id)]);
   });
 }
 
 export async function setLike(db: Db, viewer: SessionUser, id: number, liked: boolean) {
-  await activePost(db, id);
+  const post = await activePost(db, id);
   if (liked) {
     // a chave primária (post, pessoa) impede curtida repetida mesmo em requisições simultâneas
     await db('post_likes').insert({ post_id: id, user_id: viewer.id, created_at: nowIso() }).onConflict(['post_id', 'user_id']).ignore();
+    await noticeLike(db, viewer, post);
   } else {
     await db('post_likes').where({ post_id: id, user_id: viewer.id }).delete();
   }
   const row = await db('post_likes').where({ post_id: id }).count({ n: '*' }).first();
   const mine = await db('post_likes').where({ post_id: id, user_id: viewer.id }).first('post_id');
   return { likes: Number(row?.n ?? 0), likedByMe: Boolean(mine) };
+}
+
+// avisa o autor uma única vez por pessoa que curtiu (descurtir e curtir de novo não repete)
+async function noticeLike(db: Db, viewer: SessionUser, post: Row) {
+  if (post.author_id === viewer.id) return;
+  const already = await db('post_like_notices').where({ post_id: post.id, user_id: viewer.id }).first('post_id');
+  if (already) return;
+  try {
+    await db('post_like_notices').insert({ post_id: post.id, user_id: viewer.id, created_at: nowIso() });
+  } catch (err) {
+    // duas requisições ao mesmo tempo: a chave primária deixa só uma passar
+    if (String((err as Error).message).includes('UNIQUE')) return;
+    throw err;
+  }
+  await notify(
+    db,
+    [post.author_id as number],
+    {
+      kind: 'feed.curtida',
+      title: `${viewer.name} curtiu sua publicação`,
+      body: clipText(post.body as string),
+      link: postLink(post.id as number),
+      // curtidas na mesma publicação se juntam num aviso só enquanto não for lido
+      dedupeKey: `feed-curtidas:${post.id}`,
+    },
+    viewer.id,
+  );
 }
 
 const commentsPage = z.object({
@@ -199,7 +234,7 @@ export async function listComments(db: Db, viewer: SessionUser, postId: number, 
 }
 
 export async function createComment(db: Db, viewer: SessionUser, postId: number, body: unknown) {
-  await activePost(db, postId);
+  const post = await activePost(db, postId);
   const parsed = commentSchema.safeParse(body ?? {});
   if (!parsed.success) throw fromZod(parsed.error);
   const since = new Date(Date.now() - DUP_WINDOW_MS).toISOString();
@@ -210,6 +245,18 @@ export async function createComment(db: Db, viewer: SessionUser, postId: number,
     .first('id');
   if (dup) throw new HttpError(409, 'duplicate', 'Você acabou de enviar esse mesmo comentário.');
   const [id] = await db('post_comments').insert({ post_id: postId, author_id: viewer.id, body: parsed.data.body, created_at: nowIso() });
+  await notify(
+    db,
+    [post.author_id as number],
+    {
+      kind: 'feed.comentario',
+      title: `${viewer.name} comentou na sua publicação`,
+      body: clipText(parsed.data.body),
+      link: postLink(postId),
+      dedupeKey: `feed-comentarios:${postId}`,
+    },
+    viewer.id,
+  );
   const row = await db('post_comments as pc')
     .join('users as u', 'u.id', 'pc.author_id')
     .where('pc.id', id)

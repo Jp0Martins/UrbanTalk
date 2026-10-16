@@ -11,6 +11,7 @@ import {
   addNote,
   addressSchema,
   changeStatus,
+  deleteOccurrence,
   getOccurrenceForStaff,
   listOccurrences,
   noteSchema,
@@ -67,6 +68,13 @@ export function adminRoutes(db: Db, uploadDir: string) {
 
   router.get('/occurrences/:id', async (req, res) => {
     res.json(await getOccurrenceForStaff(db, parseId(req.params.id), req.user!));
+  });
+
+  // só administradores excluem reclamações; as fotos saem do disco depois do commit
+  router.delete('/occurrences/:id', requireManager, async (req, res) => {
+    const { photos } = await deleteOccurrence(db, req.user!, parseId(req.params.id));
+    for (const p of photos) await removePhoto(uploadDir, p);
+    res.status(204).end();
   });
 
   router.patch('/occurrences/:id/status', async (req, res) => {

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, computed, inject, input, output, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ApiService } from '../core/api.service';
 import { toApiError } from '../core/api-error';
@@ -175,12 +175,14 @@ import { ReportButtonComponent } from './report-button.component';
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PostCardComponent {
+export class PostCardComponent implements OnInit {
   private api = inject(ApiService);
   private toast = inject(ToastService);
   session = inject(SessionStore);
 
   post = input.required<Post>();
+  // aberta a partir de um aviso: já mostra os comentários
+  startOpen = input(false);
   changed = output<Post>();
   removed = output<number>();
 
@@ -195,6 +197,10 @@ export class PostCardComponent {
   sending = signal(false);
   commentError = signal<string | null>(null);
   hasMore = computed(() => this.nextAfter() !== null);
+
+  ngOnInit() {
+    if (this.startOpen()) this.toggleComments();
+  }
 
   toggleLike() {
     const p = this.post();

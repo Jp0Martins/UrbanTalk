@@ -184,7 +184,7 @@ export async function getProposal(db: Db, id: number, viewer?: SessionUser) {
     isMine: own,
     canLink: Boolean(viewer && (own || isStaffRole(viewer.role))),
     canChangeStatus: Boolean(viewer && isStaffRole(viewer.role)),
-    canDelete: own,
+    canDelete: Boolean(own || viewer?.role === 'admin'),
     canReport: Boolean(viewer && !own),
   };
 }
@@ -356,10 +356,15 @@ export async function linkOccurrence(db: Db, viewer: SessionUser, id: number, oc
   return getProposal(db, id, viewer);
 }
 
+// autor remove a própria; administrador remove qualquer uma (fica restaurável na moderação)
 export async function deleteOwnProposal(db: Db, viewer: SessionUser, id: number) {
   const p = await activeProposal(db, id);
-  if (p.author_id !== viewer.id) throw forbidden('Você só pode remover as suas propostas.');
-  await db('proposals').where({ id }).update({ hidden_at: nowIso(), hidden_by: viewer.id, hidden_reason: 'removido_autor' });
+  const own = p.author_id === viewer.id;
+  if (!own && viewer.role !== 'admin') throw forbidden('Você só pode remover as suas propostas.');
+  await db.transaction(async (trx) => {
+    await trx('proposals').where({ id }).update({ hidden_at: nowIso(), hidden_by: viewer.id, hidden_reason: own ? 'removido_autor' : 'moderacao' });
+    if (!own) await audit(trx, viewer.id, 'moderacao.proposta', 'proposal', id, { autor: p.author_id });
+  });
 }
 
 // propostas que citam uma ocorrência (mostradas no detalhe da ocorrência)
