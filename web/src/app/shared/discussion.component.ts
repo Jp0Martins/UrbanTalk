@@ -46,7 +46,6 @@ import { UsefulVoteComponent } from './useful-vote.component';
                 <p class="topo">
                   <strong>{{ c.author.isMe ? c.author.name + ' (você)' : c.author.name }}</strong>
                   @if (c.author.isStaff) { <span class="selo-texto equipe">Equipe</span> }
-                  @if (c.author.isDemo) { <span class="selo-texto">Demonstração</span> }
                   <time class="quando" [attr.datetime]="c.createdAt" [title]="c.createdAt | data: true">{{ c.createdAt | relativo }}</time>
                 </p>
                 @if (c.replyTo && !n.nested) {

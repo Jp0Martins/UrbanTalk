@@ -206,33 +206,33 @@ async function seed(db: Db) {
         t += 3 * 86_400_000;
         await trx('status_history').insert({
           occurrence_id: id, from_status: 'registrada', to_status: 'encaminhada', changed_by: adminId,
-          note: 'Incluída no relatório enviado à Prefeitura (demonstração).', created_at: new Date(t).toISOString(),
+          note: 'Incluída no relatório enviado à Prefeitura.', created_at: new Date(t).toISOString(),
         });
       }
       if (status === 'resolvida') {
         t += 9 * 86_400_000;
         await trx('status_history').insert({
           occurrence_id: id, from_status: 'encaminhada', to_status: 'resolvida', changed_by: adminId,
-          note: 'Conferido no local (demonstração).', created_at: new Date(t).toISOString(),
+          note: 'Conferido no local.', created_at: new Date(t).toISOString(),
         });
         // resolução informada, sem fotos: aparece como "resolução informada", não "com evidências"
-        await trx('occurrence_resolutions').insert({ occurrence_id: id, resolved_by: adminId, status: 'resolvida', description: 'Conferido no local (demonstração).', created_at: new Date(t).toISOString() });
+        await trx('occurrence_resolutions').insert({ occurrence_id: id, resolved_by: adminId, status: 'resolvida', description: 'Conferido no local.', created_at: new Date(t).toISOString() });
         await trx('occurrence_events').insert({ occurrence_id: id, actor_id: adminId, kind: 'resolucao', visibility: 'publica', body: null, data: JSON.stringify({ status: 'resolvida', evidencias: 0, photos: [] }), created_at: new Date(t).toISOString() });
       }
       if (status !== 'resolvida' && rand() < 0.15) {
-        await trx('occurrences').where({ id }).update({ priority: 'media', priority_reason: 'Vários moradores confirmaram e a foto mostra o problema (demonstração).' });
-        await trx('occurrence_events').insert({ occurrence_id: id, actor_id: staffId, kind: 'prioridade', visibility: 'interna', body: 'Vários moradores confirmaram e a foto mostra o problema (demonstração).', data: JSON.stringify({ from: null, to: 'media' }), created_at: new Date(Date.parse(createdAt) + 86_400_000).toISOString() });
+        await trx('occurrences').where({ id }).update({ priority: 'media', priority_reason: 'Vários moradores confirmaram e a foto mostra o problema.' });
+        await trx('occurrence_events').insert({ occurrence_id: id, actor_id: staffId, kind: 'prioridade', visibility: 'interna', body: 'Vários moradores confirmaram e a foto mostra o problema.', data: JSON.stringify({ from: null, to: 'media' }), created_at: new Date(Date.parse(createdAt) + 86_400_000).toISOString() });
       }
       if (status !== 'registrada' && rand() < 0.5) {
         await trx('occurrence_notes').insert({
           occurrence_id: id, author_id: staffId, visibility: 'interna',
-          body: 'Verificar com a regional se já existe chamado aberto (demonstração).', created_at: new Date(Date.parse(createdAt) + 2 * 86_400_000).toISOString(),
+          body: 'Verificar com a regional se já existe chamado aberto.', created_at: new Date(Date.parse(createdAt) + 2 * 86_400_000).toISOString(),
         });
       }
       if (status === 'encaminhada' && rand() < 0.5) {
         await trx('occurrence_notes').insert({
           occurrence_id: id, author_id: staffId, visibility: 'publica',
-          body: 'Recebemos sua reclamação e ela entrou no relatório do mês. Avisaremos aqui quando houver novidade (demonstração).',
+          body: 'Recebemos sua reclamação e ela entrou no relatório do mês. Avisaremos aqui quando houver novidade.',
           created_at: new Date(Date.parse(createdAt) + 4 * 86_400_000).toISOString(),
         });
       }
@@ -271,7 +271,7 @@ async function seed(db: Db) {
     }
   }
 
-  // propostas e discussões fictícias; os autores são contas @demo e aparecem com o selo "Demonstração"
+  // propostas e discussões fictícias; os autores são contas @demo
   const PROPOSALS = [
     { title: 'Faixa elevada na saída da escola da Rua da Penha', body: 'Na saída da escola os carros não reduzem a velocidade. Uma faixa elevada daria mais segurança para as crianças atravessarem.', hood: 'Centro', cat: 'sinalizacao', status: 'em-discussao' },
     { title: 'Abrigos com cobertura nos pontos da Avenida Dom Aguirre', body: 'Vários pontos da avenida não têm cobertura. Em dia de chuva quem espera o ônibus fica exposto. A proposta é priorizar abrigos nos pontos com mais movimento.', hood: 'Além Ponte', cat: 'ponto-onibus', status: 'priorizada' },
@@ -287,7 +287,7 @@ async function seed(db: Db) {
     });
     await db('proposal_status_history').insert({ proposal_id: pid, from_status: null, to_status: 'nova', changed_by: author, note: null, created_at: at });
     if (p.status !== 'nova') {
-      await db('proposal_status_history').insert({ proposal_id: pid, from_status: 'nova', to_status: p.status, changed_by: adminId, note: 'Mudança de fase de demonstração.', created_at: new Date(Date.parse(at) + 5 * 86_400_000).toISOString() });
+      await db('proposal_status_history').insert({ proposal_id: pid, from_status: 'nova', to_status: p.status, changed_by: adminId, note: 'Proposta analisada pela equipe.', created_at: new Date(Date.parse(at) + 5 * 86_400_000).toISOString() });
     }
     for (const u of userIds.filter((u) => u !== author && rand() < 0.6)) {
       await db('proposal_votes').insert({ proposal_id: pid, user_id: u, created_at: new Date(Date.parse(at) + 3_600_000).toISOString() });
@@ -301,8 +301,8 @@ async function seed(db: Db) {
   ];
   // fóruns da comunidade criados por contas de demonstração (nenhum fórum é criado automaticamente por bairro)
   const COMMUNITY_FORUMS = [
-    { slug: 'demo-centro', name: 'Melhorias para o Centro', description: 'Conversas sobre trânsito, calçadas e comércio no Centro de Sorocaba (fórum de demonstração).', theme: 'comunidade', tags: 'centro,calcadas', hood: 'Centro' },
-    { slug: 'demo-vila-carvalho', name: 'Limpeza e entulho na Vila Carvalho', description: 'Pontos de descarte irregular e mutirões de limpeza na Vila Carvalho (fórum de demonstração).', theme: 'meio-ambiente', tags: 'entulho,mutirao', hood: 'Vila Carvalho' },
+    { slug: 'demo-centro', name: 'Melhorias para o Centro', description: 'Conversas sobre trânsito, calçadas e comércio no Centro de Sorocaba.', theme: 'comunidade', tags: 'centro,calcadas', hood: 'Centro' },
+    { slug: 'demo-vila-carvalho', name: 'Limpeza e entulho na Vila Carvalho', description: 'Pontos de descarte irregular e mutirões de limpeza na Vila Carvalho.', theme: 'meio-ambiente', tags: 'entulho,mutirao', hood: 'Vila Carvalho' },
   ];
   for (const [i, f] of COMMUNITY_FORUMS.entries()) {
     const at = new Date(now - (12 - i) * 86_400_000).toISOString();

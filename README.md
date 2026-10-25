@@ -49,7 +49,7 @@ Opcional, para apresentar o sistema com o mapa preenchido:
 npm run demo:seed
 ```
 
-Cria 64 ocorrências **fictícias** (algumas com rua, algumas em "Outros", algumas resolvidas e com prioridade), anotações da equipe, 2 reclamações da cidade toda, conversas no feed, 4 propostas com apoios, 2 fóruns criados por moradores e 3 discussões com votos, 8 contas de cidadão (`cidadao1@demo.urbantalk.local` até `cidadao8@...`, senha `Demo1234`), um administrador (`administrador@gmail.com`) e um funcionário (`funcionario@gmail.com`), com senhas mostradas no terminal. Tudo fica marcado como demonstração na interface, nos indicadores e no PDF. Para apagar: `npm run demo:reset` (remove também o que as contas de demonstração criaram pelo site).
+Cria 64 ocorrências **fictícias** (algumas com rua, algumas em "Outros", algumas resolvidas e com prioridade), anotações da equipe, 2 reclamações da cidade toda, conversas no feed, 4 propostas com apoios, 2 fóruns criados por moradores e 3 discussões com votos, 8 contas de cidadão (`cidadao1@demo.urbantalk.local` até `cidadao8@...`, senha `Demo1234`), um administrador (`administrador@gmail.com`) e um funcionário (`funcionario@gmail.com`), com senhas mostradas no terminal. No banco tudo fica marcado como demonstração (e o PDF avisa), mas o site não mostra selos nem avisos, para a apresentação ficar limpa. Para apagar: `npm run demo:reset` (remove também o que as contas de demonstração criaram pelo site).
 
 Agora rode:
 

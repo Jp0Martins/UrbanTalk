@@ -251,7 +251,7 @@ import { EmptyStateComponent, ErrorStateComponent } from '../shared/states';
     .alternar .btn:last-child { border-radius: 0 var(--r-1) var(--r-1) 0; margin-left: -1px; }
     ut-filtros { display: block; margin-bottom: var(--s-4); }
     .espaco { margin-bottom: var(--s-4); }
-    .divisao { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: var(--s-4); height: calc(100dvh - 300px); min-height: 520px; }
+    .divisao { display: grid; grid-template-columns: minmax(0, 1fr) 360px; grid-template-rows: minmax(0, 1fr); gap: var(--s-4); height: calc(100dvh - 300px); min-height: 520px; }
     .mapa-caixa { position: relative; border: 1px solid var(--linha); border-radius: var(--r-2); overflow: hidden; }
     .mapa { position: absolute; inset: 0; }
     .legenda {
@@ -262,7 +262,8 @@ import { EmptyStateComponent, ErrorStateComponent } from '../shared/states';
 
     .mapa-aviso { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); z-index: 500; background: var(--asfalto); color: #fff; padding: 6px 12px; border-radius: var(--r-1); font-size: var(--t-sm); }
 
-    .lado { background: var(--superficie); border: 1px solid var(--linha); border-radius: var(--r-2); overflow-y: auto; padding: var(--s-4); }
+    /* a lista rola dentro do painel; relative prende os textos escondidos de leitor de tela, que esticavam a página */
+    .lado { background: var(--superficie); border: 1px solid var(--linha); border-radius: var(--r-2); overflow-y: auto; padding: var(--s-4); min-height: 0; position: relative; }
     .lado-topo { margin-bottom: var(--s-3); }
     .lado-topo .dica { font-size: var(--t-xs); color: var(--texto-2); }
     .mini-lista { list-style: none; margin: 0 calc(-1 * var(--s-4)); padding: 0; border-top: 1px solid var(--linha); }
@@ -328,7 +329,7 @@ import { EmptyStateComponent, ErrorStateComponent } from '../shared/states';
     .lista { overflow: hidden; }
 
     @media (max-width: 1000px) {
-      .divisao { grid-template-columns: 1fr; height: auto; }
+      .divisao { grid-template-columns: 1fr; grid-template-rows: auto; height: auto; }
       .mapa-caixa { height: 420px; }
       .lado { max-height: none; }
     }

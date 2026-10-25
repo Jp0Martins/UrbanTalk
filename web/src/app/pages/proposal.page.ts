@@ -38,7 +38,6 @@ import { VoteExplainerComponent } from '../shared/vote-explainer.component';
               <p class="autor">
                 <ut-avatar [name]="p.author.name" [initials]="p.author.initials" [size]="30" />
                 <span>Proposta de <strong>{{ p.author.isMe ? p.author.name + ' (você)' : p.author.name }}</strong> · {{ p.createdAt | data }}</span>
-                @if (p.author.isDemo) { <span class="selo-texto">Demonstração</span> }
               </p>
             </header>
 

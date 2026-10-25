@@ -28,9 +28,6 @@ import { IconComponent } from './icon.component';
           <span class="confirmacoes" [attr.aria-label]="o.confirmations + ' confirmações'">
             <ut-icon name="hand" [size]="16" /><span class="tabular">{{ o.confirmations }}</span>
           </span>
-          @if (o.isDemo) {
-            <span class="demo">Demonstração</span>
-          }
         </div>
       </div>
     </a>
@@ -53,7 +50,6 @@ import { IconComponent } from './icon.component';
     .compacto .descricao { -webkit-line-clamp: 1; }
     .meta { display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-3); align-items: center; font-size: var(--t-xs); color: var(--texto-3); }
     .confirmacoes { display: inline-flex; gap: 4px; align-items: center; }
-    .demo { border: 1px solid var(--linha-forte); border-radius: var(--r-1); padding: 0 8px; color: var(--texto-2); }
     @media (max-width: 520px) {
       .topo { flex-direction: column; align-items: flex-start; gap: 4px; }
     }

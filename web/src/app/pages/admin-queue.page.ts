@@ -84,7 +84,6 @@ type Flag = NonNullable<QueueFilters['flag']>;
                     <span class="codigo tabular">{{ it.code }}</span>
                     <ut-status [status]="it.status" />
                     @if (it.priority) { <span class="selo-texto prio" [attr.data-p]="it.priority" [title]="it.priorityReason ?? ''">Prioridade {{ prioName(it.priority) }}</span> }
-                    @if (it.isDemo) { <span class="selo-texto">Demonstração</span> }
                   </p>
                   <p class="end"><ut-icon name="pin" [size]="14" />{{ it.street ? it.street + ', ' : '' }}{{ it.neighborhood?.name ?? 'Cidade toda' }}</p>
                   <p class="desc">{{ it.description }}</p>

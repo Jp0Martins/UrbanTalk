@@ -105,9 +105,6 @@ import { NeighborhoodInputComponent } from '../shared/neighborhood-input.compone
                 <li>Gráfico da evolução no período</li>
                 <li>Reclamações em aberto com mais confirmações, com rua e bairro, para priorizar</li>
               </ul>
-              @if (p.demoCount > 0) {
-                <div class="aviso aviso-atencao"><ut-icon name="info" />{{ p.demoCount }} dos registros são fictícios de demonstração e o PDF avisa isso.</div>
-              }
             }
           }
           <p class="nota">Depois de enviar o relatório ao órgão responsável, atualize o status das reclamações na página de cada uma, e deixe uma atualização visível ao cidadão se quiser explicar o próximo passo.</p>

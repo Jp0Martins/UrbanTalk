@@ -52,13 +52,6 @@ import { EmptyStateComponent, ErrorStateComponent } from '../shared/states';
         @let d = ind()!;
         <p class="periodo">Período: {{ fmt(d.period.from) }} a {{ fmt(d.period.to) }}</p>
 
-        @if (d.demoCount > 0) {
-          <div class="aviso aviso-atencao demo" role="note">
-            <ut-icon name="info" />
-            <span>{{ d.demoCount }} {{ d.demoCount === 1 ? 'ocorrência deste recorte é fictícia' : 'ocorrências deste recorte são fictícias' }}, criadas para demonstração. Remova com <code>npm run demo:reset</code> antes de usar com dados reais.</span>
-          </div>
-        }
-
         @if (d.total === 0) {
           <ut-vazio icon="chart" title="Sem ocorrências neste período" text="Não há registros para os filtros escolhidos, então não há números a mostrar. Amplie o período ou remova filtros." />
         } @else {
@@ -194,8 +187,6 @@ import { EmptyStateComponent, ErrorStateComponent } from '../shared/states';
     .periodos { display: flex; gap: var(--s-2); flex-wrap: wrap; margin-bottom: var(--s-3); }
     ut-filtros { display: block; margin-bottom: var(--s-4); }
     .periodo { color: var(--texto-2); font-size: var(--t-sm); margin-bottom: var(--s-3); }
-    .demo { margin-bottom: var(--s-4); }
-    .demo ut-icon { color: #8a6a00; }
     code { font-size: 0.9em; background: rgb(0 0 0 / 0.06); padding: 1px 5px; border-radius: 3px; }
 
     .numeros {

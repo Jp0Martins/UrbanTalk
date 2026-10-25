@@ -25,9 +25,6 @@ import { ReportButtonComponent } from './report-button.component';
           @if (p.author.isStaff) {
             <span class="selo-texto equipe">Equipe UrbanTalk</span>
           }
-          @if (p.author.isDemo) {
-            <span class="selo-texto">Demonstração</span>
-          }
           <time class="quando" [attr.datetime]="p.createdAt" [title]="p.createdAt | data: true">{{ p.createdAt | relativo }}</time>
         </header>
         <p class="texto">{{ p.body }}</p>

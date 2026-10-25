@@ -46,9 +46,6 @@ import { StaffTriageComponent } from '../shared/staff-triage.component';
             <header class="cab">
               <div class="linha-meta">
                 <span class="codigo tabular">{{ o.code }}</span>
-                @if (o.isDemo) {
-                  <span class="selo-texto">Dado fictício de demonstração</span>
-                }
                 @if (o.isMine) {
                   <span class="selo-texto">Você registrou</span>
                 }
