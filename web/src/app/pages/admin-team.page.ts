@@ -67,7 +67,6 @@ import { ErrorStateComponent } from '../shared/states';
             <div class="aviso aviso-erro" role="alert"><ut-icon name="alert" />{{ formError() }}</div>
           }
           <button type="submit" class="btn btn-primario" [disabled]="busy() || !email().trim()">Liberar acesso</button>
-          <p class="dica">Toda liberação ou remoção fica registrada com seu nome. Para criar uma conta de funcionário direto no servidor, use <code>npm run staff:create</code> (veja o README).</p>
         </form>
       </div>
     </div>

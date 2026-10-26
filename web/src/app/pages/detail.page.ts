@@ -205,7 +205,6 @@ import { StaffTriageComponent } from '../shared/staff-triage.component';
                       <button type="button" class="btn btn-secundario btn-sm" (click)="editingAddress.set(false)">Cancelar</button>
                       <button type="button" class="btn btn-primario btn-sm" (click)="saveAddress()">Salvar endereço</button>
                     </div>
-                    <p class="dica">A correção fica registrada com seu nome no log da equipe.</p>
                   }
                 </div>
 
