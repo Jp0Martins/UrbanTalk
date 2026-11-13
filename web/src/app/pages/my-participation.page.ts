@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@ngx-translate/core';
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { toApiError } from '../core/api-error';
@@ -11,55 +12,55 @@ import { TopicRowComponent } from '../shared/topic-row.component';
 // o que a pessoa criou, segue e comentou na Comunidade
 @Component({
   selector: 'ut-minhas-participacoes',
-  imports: [RouterLink, IconComponent, ForumCardComponent, TopicRowComponent, ErrorStateComponent],
+  imports: [RouterLink, IconComponent, ForumCardComponent, TopicRowComponent, ErrorStateComponent, TranslatePipe],
   template: `
     @if (error(); as e) {
       <ut-erro [message]="e" (retry)="load()" />
     } @else if (data(); as d) {
       <div class="grade">
         <section class="bloco largo" aria-labelledby="cri-t">
-          <div class="b-topo"><h2 id="cri-t">Fóruns que você criou</h2><a routerLink="/comunidade/foruns/novo" class="btn btn-texto btn-sm"><ut-icon name="plus" [size]="16" />Criar fórum</a></div>
+          <div class="b-topo"><h2 id="cri-t">{{ 'auto.m7f64bd5999' | translate }}</h2><a routerLink="/comunidade/foruns/novo" class="btn btn-texto btn-sm"><ut-icon name="plus" [size]="16" />{{ 'auto.ma97e989a61' | translate }}</a></div>
           @if (d.createdForums.length === 0) {
-            <p class="vazio">Você ainda não criou nenhum fórum. Quando um assunto merecer um espaço próprio, é só criar.</p>
+            <p class="vazio">{{ 'auto.madde5ed834' | translate }}</p>
           } @else {
             <ul class="foruns">@for (f of d.createdForums; track f.id) { <li><ut-forum-card [forum]="f" [compact]="true" /></li> }</ul>
           }
         </section>
 
         <section class="bloco largo" aria-labelledby="seg-t">
-          <h2 id="seg-t">Fóruns que você segue</h2>
+          <h2 id="seg-t">{{ 'auto.m34a2b97924' | translate }}</h2>
           @if (d.followedForums.length === 0) {
-            <p class="vazio">Siga fóruns para ser avisado de novas discussões. <a routerLink="/comunidade/foruns">Ver fóruns</a></p>
+            <p class="vazio">{{ 'auto.mc3d03253d9' | translate }} <a routerLink="/comunidade/foruns">{{ 'auto.m1935ccb761' | translate }}</a></p>
           } @else {
             <ul class="foruns">@for (f of d.followedForums; track f.id) { <li><ut-forum-card [forum]="f" [compact]="true" /></li> }</ul>
           }
         </section>
 
         <section class="painel bloco" aria-labelledby="mt-t">
-          <h2 id="mt-t">Discussões que você abriu</h2>
+          <h2 id="mt-t">{{ 'auto.m9cd13c6ee9' | translate }}</h2>
           @if (d.myTopics.length === 0) {
-            <p class="vazio">Nenhuma ainda. Escolha um fórum e abra uma conversa.</p>
+            <p class="vazio">{{ 'auto.mc2b0272765' | translate }}</p>
           } @else {
             <ul class="lista">@for (t of d.myTopics; track t.id) { <li><ut-topic-row [topic]="t" /></li> }</ul>
           }
         </section>
 
         <section class="painel bloco" aria-labelledby="ct-t">
-          <h2 id="ct-t">Discussões em que você comentou</h2>
+          <h2 id="ct-t">{{ 'auto.mf329707765' | translate }}</h2>
           @if (d.commentedTopics.length === 0) {
-            <p class="vazio">Você ainda não respondeu a nenhuma discussão.</p>
+            <p class="vazio">{{ 'auto.m3e5b506326' | translate }}</p>
           } @else {
             <ul class="lista">@for (t of d.commentedTopics; track t.id) { <li><ut-topic-row [topic]="t" /></li> }</ul>
           }
         </section>
 
         <p class="largo feed-nota">
-          @if (d.feedPosts > 0) { Você tem {{ d.feedPosts }} {{ d.feedPosts === 1 ? 'publicação' : 'publicações' }} no feed. <a routerLink="/comunidade" [queryParams]="{ filtro: 'minhas' }">Ver no Feed</a> }
-          @else { Você ainda não publicou no feed. <a routerLink="/comunidade">Ir para o Feed</a> }
+          @if (d.feedPosts > 0) { Você tem {{ d.feedPosts }} {{ d.feedPosts === 1 ? ('auto.m69b68b34dd' | translate) : ('auto.mfbef526996' | translate) }} no feed. <a routerLink="/comunidade" [queryParams]="{ filtro: 'minhas' }">{{ 'auto.m23a55e86b8' | translate }}</a> }
+          @else { Você ainda não publicou no feed. <a routerLink="/comunidade">{{ 'auto.m08dcf39837' | translate }}</a> }
         </p>
       </div>
     } @else {
-      <p class="carregando">Carregando…</p>
+      <p class="carregando">{{ 'auto.mbca482b745' | translate }}</p>
     }
   `,
   styles: `

@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@ngx-translate/core';
 import { ChangeDetectionStrategy, Component, computed, input, signal } from '@angular/core';
 import { formatDay, formatDayShort } from '../core/format';
 
@@ -11,6 +12,7 @@ export interface BarItem {
 
 // ranking horizontal: rótulo, barra e valor; funciona como tabela para leitores de tela
 @Component({
+  imports: [TranslatePipe],
   selector: 'ut-barras',
   template: `
     @if (items().length === 0) {
@@ -20,7 +22,7 @@ export interface BarItem {
         <caption class="sr-only">{{ caption() }}</caption>
         <colgroup><col /><col class="c-valor" /><col class="c-pct" /></colgroup>
         <thead class="sr-only">
-          <tr><th scope="col">Item</th><th scope="col">Ocorrências</th><th scope="col">Percentual</th></tr>
+          <tr><th scope="col">{{ 'auto.mecdda59aea' | translate }}</th><th scope="col">{{ 'auto.me40af9d924' | translate }}</th><th scope="col">{{ 'auto.m3181e033bf' | translate }}</th></tr>
         </thead>
         <tbody>
           @for (it of visible(); track it.label) {
@@ -39,7 +41,7 @@ export interface BarItem {
       </table>
       @if (hidden() > 0) {
         <button type="button" class="btn btn-texto btn-sm mais" (click)="expanded.set(!expanded())">
-          {{ expanded() ? 'Mostrar menos' : 'Mostrar mais ' + hidden() }}
+          {{ expanded() ? ('auto.mef6b2a81e4' | translate) : 'Mostrar mais ' + hidden() }}
         </button>
       }
     }

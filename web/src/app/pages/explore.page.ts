@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@ngx-translate/core';
 import { AsyncPipe, NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -24,51 +25,51 @@ const TYPES: { id: Exclude<SearchType, 'todos'>; label: string }[] = [
 
 @Component({
   selector: 'ut-explorar',
-  imports: [AsyncPipe, NgTemplateOutlet, RouterLink, IconComponent, PageHeaderComponent, PaginationComponent, StatusBadgeComponent, PhaseBadgeComponent, EmptyStateComponent, ErrorStateComponent, RelativePipe, NeighborhoodInputComponent],
+  imports: [AsyncPipe, NgTemplateOutlet, RouterLink, IconComponent, PageHeaderComponent, PaginationComponent, StatusBadgeComponent, PhaseBadgeComponent, EmptyStateComponent, ErrorStateComponent, RelativePipe, NeighborhoodInputComponent, TranslatePipe],
   template: `
     <div class="pagina">
-      <ut-cabecalho-pagina title="Explorar" description="O que está acontecendo em Sorocaba: reclamações, discussões, propostas e resoluções recentes." />
+      <ut-cabecalho-pagina [title]="'auto.maf5aec0ee2' | translate" [description]="'auto.me3921bc5d4' | translate" />
 
       <form class="busca painel" role="search" (submit)="$event.preventDefault(); submit()">
         <div class="campo cresce">
-          <label for="busca-g">Buscar no UrbanTalk</label>
+          <label for="busca-g">{{ 'auto.mab0b414f8c' | translate }}</label>
           <div class="busca-wrap">
             <ut-icon name="search" [size]="20" />
-            <input id="busca-g" class="entrada" type="search" maxlength="100" placeholder="Ex.: poste apagado, ciclovia, UT-00012" [value]="q()" (input)="q.set($any($event.target).value)" />
+            <input id="busca-g" class="entrada" type="search" maxlength="100" [placeholder]="'auto.m6138964b5e' | translate" [value]="q()" (input)="q.set($any($event.target).value)" />
           </div>
         </div>
         <div class="campo">
-          <label for="b-tipo">Em</label>
+          <label for="b-tipo">{{ 'auto.mcd741b3fe8' | translate }}</label>
           <select id="b-tipo" class="entrada" (change)="type.set($any($event.target).value)">
-            <option value="todos" [selected]="type() === 'todos'">Tudo</option>
+            <option value="todos" [selected]="type() === 'todos'">{{ 'auto.mb3bafc8941' | translate }}</option>
             @for (t of types; track t.id) { <option [value]="t.id" [selected]="type() === t.id">{{ t.label }}</option> }
           </select>
         </div>
         <div class="campo">
-          <label for="b-cat">Categoria</label>
+          <label for="b-cat">{{ 'auto.m5966b0ce8b' | translate }}</label>
           <select id="b-cat" class="entrada" (change)="category.set(num($any($event.target).value))">
-            <option value="">Todas</option>
+            <option value="">{{ 'auto.m8a3c344036' | translate }}</option>
             @for (c of api.categories$ | async; track c.id) { <option [value]="c.id" [selected]="category() === c.id">{{ c.name }}</option> }
           </select>
         </div>
         <div class="campo">
-          <label for="b-bairro">Bairro</label>
-          <ut-bairro inputId="b-bairro" placeholder="Qualquer bairro" [value]="hood()" (valueChange)="hood.set($event)" />
+          <label for="b-bairro">{{ 'auto.m49f7179a65' | translate }}</label>
+          <ut-bairro inputId="b-bairro" [placeholder]="'auto.m035fe17a1c' | translate" [value]="hood()" (valueChange)="hood.set($event)" />
         </div>
-        <button type="submit" class="btn btn-primario" [disabled]="q().trim().length < 2">Buscar</button>
-        @if (result()) { <button type="button" class="btn btn-texto" (click)="clear()">Voltar ao Explorar</button> }
+        <button type="submit" class="btn btn-primario" [disabled]="q().trim().length < 2">{{ 'auto.ma62405e2ce' | translate }}</button>
+        @if (result()) { <button type="button" class="btn btn-texto" (click)="clear()">{{ 'auto.m5b93cd6139' | translate }}</button> }
         @if (searchError()) { <p class="erro" role="alert">{{ searchError() }}</p> }
       </form>
 
       @if (searching()) {
-        <p class="carregando">Buscando…</p>
+        <p class="carregando">{{ 'auto.m9870b9e569' | translate }}</p>
       } @else if (result(); as r) {
         <section aria-live="polite" aria-labelledby="res-t">
           <h2 id="res-t" class="sec">Resultados para “{{ r.q }}”</h2>
-          @if (r.publicOnly) { <p class="dica">Você está vendo só conteúdo público. <a routerLink="/entrar" [queryParams]="{ volta: '/explorar?q=' + r.q }">Entre</a> para buscar também nas publicações da comunidade.</p> }
+          @if (r.publicOnly) { <p class="dica">{{ 'auto.md0499c0d92' | translate }} <a routerLink="/entrar" [queryParams]="{ volta: '/explorar?q=' + r.q }">{{ 'auto.m4ea354d383' | translate }}</a> {{ 'auto.mf67a4986fe' | translate }}</p> }
           @if (r.groups; as g) {
             @if (totalAll(r) === 0) {
-              <ut-vazio icon="search" title="Nada encontrado" text="Tente outra palavra, tire o filtro de bairro ou categoria, ou procure pelo código da reclamação (ex.: UT-00012)." />
+              <ut-vazio icon="search" [title]="'auto.m1ec4888562' | translate" [text]="'auto.ma77cb63289' | translate" />
             }
             @for (t of types; track t.id) {
               @if (g[t.id].total > 0) {
@@ -81,7 +82,7 @@ const TYPES: { id: Exclude<SearchType, 'todos'>; label: string }[] = [
             }
           } @else {
             @if (!r.items?.length) {
-              <ut-vazio icon="search" title="Nada encontrado nesta categoria" text="Tente buscar em Tudo ou use outras palavras." />
+              <ut-vazio icon="search" [title]="'auto.me32e9cac44' | translate" [text]="'auto.mc335b84641' | translate" />
             } @else {
               <ul class="hits">@for (h of r.items; track h.id) { <li><ng-container *ngTemplateOutlet="hit; context: { $implicit: h, t: r.type }" /></li> }</ul>
               <ut-paginacao [page]="r.page!" [totalPages]="r.totalPages!" (go)="run($event)" />
@@ -94,37 +95,37 @@ const TYPES: { id: Exclude<SearchType, 'todos'>; label: string }[] = [
         <div class="grade">
           <section class="painel bloco perto" aria-labelledby="perto-t">
             <div class="b-topo">
-              <h2 id="perto-t">Problemas perto de você</h2>
+              <h2 id="perto-t">{{ 'auto.m7d5eb6f83f' | translate }}</h2>
               <div class="perto-acoes">
-                <button type="button" class="btn btn-secundario btn-sm" (click)="locate()" [disabled]="locating()"><ut-icon name="locate" [size]="16" />{{ locating() ? 'Localizando…' : 'Usar minha localização' }}</button>
-                <label class="sr-only" for="perto-bairro">Ou digite um bairro</label>
-                <ut-bairro inputId="perto-bairro" class="perto-bairro" placeholder="Ou digite um bairro…" (committed)="nearHood($event)" />
+                <button type="button" class="btn btn-secundario btn-sm" (click)="locate()" [disabled]="locating()"><ut-icon name="locate" [size]="16" />{{ locating() ? ('auto.m3993e04256' | translate) : ('auto.mb357f03435' | translate) }}</button>
+                <label class="sr-only" for="perto-bairro">{{ 'auto.m381ef23e2d' | translate }}</label>
+                <ut-bairro inputId="perto-bairro" class="perto-bairro" [placeholder]="'auto.m116dad9208' | translate" (committed)="nearHood($event)" />
               </div>
             </div>
             @if (geoError()) { <p class="erro">{{ geoError() }}</p> }
             @if (d.nearMode === null) {
               <p class="dica">Sua localização é usada só nesta busca, não é salva. Mostramos reclamações abertas num raio de {{ d.nearRadiusM / 1000 }} km.</p>
             } @else if (d.near.length === 0) {
-              <p class="muted">Nenhuma reclamação aberta {{ d.nearMode === 'local' ? 'num raio de ' + d.nearRadiusM / 1000 + ' km' : 'neste bairro' }}.</p>
+              <p class="muted">Nenhuma reclamação aberta {{ d.nearMode === 'local' ? 'num raio de ' + d.nearRadiusM / 1000 + ' km' : ('auto.mdf306c9efe' | translate) }}.</p>
             } @else {
               <ul class="occs">@for (o of d.near; track o.id) { <li><ng-container *ngTemplateOutlet="occ; context: { $implicit: o }" /></li> }</ul>
             }
           </section>
 
           <section class="painel bloco" aria-labelledby="rec-t">
-            <div class="b-topo"><h2 id="rec-t">Reclamações recentes</h2><a routerLink="/mapa" class="btn btn-texto btn-sm">Ver no mapa</a></div>
-            @if (d.recent.length === 0) { <p class="muted">Ainda não há reclamações registradas.</p> }
+            <div class="b-topo"><h2 id="rec-t">{{ 'auto.m3f5dc804bc' | translate }}</h2><a routerLink="/mapa" class="btn btn-texto btn-sm">{{ 'auto.m45f3f64f78' | translate }}</a></div>
+            @if (d.recent.length === 0) { <p class="muted">{{ 'auto.m7f5162cd64' | translate }}</p> }
             <ul class="occs">@for (o of d.recent; track o.id) { <li><ng-container *ngTemplateOutlet="occ; context: { $implicit: o }" /></li> }</ul>
           </section>
 
           <section class="painel bloco" aria-labelledby="res-r-t">
-            <h2 id="res-r-t">Resoluções informadas recentemente</h2>
-            @if (d.resolutions.length === 0) { <p class="muted">Nenhuma resolução registrada ainda.</p> }
+            <h2 id="res-r-t">{{ 'auto.mbaceeb36c7' | translate }}</h2>
+            @if (d.resolutions.length === 0) { <p class="muted">{{ 'auto.mad5e43c56b' | translate }}</p> }
             <ul class="lista">
               @for (r of d.resolutions; track r.occurrenceId) {
                 <li>
                   <a [routerLink]="['/ocorrencias', r.occurrenceId]"><ut-icon [name]="r.icon" [size]="16" />{{ r.category }} · {{ r.place }}</a>
-                  <span class="selos"><span class="selo-texto">Resolução informada</span>@if (r.withEvidence) { <span class="selo-texto">com evidências</span> }@if (r.communityConfirmed) { <span class="selo-texto publica">confirmada pela comunidade</span> }</span>
+                  <span class="selos"><span class="selo-texto">{{ 'auto.m339b0eaead' | translate }}</span>@if (r.withEvidence) { <span class="selo-texto">{{ 'auto.m21b0d83c91' | translate }}</span> }@if (r.communityConfirmed) { <span class="selo-texto publica">{{ 'auto.m768048accb' | translate }}</span> }</span>
                   <span class="dica">{{ r.at | relativo }}{{ r.description ? ' · ' + r.description : '' }}</span>
                 </li>
               }
@@ -132,26 +133,26 @@ const TYPES: { id: Exclude<SearchType, 'todos'>; label: string }[] = [
           </section>
 
           <section class="painel bloco" aria-labelledby="disc-t">
-            <div class="b-topo"><h2 id="disc-t">Discussões populares</h2><a routerLink="/comunidade/foruns" class="btn btn-texto btn-sm">Fóruns</a></div>
-            @if (d.topics.length === 0) { <p class="muted">Nenhuma discussão com respostas nos últimos 30 dias.</p> }
-            <ul class="lista">@for (t of d.topics; track t.id) { <li><a [routerLink]="['/comunidade/discussoes', t.id]">{{ t.title }}</a><span class="dica">{{ t.forum }} · {{ t.replies }} {{ t.replies === 1 ? 'resposta' : 'respostas' }} em 30 dias</span></li> }</ul>
+            <div class="b-topo"><h2 id="disc-t">{{ 'auto.m96b204101d' | translate }}</h2><a routerLink="/comunidade/foruns" class="btn btn-texto btn-sm">{{ 'auto.m17f0d26d2c' | translate }}</a></div>
+            @if (d.topics.length === 0) { <p class="muted">{{ 'auto.me3b915107d' | translate }}</p> }
+            <ul class="lista">@for (t of d.topics; track t.id) { <li><a [routerLink]="['/comunidade/discussoes', t.id]">{{ t.title }}</a><span class="dica">{{ t.forum }} · {{ t.replies }} {{ t.replies === 1 ? ('auto.mb56f3b55b8' | translate) : ('auto.m622c3c83f9' | translate) }} em 30 dias</span></li> }</ul>
           </section>
 
           <section class="painel bloco" aria-labelledby="prop-t">
-            <div class="b-topo"><h2 id="prop-t">Propostas com mais apoio</h2><a routerLink="/propostas" class="btn btn-texto btn-sm">Todas</a></div>
-            @if (d.proposals.length === 0) { <p class="muted">Nenhuma proposta em andamento.</p> }
-            <ul class="lista">@for (p of d.proposals; track p.id) { <li><a [routerLink]="['/propostas', p.id]">{{ p.title }}</a><span class="linha"><ut-fase [status]="p.status" /><span class="dica tabular">{{ p.votes }} apoios · {{ p.neighborhood ?? 'Cidade toda' }}</span></span></li> }</ul>
+            <div class="b-topo"><h2 id="prop-t">{{ 'auto.m709aa9d1f3' | translate }}</h2><a routerLink="/propostas" class="btn btn-texto btn-sm">{{ 'auto.m8a3c344036' | translate }}</a></div>
+            @if (d.proposals.length === 0) { <p class="muted">{{ 'auto.meead6c47ff' | translate }}</p> }
+            <ul class="lista">@for (p of d.proposals; track p.id) { <li><a [routerLink]="['/propostas', p.id]">{{ p.title }}</a><span class="linha"><ut-fase [status]="p.status" /><span class="dica tabular">{{ p.votes }} apoios · {{ p.neighborhood ?? ('auto.mf42a4c41ae' | translate) }}</span></span></li> }</ul>
           </section>
 
           <section class="painel bloco" aria-labelledby="bai-t">
-            <h2 id="bai-t">Bairros com mais atividade</h2>
-            <p class="dica">Últimos 30 dias: reclamações, discussões em fóruns que citam o bairro e propostas.</p>
-            @if (d.neighborhoods.length === 0) { <p class="muted">Sem atividade nos últimos 30 dias.</p> }
+            <h2 id="bai-t">{{ 'auto.mf44e126c6c' | translate }}</h2>
+            <p class="dica">{{ 'auto.m656c6aacd2' | translate }}</p>
+            @if (d.neighborhoods.length === 0) { <p class="muted">{{ 'auto.ma022594dd0' | translate }}</p> }
             <ul class="lista">@for (n of d.neighborhoods; track n.key) { <li><a routerLink="/mapa" [queryParams]="{ bairro: n.name }">{{ n.name }}</a><span class="dica tabular">{{ n.occurrences }} reclamações · {{ n.topics }} discussões · {{ n.proposals }} propostas</span></li> }</ul>
           </section>
         </div>
       } @else {
-        <p class="carregando">Carregando…</p>
+        <p class="carregando">{{ 'auto.mbca482b745' | translate }}</p>
       }
     </div>
 
@@ -172,7 +173,7 @@ const TYPES: { id: Exclude<SearchType, 'todos'>; label: string }[] = [
           @if (h.icon) { <ut-icon [name]="h.icon" [size]="16" /> }
           <strong>{{ h.title }}</strong>
           @if (h.code) { <span class="muted tabular">{{ h.code }}</span> }
-          @if (h.isInstitutional) { <span class="selo-texto publica">Conteúdo do UrbanTalk</span> }
+          @if (h.isInstitutional) { <span class="selo-texto publica">{{ 'auto.m330cd5f9ab' | translate }}</span> }
           @if (h.status && t === 'ocorrencias') { <ut-status [status]="h.status" /> }
           @if (h.status && t === 'propostas') { <ut-fase [status]="h.status" /> }
         </span>
@@ -205,7 +206,7 @@ const TYPES: { id: Exclude<SearchType, 'todos'>; label: string }[] = [
     .perto-acoes { display: flex; gap: var(--s-2); flex-wrap: wrap; align-items: center; }
     .perto-acoes ut-bairro { flex: 1 1 200px; }
     .perto-acoes ut-bairro ::ng-deep .entrada { min-height: 36px; padding-top: 6px; padding-bottom: 6px; }
-    .occs { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 6px; }
+    .occs { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); gap: 6px; }
     .occ { display: flex; gap: var(--s-3); align-items: center; padding: 8px; border: 1px solid var(--linha); border-radius: var(--r-1); text-decoration: none; color: inherit; flex-wrap: wrap; }
     .occ:hover { background: var(--superficie-2); color: inherit; }
     .occ img, .ico { width: 52px; height: 52px; border-radius: var(--r-1); object-fit: cover; flex: none; }

@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@ngx-translate/core';
 import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -16,18 +17,18 @@ const MAX = 500;
 
 @Component({
   selector: 'ut-comunidade',
-  imports: [RouterLink, AvatarComponent, IconComponent, StatusBadgeComponent, PostCardComponent, ErrorStateComponent],
+  imports: [RouterLink, AvatarComponent, IconComponent, StatusBadgeComponent, PostCardComponent, ErrorStateComponent, TranslatePipe],
   template: `
     @if (!session.user()) {
       <div class="convite-entrar">
         <ut-icon name="chat" [size]="28" />
         <div>
-          <p class="vazio-titulo">O feed é o mural rápido de quem usa o UrbanTalk</p>
-          <p class="muted">Entre para ler e publicar alertas, dúvidas e boas notícias. Os fóruns podem ser lidos sem conta.</p>
+          <p class="vazio-titulo">{{ 'auto.m34a04152ed' | translate }}</p>
+          <p class="muted">{{ 'auto.m0995305661' | translate }}</p>
           <div class="acoes-convite">
-            <a routerLink="/entrar" [queryParams]="{ volta: '/comunidade' }" class="btn btn-primario">Entrar</a>
-            <a routerLink="/cadastro" class="btn btn-secundario">Criar conta</a>
-            <a routerLink="/comunidade/foruns" class="btn btn-texto">Ver os fóruns</a>
+            <a routerLink="/entrar" [queryParams]="{ volta: '/comunidade' }" class="btn btn-primario">{{ 'auto.m7573ba8515' | translate }}</a>
+            <a routerLink="/cadastro" class="btn btn-secundario">{{ 'auto.mb03ff67468' | translate }}</a>
+            <a routerLink="/comunidade/foruns" class="btn btn-texto">{{ 'auto.mcc3c169e94' | translate }}</a>
           </div>
         </div>
       </div>
@@ -36,34 +37,34 @@ const MAX = 500;
       <div class="grade">
         <div class="coluna">
           <form class="compor" (submit)="$event.preventDefault(); publish()" aria-labelledby="compor-t">
-            <h2 id="compor-t" class="sr-only">Nova publicação</h2>
+            <h2 id="compor-t" class="sr-only">{{ 'auto.m9f62ab08ba' | translate }}</h2>
             <div class="compor-topo">
               <ut-avatar [name]="session.user()!.name" [initials]="myInitials()" [staff]="session.isStaff()" />
               <div class="campo cresce">
-                <label for="texto-post" class="sr-only">O que está acontecendo no seu bairro?</label>
-                <textarea id="texto-post" class="entrada" rows="3" [attr.maxlength]="max" placeholder="O que está acontecendo no seu bairro?" [value]="draft()" (input)="draft.set($any($event.target).value)" [attr.aria-invalid]="!!composeError()" aria-describedby="contador"></textarea>
+                <label for="texto-post" class="sr-only">{{ 'auto.mf221203be4' | translate }}</label>
+                <textarea id="texto-post" class="entrada" rows="3" [attr.maxlength]="max" [placeholder]="'auto.mf221203be4' | translate" [value]="draft()" (input)="draft.set($any($event.target).value)" [attr.aria-invalid]="!!composeError()" aria-describedby="contador"></textarea>
               </div>
             </div>
 
             @if (linked(); as o) {
               <div class="ligada">
                 <ut-icon [name]="o.category.icon" [size]="20" />
-                <span class="lig-texto"><strong>Sobre {{ o.code }}</strong> · {{ o.category.name }}, {{ o.street ? o.street + ', ' : '' }}{{ o.neighborhood?.name ?? 'Cidade toda' }}</span>
+                <span class="lig-texto"><strong>Sobre {{ o.code }}</strong> · {{ o.category.name }}, {{ o.street ? o.street + ', ' : '' }}{{ o.neighborhood?.name ?? ('auto.mf42a4c41ae' | translate) }}</span>
                 <ut-status [status]="o.status" />
-                <button type="button" class="btn btn-texto btn-sm" (click)="unlink()">Remover<span class="sr-only"> ligação com a reclamação</span></button>
+                <button type="button" class="btn btn-texto btn-sm" (click)="unlink()">{{ 'auto.m4bd4ea8342' | translate }}<span class="sr-only"> {{ 'auto.m0ae1958e5f' | translate }}</span></button>
               </div>
             } @else if (linking()) {
               <div class="ligar">
-                <label for="codigo" class="rotulo">Código da reclamação</label>
+                <label for="codigo" class="rotulo">{{ 'auto.m0a2a33fd36' | translate }}</label>
                 <div class="ligar-linha">
-                  <input id="codigo" class="entrada" placeholder="Ex.: UT-00012" maxlength="12" [value]="code()" (input)="code.set($any($event.target).value)" (keydown.enter)="$event.preventDefault(); findOccurrence()" />
-                  <button type="button" class="btn btn-secundario btn-sm" (click)="findOccurrence()">Ligar</button>
-                  <button type="button" class="btn btn-texto btn-sm" (click)="linking.set(false)">Cancelar</button>
+                  <input id="codigo" class="entrada" [placeholder]="'auto.m300ad036e1' | translate" maxlength="12" [value]="code()" (input)="code.set($any($event.target).value)" (keydown.enter)="$event.preventDefault(); findOccurrence()" />
+                  <button type="button" class="btn btn-secundario btn-sm" (click)="findOccurrence()">{{ 'auto.m8dfb09be6f' | translate }}</button>
+                  <button type="button" class="btn btn-texto btn-sm" (click)="linking.set(false)">{{ 'auto.mc111e0ab9d' | translate }}</button>
                 </div>
                 @if (linkError()) {
                   <p class="erro" role="alert">{{ linkError() }}</p>
                 }
-                <p class="dica">O código aparece na página de cada reclamação, como UT-00012.</p>
+                <p class="dica">{{ 'auto.mffcb657f84' | translate }}</p>
               </div>
             }
 
@@ -72,11 +73,11 @@ const MAX = 500;
             }
             <div class="compor-rodape">
               @if (!linked() && !linking()) {
-                <button type="button" class="btn btn-texto btn-sm" (click)="linking.set(true)"><ut-icon name="pin" [size]="16" />Ligar a uma reclamação</button>
+                <button type="button" class="btn btn-texto btn-sm" (click)="linking.set(true)"><ut-icon name="pin" [size]="16" />{{ 'auto.mce12869b5f' | translate }}</button>
               }
               <span id="contador" class="contador tabular" [class.alerta]="remaining() < 40">{{ remaining() }}</span>
               <button type="submit" class="btn btn-primario" [disabled]="draft().trim().length < 3 || publishing() || remaining() < 0">
-                <ut-icon name="send" [size]="18" />{{ publishing() ? 'Publicando…' : 'Publicar' }}
+                <ut-icon name="send" [size]="18" />{{ publishing() ? ('auto.mecbf570d2c' | translate) : ('auto.m9df643f069' | translate) }}
               </button>
             </div>
           </form>
@@ -84,15 +85,15 @@ const MAX = 500;
           @if (focusId()) {
             <section class="destaque" aria-labelledby="destaque-t">
               <div class="destaque-topo">
-                <h2 id="destaque-t">Publicação do seu aviso</h2>
-                <button type="button" class="btn btn-texto btn-sm" (click)="clearFocus()">Fechar</button>
+                <h2 id="destaque-t">{{ 'auto.m4ad4ee0e1b' | translate }}</h2>
+                <button type="button" class="btn btn-texto btn-sm" (click)="clearFocus()">{{ 'auto.m7b2006fd7a' | translate }}</button>
               </div>
               @if (focusPost(); as fp) {
                 <ut-publicacao [post]="fp" [startOpen]="true" (changed)="focusChanged($event)" (removed)="focusRemoved($event)" />
               } @else if (focusError(); as fe) {
                 <p class="aviso aviso-info" role="status"><ut-icon name="info" />{{ fe }}</p>
               } @else {
-                <p class="carregando">Abrindo publicação…</p>
+                <p class="carregando">{{ 'auto.m44be779be5' | translate }}</p>
               }
             </section>
           }
@@ -101,10 +102,10 @@ const MAX = 500;
             <div class="aviso aviso-info filtro-ativo" role="status">
               <ut-icon name="info" />
               <span>Mostrando só as conversas sobre a reclamação UT-{{ pad(id) }}.</span>
-              <button type="button" class="btn btn-texto btn-sm" (click)="clearOccurrenceFilter()">Ver todas</button>
+              <button type="button" class="btn btn-texto btn-sm" (click)="clearOccurrenceFilter()">{{ 'auto.m3efc403aa6' | translate }}</button>
             </div>
           } @else {
-            <div class="segmentado abas" role="tablist" aria-label="Filtrar publicações">
+            <div class="segmentado abas" role="tablist" [aria-label]="'auto.mfcf331115c' | translate">
               @for (t of tabs; track t.id) {
                 <button type="button" role="tab" [attr.aria-selected]="filter() === t.id" (click)="setFilter(t.id)">{{ t.label }}</button>
               }
@@ -119,7 +120,7 @@ const MAX = 500;
                   <span class="linhas"><span class="esqueleto l1"></span><span class="esqueleto l2"></span><span class="esqueleto l3"></span></span>
                 </div>
               }
-              <p class="sr-only">Carregando publicações…</p>
+              <p class="sr-only">{{ 'auto.m1b61b40ecc' | translate }}</p>
             } @else if (error(); as e) {
               <ut-erro [message]="e" (retry)="load()" />
             } @else if (posts().length === 0) {
@@ -135,10 +136,10 @@ const MAX = 500;
               }
               @if (nextBefore()) {
                 <button type="button" class="btn btn-secundario mais" [disabled]="loadingMore()" (click)="loadMore()">
-                  {{ loadingMore() ? 'Carregando…' : 'Carregar publicações anteriores' }}
+                  {{ loadingMore() ? ('auto.mbca482b745' | translate) : ('auto.m2d79eb2928' | translate) }}
                 </button>
               } @else {
-                <p class="fim">Você chegou ao começo da conversa.</p>
+                <p class="fim">{{ 'auto.m4acb078ebc' | translate }}</p>
               }
             }
           </section>
@@ -146,17 +147,17 @@ const MAX = 500;
 
         <aside class="lado">
           <section class="painel regras" aria-labelledby="regras-t">
-            <h2 id="regras-t">Combinados da comunidade</h2>
+            <h2 id="regras-t">{{ 'auto.ma941a15ce8' | translate }}</h2>
             <ul>
-              <li>Fale do problema, não da pessoa. Respeito sempre.</li>
-              <li>Nada de dados pessoais: telefone, endereço de alguém, placa de carro.</li>
-              <li>Publicação não é reclamação oficial. Para a equipe acompanhar, <a routerLink="/registrar">registre uma reclamação</a>.</li>
-              <li>A equipe pode remover conteúdo que fuja desses combinados.</li>
+              <li>{{ 'auto.mb792e6fe33' | translate }}</li>
+              <li>{{ 'auto.m0ec3df8e87' | translate }}</li>
+              <li>{{ 'auto.m9f6e488bfe' | translate }} <a routerLink="/registrar">{{ 'auto.m144a514c70' | translate }}</a>.</li>
+              <li>{{ 'auto.m607b06086e' | translate }}</li>
             </ul>
           </section>
           <a class="painel atalho" routerLink="/comunidade/foruns">
             <span class="at-ico"><ut-icon name="users" [size]="22" /></span>
-            <span><strong>Fóruns</strong><span>Discussões organizadas por tema, com votos e respostas.</span></span>
+            <span><strong>{{ 'auto.m17f0d26d2c' | translate }}</strong><span>{{ 'auto.m74b87d8638' | translate }}</span></span>
           </a>
         </aside>
       </div>

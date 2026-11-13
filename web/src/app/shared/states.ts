@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@ngx-translate/core';
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { IconComponent } from './icon.component';
 
@@ -43,7 +44,7 @@ export class EmptyStateComponent {
 // falha de carregamento com opção de tentar de novo
 @Component({
   selector: 'ut-erro',
-  imports: [IconComponent],
+  imports: [IconComponent, TranslatePipe],
   template: `
     <div class="aviso aviso-erro" role="alert">
       <ut-icon name="alert" />
@@ -51,7 +52,7 @@ export class EmptyStateComponent {
         <p>{{ message() }}</p>
         @if (retryable()) {
           <button type="button" class="btn btn-secundario btn-sm" (click)="retry.emit()">
-            <ut-icon name="refresh" [size]="16" />Tentar de novo
+            <ut-icon name="refresh" [size]="16" />{{ 'auto.m4842fe591c' | translate }}
           </button>
         }
       </div>

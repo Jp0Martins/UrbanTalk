@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@ngx-translate/core';
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { toApiError } from '../core/api-error';
@@ -12,46 +13,46 @@ import { TopicRowComponent } from '../shared/topic-row.component';
 // descoberta dentro da Comunidade: só o que existe de verdade, sem números inventados
 @Component({
   selector: 'ut-comunidade-explorar',
-  imports: [RouterLink, IconComponent, ForumCardComponent, TopicRowComponent, ErrorStateComponent],
+  imports: [RouterLink, IconComponent, ForumCardComponent, TopicRowComponent, ErrorStateComponent, TranslatePipe],
   template: `
     @if (error(); as e) {
       <ut-erro [message]="e" (retry)="load()" />
     } @else if (data(); as d) {
       <div class="grade">
         <section class="painel bloco" aria-labelledby="pop-t">
-          <h2 id="pop-t">Em alta nos últimos 30 dias</h2>
+          <h2 id="pop-t">{{ 'auto.mf85436938d' | translate }}</h2>
           @if (d.popular.length === 0) {
-            <p class="vazio">Nenhuma discussão recebeu votos ou respostas no último mês. Que tal <a routerLink="/comunidade/foruns">entrar num fórum</a> e puxar o assunto?</p>
+            <p class="vazio">{{ 'auto.maa5e089181' | translate }} <a routerLink="/comunidade/foruns">{{ 'auto.mbd27fd7c07' | translate }}</a> {{ 'auto.mc11e64da4d' | translate }}</p>
           } @else {
             <ul class="lista">@for (t of d.popular; track t.id) { <li><ut-topic-row [topic]="t" /></li> }</ul>
           }
         </section>
 
         <section class="painel bloco" aria-labelledby="nov-t">
-          <h2 id="nov-t">Discussões novas</h2>
+          <h2 id="nov-t">{{ 'auto.mf40bd44d00' | translate }}</h2>
           @if (d.newest.length === 0) {
-            <p class="vazio">Ninguém abriu discussão ainda. A primeira pode ser sua.</p>
+            <p class="vazio">{{ 'auto.m670745f4b3' | translate }}</p>
           } @else {
             <ul class="lista">@for (t of d.newest; track t.id) { <li><ut-topic-row [topic]="t" /></li> }</ul>
           }
         </section>
 
         <section class="painel bloco largo" aria-labelledby="temas-t">
-          <h2 id="temas-t">Temas</h2>
+          <h2 id="temas-t">{{ 'auto.me0ea950b7f' | translate }}</h2>
           <ul class="temas">
             @for (t of d.themes; track t.id) {
-              <li><a [routerLink]="['/comunidade/foruns']" [queryParams]="{ tema: t.id }"><ut-icon [name]="t.icon" [size]="18" />{{ t.name }}<span class="n tabular">{{ t.forums }} {{ t.forums === 1 ? 'fórum' : 'fóruns' }}</span></a></li>
+              <li><a [routerLink]="['/comunidade/foruns']" [queryParams]="{ tema: t.id }"><ut-icon [name]="t.icon" [size]="18" />{{ t.name }}<span class="n tabular">{{ t.forums }} {{ t.forums === 1 ? ('auto.m32a3c72527' | translate) : ('auto.m043bcf3587' | translate) }}</span></a></li>
             }
           </ul>
         </section>
 
         <section class="bloco largo sem-painel" aria-labelledby="nf-t">
-          <div class="b-topo"><h2 id="nf-t">Fóruns criados recentemente</h2><a routerLink="/comunidade/foruns" [queryParams]="{ tipo: 'comunidade', ordem: 'novos' }" class="btn btn-texto btn-sm">Ver todos</a></div>
+          <div class="b-topo"><h2 id="nf-t">{{ 'auto.m789bde78ec' | translate }}</h2><a routerLink="/comunidade/foruns" [queryParams]="{ tipo: 'comunidade', ordem: 'novos' }" class="btn btn-texto btn-sm">{{ 'auto.md0d3d306c8' | translate }}</a></div>
           @if (d.newForums.length === 0) {
             <div class="convite">
-              <p>Ainda não há fóruns criados por moradores. Tem um assunto que merece um espaço próprio?</p>
-              @if (session.user()) { <a routerLink="/comunidade/foruns/novo" class="btn btn-primario"><ut-icon name="plus" [size]="18" />Criar fórum</a> }
-              @else { <a routerLink="/entrar" [queryParams]="{ volta: '/comunidade/foruns/novo' }" class="btn btn-secundario">Entre para criar um fórum</a> }
+              <p>{{ 'auto.m84bea5b73a' | translate }}</p>
+              @if (session.user()) { <a routerLink="/comunidade/foruns/novo" class="btn btn-primario"><ut-icon name="plus" [size]="18" />{{ 'auto.ma97e989a61' | translate }}</a> }
+              @else { <a routerLink="/entrar" [queryParams]="{ volta: '/comunidade/foruns/novo' }" class="btn btn-secundario">{{ 'auto.m0fefc181bf' | translate }}</a> }
             </div>
           } @else {
             <ul class="foruns">@for (f of d.newForums; track f.id) { <li><ut-forum-card [forum]="f" [compact]="true" /></li> }</ul>
@@ -60,13 +61,13 @@ import { TopicRowComponent } from '../shared/topic-row.component';
 
         @if (d.tags.length) {
           <section class="painel bloco largo" aria-labelledby="tags-t">
-            <h2 id="tags-t">Tags mais usadas</h2>
+            <h2 id="tags-t">{{ 'auto.m88bb1cb036' | translate }}</h2>
             <p class="tags">@for (t of d.tags; track t.tag) { <span class="tag">#{{ t.tag }} <span class="n tabular">{{ t.count }}</span></span> }</p>
           </section>
         }
       </div>
     } @else {
-      <p class="carregando">Carregando…</p>
+      <p class="carregando">{{ 'auto.mbca482b745' | translate }}</p>
     }
   `,
   styles: `

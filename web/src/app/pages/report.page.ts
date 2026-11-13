@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@ngx-translate/core';
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, computed, inject, signal, viewChild } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -16,24 +17,24 @@ type Step = 1 | 2 | 3;
 
 @Component({
   selector: 'ut-registrar',
-  imports: [RouterLink, PageHeaderComponent, MapComponent, IconComponent, PlacaComponent, NeighborhoodInputComponent],
+  imports: [RouterLink, PageHeaderComponent, MapComponent, IconComponent, PlacaComponent, NeighborhoodInputComponent, TranslatePipe],
   template: `
     <div class="pagina">
       @if (created(); as c) {
         <section class="sucesso" aria-labelledby="ok-t">
           <div class="selo"><ut-icon name="check" [size]="28" /></div>
           <h1 id="ok-t" tabindex="-1" #okTitle>Pronto! Reclamação {{ c.code }} registrada</h1>
-          <p>Ela foi salva e já aparece na lista pública com o status <strong>{{ statusName(c.status) }}</strong>. A equipe do UrbanTalk vê a reclamação na hora, e você acompanha cada novidade em Minhas reclamações.</p>
+          <p>{{ 'auto.md8ae0530b9' | translate }} <strong>{{ statusName(c.status) }}</strong>{{ 'auto.mcc71b7049b' | translate }}</p>
           <div class="acoes">
-            <a [routerLink]="['/ocorrencias', c.id]" class="btn btn-primario">Ver a reclamação</a>
-            <a routerLink="/comunidade" [queryParams]="{ ocorrencia: c.id }" class="btn btn-secundario"><ut-icon name="chat" [size]="18" />Contar para a comunidade</a>
-            <button type="button" class="btn btn-texto" (click)="reset()">Registrar outra</button>
+            <a [routerLink]="['/ocorrencias', c.id]" class="btn btn-primario">{{ 'auto.m8c0079f5b1' | translate }}</a>
+            <a routerLink="/comunidade" [queryParams]="{ ocorrencia: c.id }" class="btn btn-secundario"><ut-icon name="chat" [size]="18" />{{ 'auto.m217c8a0397' | translate }}</a>
+            <button type="button" class="btn btn-texto" (click)="reset()">{{ 'auto.m582086133c' | translate }}</button>
           </div>
         </section>
       } @else {
-        <ut-cabecalho-pagina title="Registrar uma reclamação" description="Três passos rápidos: onde se aplica, o que é e revisão. Nada é enviado antes de você conferir." />
+        <ut-cabecalho-pagina [title]="'auto.m6d54bea45a' | translate" [description]="'auto.mc51cea99e2' | translate" />
 
-        <ol class="etapas" aria-label="Etapas do registro">
+        <ol class="etapas" [aria-label]="'auto.m18ab31f38d' | translate">
           @for (s of steps; track s.n) {
             <li [class.atual]="step() === s.n" [class.feita]="step() > s.n" [attr.aria-current]="step() === s.n ? 'step' : null">
               <span class="n">@if (step() > s.n) { <ut-icon name="check" [size]="16" /> } @else { {{ s.n }} }</span>{{ s.label }}
@@ -43,26 +44,26 @@ type Step = 1 | 2 | 3;
 
         @if (step() === 1) {
           <section class="passo-local" aria-labelledby="p1">
-            <h2 id="p1" class="sr-only">Onde é o problema</h2>
+            <h2 id="p1" class="sr-only">{{ 'auto.m389d33e37f' | translate }}</h2>
             <div class="mapa-caixa" [class.apagado]="scope() === 'cidade' && !point()">
-              <ut-mapa #picker class="mapa" mode="pick" [pickValue]="point()" (picked)="setPoint($event, 'mapa')" label="Mapa para marcar o local do problema. Clique no mapa ou arraste o marcador." />
+              <ut-mapa #picker class="mapa" mode="pick" [pickValue]="point()" (picked)="setPoint($event, 'mapa')" [label]="'auto.m97f6e351fe' | translate" />
               @if (!point()) {
-                <div class="mapa-dica" aria-hidden="true">{{ scope() === 'cidade' ? 'Opcional: marque um ponto de exemplo' : scope() === 'bairro' ? 'Clique no mapa no ponto exato do problema' : 'Primeiro, diga ao lado onde o problema se aplica' }}</div>
+                <div class="mapa-dica" aria-hidden="true">{{ scope() === 'cidade' ? ('auto.m6eb350870e' | translate) : scope() === 'bairro' ? ('auto.mcbf60bee62' | translate) : ('auto.m5dc1a95ba5' | translate) }}</div>
               }
             </div>
             <div class="campos">
               <fieldset class="onde" [attr.aria-invalid]="!!errors()['scope']">
-                <legend class="rotulo">Onde se aplica?</legend>
+                <legend class="rotulo">{{ 'auto.me3276f44eb' | translate }}</legend>
                 <div class="onde-opcoes">
                   <label class="onde-op" [class.marcada]="scope() === 'cidade'">
                     <input type="radio" name="abrangencia" value="cidade" [checked]="scope() === 'cidade'" (change)="setScope('cidade')" />
-                    <span class="onde-nome">Cidade toda</span>
-                    <span class="onde-desc">Afeta Sorocaba inteira, sem um bairro específico</span>
+                    <span class="onde-nome">{{ 'auto.mf42a4c41ae' | translate }}</span>
+                    <span class="onde-desc">{{ 'auto.meaf8e5ef3e' | translate }}</span>
                   </label>
                   <label class="onde-op" [class.marcada]="scope() === 'bairro'">
                     <input type="radio" name="abrangencia" value="bairro" [checked]="scope() === 'bairro'" (change)="setScope('bairro')" />
-                    <span class="onde-nome">Bairro</span>
-                    <span class="onde-desc">Acontece em um lugar específico</span>
+                    <span class="onde-nome">{{ 'auto.m49f7179a65' | translate }}</span>
+                    <span class="onde-desc">{{ 'auto.m73819f27fa' | translate }}</span>
                   </label>
                 </div>
                 @if (errors()['scope']) {
@@ -72,9 +73,9 @@ type Step = 1 | 2 | 3;
 
               @if (scope() === 'bairro') {
                 <div class="campo">
-                  <label for="bairro">Nome do bairro</label>
+                  <label for="bairro">{{ 'auto.m962e12cc72' | translate }}</label>
                   <ut-bairro inputId="bairro" [required]="true" [invalid]="!!errors()['neighborhoodName']" describedBy="bairro-dica" [value]="neighborhoodName()" (valueChange)="setHoodName($event)" />
-                  <span class="dica" id="bairro-dica">Escreva como você conhece o bairro. Se ele não aparecer nas sugestões, tudo bem: o nome novo é aceito.</span>
+                  <span class="dica" id="bairro-dica">{{ 'auto.m9673f66d35' | translate }}</span>
                   @if (errors()['neighborhoodName']) {
                     <p class="erro" role="alert">{{ errors()['neighborhoodName'] }}</p>
                   }
@@ -83,17 +84,17 @@ type Step = 1 | 2 | 3;
 
               @if (scope()) {
                 <div class="campo">
-                  <span class="rotulo">{{ scope() === 'cidade' ? 'Ponto de exemplo no mapa (opcional)' : 'Local no mapa' }}</span>
+                  <span class="rotulo">{{ scope() === 'cidade' ? ('auto.ma6eb9b9a67' | translate) : ('auto.m4494a84c0c' | translate) }}</span>
                   <button type="button" class="btn btn-secundario" (click)="locate()" [disabled]="locating()">
-                    <ut-icon name="locate" [size]="18" />{{ locating() ? 'Buscando sua localização…' : 'Usar minha localização' }}
+                    <ut-icon name="locate" [size]="18" />{{ locating() ? ('auto.m1655d9ad60' | translate) : ('auto.mb357f03435' | translate) }}
                   </button>
                   @if (geoMsg(); as g) {
                     <p class="dica" [class.erro]="g.kind === 'erro'" role="status">{{ g.text }}</p>
                   }
-                  <p class="dica">{{ scope() === 'cidade' ? 'Não é preciso marcar nada. Use só se quiser mostrar um lugar onde o problema aparece.' : 'Você também pode clicar no mapa ou arrastar o marcador para corrigir o ponto.' }}</p>
+                  <p class="dica">{{ scope() === 'cidade' ? ('auto.mb0052d8335' | translate) : ('auto.m1d91a322a8' | translate) }}</p>
                   @if (point(); as p) {
                     <p class="coords tabular">Ponto marcado: {{ p.lat.toFixed(5) }}, {{ p.lng.toFixed(5) }}
-                      @if (scope() === 'cidade') { <button type="button" class="btn btn-texto btn-sm" (click)="point.set(null)">Remover ponto</button> }
+                      @if (scope() === 'cidade') { <button type="button" class="btn btn-texto btn-sm" (click)="point.set(null)">{{ 'auto.md5f4d0907e' | translate }}</button> }
                     </p>
                   }
                   @if (errors()['latitude'] || errors()['longitude']) {
@@ -104,20 +105,20 @@ type Step = 1 | 2 | 3;
 
               @if (scope() === 'bairro') {
                 <div class="campo">
-                  <label for="rua">Rua ou via <span class="muted">(recomendado)</span></label>
-                  <input id="rua" class="entrada" maxlength="160" autocomplete="address-line1" [value]="street()" (input)="street.set($any($event.target).value)" [attr.aria-invalid]="!!errors()['street']" aria-describedby="rua-dica" placeholder="Ex.: Rua XV de Novembro" />
-                  <span class="dica" id="rua-dica">Escreva do jeito que aparece na placa. Não sabe o nome? Deixe em branco e use o ponto de referência.</span>
+                  <label for="rua">{{ 'auto.mfc9738a160' | translate }} <span class="muted">{{ 'auto.m8e5d12ee85' | translate }}</span></label>
+                  <input id="rua" class="entrada" maxlength="160" autocomplete="address-line1" [value]="street()" (input)="street.set($any($event.target).value)" [attr.aria-invalid]="!!errors()['street']" aria-describedby="rua-dica" [placeholder]="'auto.mfd60dad1a2' | translate" />
+                  <span class="dica" id="rua-dica">{{ 'auto.m04e64dba26' | translate }}</span>
                   @if (errors()['street']) {
                     <p class="erro" role="alert">{{ errors()['street'] }}</p>
                   }
                 </div>
                 <div class="campo">
-                  <label for="ref">Ponto de referência <span class="muted">(opcional)</span></label>
-                  <input id="ref" class="entrada" maxlength="120" [value]="reference()" (input)="reference.set($any($event.target).value)" placeholder="Ex.: em frente ao nº 250, perto da padaria" />
+                  <label for="ref">{{ 'auto.m941b3e497b' | translate }} <span class="muted">{{ 'auto.m813486d257' | translate }}</span></label>
+                  <input id="ref" class="entrada" maxlength="120" [value]="reference()" (input)="reference.set($any($event.target).value)" [placeholder]="'auto.m6f6dc0400e' | translate" />
                 </div>
               }
               <div class="nav">
-                <button type="button" class="btn btn-primario" (click)="next()">Continuar</button>
+                <button type="button" class="btn btn-primario" (click)="next()">{{ 'auto.mb8cb6f8bec' | translate }}</button>
               </div>
             </div>
           </section>
@@ -125,9 +126,9 @@ type Step = 1 | 2 | 3;
 
         @if (step() === 2) {
           <section class="passo-o-que" aria-labelledby="p2">
-            <h2 id="p2" class="sr-only">O que está acontecendo</h2>
+            <h2 id="p2" class="sr-only">{{ 'auto.m42d2d1e808' | translate }}</h2>
             <fieldset class="categorias" [attr.aria-invalid]="!!errors()['categoryId']">
-              <legend class="rotulo">Tipo de problema</legend>
+              <legend class="rotulo">{{ 'auto.m4f76051497' | translate }}</legend>
               <div class="cat-grade">
                 @for (c of categories(); track c.id) {
                   <label class="cat" [class.marcada]="categoryId() === c.id">
@@ -145,9 +146,9 @@ type Step = 1 | 2 | 3;
 
             @if (selectedCategory()?.requiresDetail) {
               <div class="campo detalhe-outros">
-                <label for="detalhe">Qual é o problema?</label>
-                <input id="detalhe" class="entrada" maxlength="80" [value]="categoryDetail()" (input)="categoryDetail.set($any($event.target).value)" [attr.aria-invalid]="!!errors()['categoryDetail']" aria-describedby="detalhe-dica" placeholder="Ex.: árvore caída, vazamento de água, fio solto" />
-                <span class="dica" id="detalhe-dica">Em poucas palavras. A reclamação continua na categoria Outros, e a equipe usa esse texto para entender o caso.</span>
+                <label for="detalhe">{{ 'auto.md4330e9dfe' | translate }}</label>
+                <input id="detalhe" class="entrada" maxlength="80" [value]="categoryDetail()" (input)="categoryDetail.set($any($event.target).value)" [attr.aria-invalid]="!!errors()['categoryDetail']" aria-describedby="detalhe-dica" [placeholder]="'auto.m01090f39c5' | translate" />
+                <span class="dica" id="detalhe-dica">{{ 'auto.ma1de05e5a4' | translate }}</span>
                 @if (errors()['categoryDetail']) {
                   <p class="erro" role="alert">{{ errors()['categoryDetail'] }}</p>
                 }
@@ -156,25 +157,25 @@ type Step = 1 | 2 | 3;
 
             <div class="lado-a-lado">
               <div class="campo">
-                <label for="desc">Descrição</label>
-                <textarea id="desc" class="entrada" rows="5" maxlength="1000" [value]="description()" (input)="description.set($any($event.target).value)" [attr.aria-invalid]="!!errors()['description']" aria-describedby="desc-dica" placeholder="O que você viu, há quanto tempo e como afeta quem passa por ali."></textarea>
+                <label for="desc">{{ 'auto.m469768598e' | translate }}</label>
+                <textarea id="desc" class="entrada" rows="5" maxlength="1000" [value]="description()" (input)="description.set($any($event.target).value)" [attr.aria-invalid]="!!errors()['description']" aria-describedby="desc-dica" [placeholder]="'auto.m2c5a184cf9' | translate"></textarea>
                 <span class="dica tabular" id="desc-dica">{{ description().trim().length }}/1000 caracteres, mínimo 10.</span>
                 @if (errors()['description']) {
                   <p class="erro" role="alert">{{ errors()['description'] }}</p>
                 }
               </div>
               <div class="campo">
-                <span class="rotulo" id="foto-r">Foto <span class="muted">(recomendada)</span></span>
+                <span class="rotulo" id="foto-r">{{ 'auto.m0f5e4f0872' | translate }} <span class="muted">{{ 'auto.m60d9b13af0' | translate }}</span></span>
                 @if (photoPreview(); as src) {
                   <div class="foto-previa">
-                    <img [src]="src" alt="Prévia da foto escolhida" />
-                    <button type="button" class="btn btn-secundario btn-sm" (click)="removePhoto()"><ut-icon name="x" [size]="16" />Remover foto</button>
+                    <img [src]="src" [alt]="'auto.m66cbf2991f' | translate" />
+                    <button type="button" class="btn btn-secundario btn-sm" (click)="removePhoto()"><ut-icon name="x" [size]="16" />{{ 'auto.m4f88b73b9d' | translate }}</button>
                   </div>
                 } @else {
                   <label class="foto-escolher">
                     <input type="file" accept="image/jpeg,image/png,image/webp" capture="environment" (change)="pickPhoto($event)" aria-labelledby="foto-r" />
                     <ut-icon name="camera" [size]="26" />
-                    <span>Tirar ou escolher foto</span>
+                    <span>{{ 'auto.mf045c9e219' | translate }}</span>
                     <span class="dica">JPG, PNG ou WebP, até {{ maxMb }} MB.</span>
                   </label>
                 }
@@ -184,29 +185,29 @@ type Step = 1 | 2 | 3;
               </div>
             </div>
             <div class="nav">
-              <button type="button" class="btn btn-secundario" (click)="step.set(1)"><ut-icon name="arrow-left" [size]="18" />Voltar</button>
-              <button type="button" class="btn btn-primario" (click)="next()">Revisar</button>
+              <button type="button" class="btn btn-secundario" (click)="step.set(1)"><ut-icon name="arrow-left" [size]="18" />{{ 'auto.m6da1db5a66' | translate }}</button>
+              <button type="button" class="btn btn-primario" (click)="next()">{{ 'auto.mdded1e28c2' | translate }}</button>
             </div>
           </section>
         }
 
         @if (step() === 3) {
           <section class="passo-revisar" aria-labelledby="p3">
-            <h2 id="p3">Confira antes de enviar</h2>
+            <h2 id="p3">{{ 'auto.m7b45595f25' | translate }}</h2>
             @if (submitError()) {
               <div class="aviso aviso-erro" role="alert"><ut-icon name="alert" />{{ submitError() }}</div>
             }
             <dl class="resumo">
-              <div><dt>Tipo</dt><dd>{{ selectedCategory()?.name }}@if (selectedCategory()?.requiresDetail) { : {{ categoryDetail().trim() }} }</dd><dd><button type="button" class="btn btn-texto btn-sm" (click)="step.set(2)">Alterar</button></dd></div>
-              <div><dt>Descrição</dt><dd class="pre">{{ description().trim() }}</dd><dd><button type="button" class="btn btn-texto btn-sm" (click)="step.set(2)">Alterar</button></dd></div>
-              <div><dt>Onde se aplica</dt><dd>@if (scope() === 'cidade') { <ut-placa size="lg">Cidade toda</ut-placa><br /><span class="muted">Sem bairro específico</span> } @else { <ut-placa size="lg">{{ street().trim() ? street().trim() + ', ' : '' }}{{ hoodClean() }}</ut-placa>@if (!street().trim()) {<br /><span class="muted">Rua não informada</span>}@if (reference().trim()) {<br /><span class="muted">Referência: {{ reference().trim() }}</span>} }</dd><dd><button type="button" class="btn btn-texto btn-sm" (click)="step.set(1)">Alterar</button></dd></div>
-              <div><dt>Ponto no mapa</dt><dd class="tabular muted">@if (point(); as p) { {{ p.lat.toFixed(5) }}, {{ p.lng.toFixed(5) }} } @else { Nenhum ponto marcado }</dd><dd><button type="button" class="btn btn-texto btn-sm" (click)="step.set(1)">Alterar</button></dd></div>
-              <div><dt>Foto</dt><dd>@if (photoPreview()) {<img [src]="photoPreview()" alt="Foto que será enviada" class="mini-foto" />} @else {Sem foto}</dd><dd><button type="button" class="btn btn-texto btn-sm" (click)="step.set(2)">Alterar</button></dd></div>
+              <div><dt>{{ 'auto.m6cc6198d9e' | translate }}</dt><dd>{{ selectedCategory()?.name }}@if (selectedCategory()?.requiresDetail) { : {{ categoryDetail().trim() }} }</dd><dd><button type="button" class="btn btn-texto btn-sm" (click)="step.set(2)">{{ 'auto.mb7863d569e' | translate }}</button></dd></div>
+              <div><dt>{{ 'auto.m469768598e' | translate }}</dt><dd class="pre">{{ description().trim() }}</dd><dd><button type="button" class="btn btn-texto btn-sm" (click)="step.set(2)">{{ 'auto.mb7863d569e' | translate }}</button></dd></div>
+              <div><dt>{{ 'auto.m769815f878' | translate }}</dt><dd>@if (scope() === 'cidade') { <ut-placa size="lg">{{ 'auto.mf42a4c41ae' | translate }}</ut-placa><br /><span class="muted">{{ 'auto.m044fd9bb58' | translate }}</span> } @else { <ut-placa size="lg">{{ street().trim() ? street().trim() + ', ' : '' }}{{ hoodClean() }}</ut-placa>@if (!street().trim()) {<br /><span class="muted">{{ 'auto.m988f1ea0c3' | translate }}</span>}@if (reference().trim()) {<br /><span class="muted">Referência: {{ reference().trim() }}</span>} }</dd><dd><button type="button" class="btn btn-texto btn-sm" (click)="step.set(1)">{{ 'auto.mb7863d569e' | translate }}</button></dd></div>
+              <div><dt>{{ 'auto.m25cf7b363e' | translate }}</dt><dd class="tabular muted">@if (point(); as p) { {{ p.lat.toFixed(5) }}, {{ p.lng.toFixed(5) }} } @else { Nenhum ponto marcado }</dd><dd><button type="button" class="btn btn-texto btn-sm" (click)="step.set(1)">{{ 'auto.mb7863d569e' | translate }}</button></dd></div>
+              <div><dt>{{ 'auto.m0f5e4f0872' | translate }}</dt><dd>@if (photoPreview()) {<img [src]="photoPreview()" [alt]="'auto.me00c699c2f' | translate" class="mini-foto" />} @else {Sem foto}</dd><dd><button type="button" class="btn btn-texto btn-sm" (click)="step.set(2)">{{ 'auto.mb7863d569e' | translate }}</button></dd></div>
             </dl>
-            <p class="dica">Ao enviar, a reclamação fica pública no mapa sem seu nome ou e-mail. A data, a hora e o status inicial são definidos pelo servidor.</p>
+            <p class="dica">{{ 'auto.mbe4a9f028b' | translate }}</p>
             <div class="nav">
-              <button type="button" class="btn btn-secundario" (click)="step.set(2)"><ut-icon name="arrow-left" [size]="18" />Voltar</button>
-              <button type="button" class="btn btn-primario" [disabled]="sending()" (click)="submit()">{{ sending() ? 'Enviando…' : 'Enviar reclamação' }}</button>
+              <button type="button" class="btn btn-secundario" (click)="step.set(2)"><ut-icon name="arrow-left" [size]="18" />{{ 'auto.m6da1db5a66' | translate }}</button>
+              <button type="button" class="btn btn-primario" [disabled]="sending()" (click)="submit()">{{ sending() ? ('auto.m5e91dcdc57' | translate) : ('auto.ma2aca15f65' | translate) }}</button>
             </div>
           </section>
         }

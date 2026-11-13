@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@ngx-translate/core';
 import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
 import { DatePipe } from '../core/format';
 import { TimelineItem } from '../core/models';
@@ -24,7 +25,7 @@ const ICONS: Record<string, string> = {
 // histórico completo da reclamação; o servidor já decidiu o que cada pessoa pode ver
 @Component({
   selector: 'ut-linha-tempo',
-  imports: [IconComponent, DatePipe],
+  imports: [IconComponent, DatePipe, TranslatePipe],
   template: `
     <ol class="linha-tempo">
       @for (t of items(); track t.key) {
@@ -33,15 +34,15 @@ const ICONS: Record<string, string> = {
           <div class="conteudo">
             <p class="titulo-ev">
               {{ t.title }}
-              @if (t.visibility === 'interna') { <span class="selo-texto interna"><ut-icon name="lock" [size]="12" />Interna</span> }
-              @if (t.visibility === 'autor') { <span class="selo-texto">{{ staffView() ? 'Visível para quem registrou' : 'Só você e a equipe veem' }}</span> }
+              @if (t.visibility === 'interna') { <span class="selo-texto interna"><ut-icon name="lock" [size]="12" />{{ 'auto.mbe316706dc' | translate }}</span> }
+              @if (t.visibility === 'autor') { <span class="selo-texto">{{ staffView() ? ('auto.m95de6d8502' | translate) : ('auto.maffbbad14b' | translate) }}</span> }
             </p>
             <p class="quando">{{ t.at | data: true }} · {{ who(t) }}</p>
             @if (t.body) { <p class="msg">{{ t.body }}</p> }
             @if (photos(t).length) {
               <ul class="fotos">
                 @for (p of photos(t); track p) {
-                  <li><a [href]="p" target="_blank" rel="noopener"><img [src]="p" alt="Foto anexada ao acompanhamento" loading="lazy" /></a></li>
+                  <li><a [href]="p" target="_blank" rel="noopener"><img [src]="p" [alt]="'auto.m1a0d19d76d' | translate" loading="lazy" /></a></li>
                 }
               </ul>
             }

@@ -407,6 +407,8 @@ Datas são gravadas pelo servidor em UTC e os filtros por dia usam o fuso de Sor
 
 ## Segurança e privacidade
 
+A página inicial e o cadastro apontam para `/privacidade`, que descreve os dados tratados, a visibilidade pública, o canal para exercer direitos e as limitações da versão atual. O aviso não substitui a análise jurídica e operacional de bases legais, prazos de retenção e resposta aos titulares antes de uma publicação definitiva.
+
 - Senhas com **scrypt** e sal aleatório; login com mensagem única para e-mail inexistente ou senha errada.
 - **Perfis conferidos no servidor**: o papel vem do banco a cada requisição; rotas da equipe exigem `staff` ou `admin`, gestão de status e equipe exige `admin`, registrar e confirmar exigem conta de cliente. Ninguém vira funcionário pelo cadastro, pelo seletor do login ou mudando a requisição.
 - **Anotações internas** só saem pelas rotas `/admin`; a rota pública da reclamação nunca as consulta.
@@ -431,6 +433,8 @@ Datas são gravadas pelo servidor em UTC e os filtros por dia usam o fuso de Sor
 ---
 
 ## Serviços externos
+
+**Idiomas e instalação.** O seletor PT/EN no cabeçalho público e no menu da conta guarda a escolha neste navegador. Os textos fixos da interface usam `ngx-translate`; nomes de pessoas, conteúdo criado pelos usuários e textos configurados pela equipe permanecem como foram cadastrados. As traduções inglesas das telas internas foram geradas inicialmente por tradução automática e devem ser revisadas antes de uma publicação em inglês. O manifesto e o service worker do Angular permitem instalar a versão de produção como PWA em HTTPS ou localhost. O cache inclui apenas a aplicação e seus arquivos estáticos; respostas da API e dados pessoais não são armazenados para uso offline.
 
 **Mapa.** Usa os tiles públicos do OpenStreetMap, que não exigem chave, mas pedem uso moderado. Para uma fase acadêmica e de validação, isso basta. Para trocar de provedor (MapTiler, Stadia, Carto etc.):
 

@@ -1,17 +1,18 @@
+import { TranslatePipe } from '@ngx-translate/core';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { ToastService } from '../core/toast.service';
 import { IconComponent } from '../shared/icon.component';
 
 @Component({
   selector: 'ut-toasts',
-  imports: [IconComponent],
+  imports: [IconComponent, TranslatePipe],
   template: `
     <div class="pilha" aria-live="polite" aria-atomic="false">
       @for (t of toast.toasts(); track t.id) {
         <div class="toast" [attr.data-kind]="t.kind" [attr.role]="t.kind === 'erro' ? 'alert' : 'status'">
           <ut-icon [name]="t.kind === 'erro' ? 'alert' : t.kind === 'sucesso' ? 'check' : 'info'" [size]="18" />
           <span>{{ t.text }}</span>
-          <button type="button" (click)="toast.dismiss(t.id)"><ut-icon name="x" [size]="16" /><span class="sr-only">Fechar aviso</span></button>
+          <button type="button" (click)="toast.dismiss(t.id)"><ut-icon name="x" [size]="16" /><span class="sr-only">{{ 'auto.m6e68f7e5c1' | translate }}</span></button>
         </div>
       }
     </div>

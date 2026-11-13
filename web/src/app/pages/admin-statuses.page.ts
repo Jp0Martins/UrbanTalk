@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@ngx-translate/core';
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiService } from '../core/api.service';
@@ -33,38 +34,38 @@ const emptyDraft = (): Draft => ({ name: '', description: '', color: 'violeta', 
 
 @Component({
   selector: 'ut-admin-status',
-  imports: [PageHeaderComponent, IconComponent, StatusBadgeComponent, ErrorStateComponent],
+  imports: [PageHeaderComponent, IconComponent, StatusBadgeComponent, ErrorStateComponent, TranslatePipe],
   template: `
     <div class="pagina">
-      <ut-cabecalho-pagina title="Status das reclamações" description="Os status contam ao cidadão em que pé está cada reclamação. Status usados não podem ser apagados: desative-os para que parem de aparecer nas novas alterações, sem sumir do histórico." />
+      <ut-cabecalho-pagina [title]="'auto.mef75413197' | translate" [description]="'auto.mb3f5fc5781' | translate" />
 
       @if (!canManage() && loaded()) {
-        <div class="aviso aviso-info aviso-topo" role="note"><ut-icon name="lock" />Você pode consultar a lista. Só administradores criam, editam e reorganizam status.</div>
+        <div class="aviso aviso-info aviso-topo" role="note"><ut-icon name="lock" />{{ 'auto.m344c740302' | translate }}</div>
       }
 
       @if (error(); as e) {
         <ut-erro [message]="e" (retry)="load()" />
       } @else if (!loaded()) {
-        <p class="carregando">Carregando status…</p>
+        <p class="carregando">{{ 'auto.m5ef2c2d7a0' | translate }}</p>
       } @else {
         <div class="grade">
           <section class="painel lista" aria-labelledby="lista-t">
-            <h2 id="lista-t">Ordem de apresentação</h2>
+            <h2 id="lista-t">{{ 'auto.m704b0a49c8' | translate }}</h2>
             <ol>
               @for (s of items(); track s.id; let i = $index; let last = $last) {
                 <li [class.inativo]="!s.active">
                   @if (editing() === s.id) {
                     <div class="edicao">
                       <div class="campo">
-                        <label [for]="'nome-' + s.id">Nome</label>
+                        <label [for]="'nome-' + s.id">{{ 'auto.m13030dd962' | translate }}</label>
                         <input class="entrada" [id]="'nome-' + s.id" maxlength="40" [value]="edit().name" (input)="patchEdit({ name: $any($event.target).value })" />
                       </div>
                       <div class="campo">
-                        <label [for]="'desc-' + s.id">Descrição para o cidadão</label>
+                        <label [for]="'desc-' + s.id">{{ 'auto.mb7aad0cd0a' | translate }}</label>
                         <textarea class="entrada" [id]="'desc-' + s.id" rows="2" maxlength="240" [value]="edit().description" (input)="patchEdit({ description: $any($event.target).value })"></textarea>
                       </div>
                       <fieldset class="cores">
-                        <legend class="rotulo">Cor</legend>
+                        <legend class="rotulo">{{ 'auto.m62037d4390' | translate }}</legend>
                         @for (c of colors; track c) {
                           <label class="cor" [attr.data-color]="c" [class.marcada]="edit().color === c" [title]="colorNames[c]">
                             <input type="radio" [name]="'cor-' + s.id" [checked]="edit().color === c" (change)="patchEdit({ color: c })" />
@@ -74,20 +75,20 @@ const emptyDraft = (): Draft => ({ name: '', description: '', color: 'violeta', 
                       </fieldset>
                       <label class="check">
                         <input type="checkbox" [checked]="edit().isClosed" [disabled]="s.isInitial" (change)="patchEdit({ isClosed: $any($event.target).checked })" />
-                        Encerra a reclamação (sai da fila de abertas)
+                        {{ 'auto.m864e031e9f' | translate }}
                       </label>
                       @if (edit().isClosed) {
                         <label class="check">
                           <input type="checkbox" [checked]="!!edit().countsAsResolved" (change)="patchEdit({ countsAsResolved: $any($event.target).checked })" />
-                          Conta como resolvida (entra nos números de resolvidas e permite registrar a solução)
+                          {{ 'auto.mdf392751e5' | translate }}
                         </label>
                       }
                       @if (rowError()) {
                         <p class="erro" role="alert">{{ rowError() }}</p>
                       }
                       <div class="linha-botoes">
-                        <button type="button" class="btn btn-texto btn-sm" (click)="editing.set(null)">Cancelar</button>
-                        <button type="button" class="btn btn-primario btn-sm" (click)="saveEdit(s)">Salvar</button>
+                        <button type="button" class="btn btn-texto btn-sm" (click)="editing.set(null)">{{ 'auto.mc111e0ab9d' | translate }}</button>
+                        <button type="button" class="btn btn-primario btn-sm" (click)="saveEdit(s)">{{ 'auto.m93bf2d32ec' | translate }}</button>
                       </div>
                     </div>
                   } @else {
@@ -101,25 +102,25 @@ const emptyDraft = (): Draft => ({ name: '', description: '', color: 'violeta', 
                       <div class="info">
                         <div class="titulo">
                           <ut-status [status]="s.slug" />
-                          @if (s.isInitial) { <span class="selo-texto">Inicial das novas</span> }
-                          @if (s.isClosed) { <span class="selo-texto">Encerramento</span> }
-                          @if (s.countsAsResolved) { <span class="selo-texto">Conta como resolvida</span> }
-                          @if (!s.active) { <span class="selo-texto">Desativado</span> }
+                          @if (s.isInitial) { <span class="selo-texto">{{ 'auto.m38f09011a4' | translate }}</span> }
+                          @if (s.isClosed) { <span class="selo-texto">{{ 'auto.mc78fd804dc' | translate }}</span> }
+                          @if (s.countsAsResolved) { <span class="selo-texto">{{ 'auto.mf3429d5b4b' | translate }}</span> }
+                          @if (!s.active) { <span class="selo-texto">{{ 'auto.m8809a6227c' | translate }}</span> }
                         </div>
                         <p class="desc">{{ s.description || 'Sem descrição.' }}</p>
                         <p class="uso">{{ usageText(s) }}</p>
                       </div>
                       @if (canManage()) {
                         <div class="acoes">
-                          <button type="button" class="btn btn-texto btn-sm" (click)="startEdit(s)"><ut-icon name="edit" [size]="16" />Editar</button>
+                          <button type="button" class="btn btn-texto btn-sm" (click)="startEdit(s)"><ut-icon name="edit" [size]="16" />{{ 'auto.m2b5f23437f' | translate }}</button>
                           @if (!s.isInitial) {
-                            <button type="button" class="btn btn-texto btn-sm" (click)="toggleActive(s)">{{ s.active ? 'Desativar' : 'Reativar' }}</button>
+                            <button type="button" class="btn btn-texto btn-sm" (click)="toggleActive(s)">{{ s.active ? ('auto.m79db9fc450' | translate) : ('auto.m4384962e9a' | translate) }}</button>
                           }
                           @if (s.active && !s.isInitial && !s.isClosed) {
-                            <button type="button" class="btn btn-texto btn-sm" (click)="makeInitial(s)">Tornar inicial</button>
+                            <button type="button" class="btn btn-texto btn-sm" (click)="makeInitial(s)">{{ 'auto.m79160fc71a' | translate }}</button>
                           }
                           @if (!s.isInitial && s.usage.occurrences + s.usage.history === 0) {
-                            <button type="button" class="btn btn-texto btn-sm perigo" (click)="remove(s)">Excluir</button>
+                            <button type="button" class="btn btn-texto btn-sm perigo" (click)="remove(s)">{{ 'auto.m8e7c1314fe' | translate }}</button>
                           }
                         </div>
                       }
@@ -132,10 +133,10 @@ const emptyDraft = (): Draft => ({ name: '', description: '', color: 'violeta', 
 
           @if (canManage()) {
             <form class="painel novo" (submit)="$event.preventDefault(); create()" novalidate aria-labelledby="novo-t">
-              <h2 id="novo-t">Novo status</h2>
+              <h2 id="novo-t">{{ 'auto.m87fc0c3b88' | translate }}</h2>
               @if (suggestions().length) {
                 <div class="sugestoes">
-                  <p class="rotulo">Sugestões <span class="muted">(preenchem o formulário)</span></p>
+                  <p class="rotulo">{{ 'auto.m1e07cf18bb' | translate }} <span class="muted">{{ 'auto.m4b584d4af0' | translate }}</span></p>
                   <div class="chips">
                     @for (sg of suggestions(); track sg.name) {
                       <button type="button" class="chip" [attr.data-color]="sg.color" (click)="draft.set({ name: sg.name, description: sg.description, color: sg.color, isClosed: sg.isClosed })"><i aria-hidden="true"></i>{{ sg.name }}</button>
@@ -144,16 +145,16 @@ const emptyDraft = (): Draft => ({ name: '', description: '', color: 'violeta', 
                 </div>
               }
               <div class="campo">
-                <label for="novo-nome">Nome</label>
+                <label for="novo-nome">{{ 'auto.m13030dd962' | translate }}</label>
                 <input id="novo-nome" class="entrada" maxlength="40" [value]="draft().name" (input)="patchDraft({ name: $any($event.target).value })" [attr.aria-invalid]="!!createFields()['name']" />
                 @if (createFields()['name']) { <span class="erro">{{ createFields()['name'] }}</span> }
               </div>
               <div class="campo">
-                <label for="novo-desc">Descrição para o cidadão</label>
-                <textarea id="novo-desc" class="entrada" rows="2" maxlength="240" [value]="draft().description" (input)="patchDraft({ description: $any($event.target).value })" placeholder="Explique em uma frase o que esse status significa."></textarea>
+                <label for="novo-desc">{{ 'auto.mb7aad0cd0a' | translate }}</label>
+                <textarea id="novo-desc" class="entrada" rows="2" maxlength="240" [value]="draft().description" (input)="patchDraft({ description: $any($event.target).value })" [placeholder]="'auto.m5b7c81e07d' | translate"></textarea>
               </div>
               <fieldset class="cores">
-                <legend class="rotulo">Cor</legend>
+                <legend class="rotulo">{{ 'auto.m62037d4390' | translate }}</legend>
                 @for (c of colors; track c) {
                   <label class="cor" [attr.data-color]="c" [class.marcada]="draft().color === c" [title]="colorNames[c]">
                     <input type="radio" name="cor-nova" [checked]="draft().color === c" (change)="patchDraft({ color: c })" />
@@ -163,18 +164,18 @@ const emptyDraft = (): Draft => ({ name: '', description: '', color: 'violeta', 
               </fieldset>
               <label class="check">
                 <input type="checkbox" [checked]="draft().isClosed" (change)="patchDraft({ isClosed: $any($event.target).checked })" />
-                Encerra a reclamação (por exemplo: não procedente, cancelada)
+                {{ 'auto.m1f309c6845' | translate }}
               </label>
               @if (draft().isClosed) {
                 <label class="check">
                   <input type="checkbox" [checked]="!!draft().countsAsResolved" (change)="patchDraft({ countsAsResolved: $any($event.target).checked })" />
-                  Conta como resolvida (o problema foi solucionado, não só encerrado)
+                  {{ 'auto.m363bcac7c2' | translate }}
                 </label>
               }
               @if (createError()) {
                 <div class="aviso aviso-erro" role="alert"><ut-icon name="alert" />{{ createError() }}</div>
               }
-              <button type="submit" class="btn btn-primario" [disabled]="busy() || draft().name.trim().length < 3"><ut-icon name="plus" />Criar status</button>
+              <button type="submit" class="btn btn-primario" [disabled]="busy() || draft().name.trim().length < 3"><ut-icon name="plus" />{{ 'auto.m6575cfb695' | translate }}</button>
             </form>
           }
         </div>

@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@ngx-translate/core';
 import { NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject, input, output, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
@@ -15,23 +16,23 @@ import { UsefulVoteComponent } from './useful-vote.component';
 // conversa de uma discussão ou de uma proposta: respostas em árvore, voto de útil, exclusão e denúncia
 @Component({
   selector: 'ut-discussao',
-  imports: [RouterLink, NgTemplateOutlet, AvatarComponent, IconComponent, RelativePipe, DatePipe, ReportButtonComponent, UsefulVoteComponent],
+  imports: [RouterLink, NgTemplateOutlet, AvatarComponent, IconComponent, RelativePipe, DatePipe, ReportButtonComponent, UsefulVoteComponent, TranslatePipe],
   template: `
     <section class="discussao" [attr.aria-labelledby]="'disc-t-' + targetId()">
       <h2 [id]="'disc-t-' + targetId()">{{ heading() }} <span class="muted tabular">({{ total() }})</span></h2>
 
       @if (loading()) {
-        <p class="carregando">Carregando a conversa…</p>
+        <p class="carregando">{{ 'auto.m5984ccafc8' | translate }}</p>
       } @else if (error(); as e) {
-        <p class="erro">{{ e }} <button type="button" class="btn btn-texto btn-sm" (click)="load()">Tentar de novo</button></p>
+        <p class="erro">{{ e }} <button type="button" class="btn btn-texto btn-sm" (click)="load()">{{ 'auto.m4842fe591c' | translate }}</button></p>
       } @else {
         @if (items().length === 0) {
           <p class="vazio">{{ emptyText() }}</p>
         }
         @if (votable() && items().length > 1) {
-          <div class="segmentado ordem" role="group" aria-label="Ordenar comentários">
-            <button type="button" [attr.aria-pressed]="order() === 'conversa'" (click)="order.set('conversa')">Ordem da conversa</button>
-            <button type="button" [attr.aria-pressed]="order() === 'uteis'" (click)="order.set('uteis')">Mais úteis</button>
+          <div class="segmentado ordem" role="group" [aria-label]="'auto.m24776128cf' | translate">
+            <button type="button" [attr.aria-pressed]="order() === 'conversa'" (click)="order.set('conversa')">{{ 'auto.mfb06e5c53d' | translate }}</button>
+            <button type="button" [attr.aria-pressed]="order() === 'uteis'" (click)="order.set('uteis')">{{ 'auto.m8f07767f8e' | translate }}</button>
           </div>
         }
         <ol class="lista">
@@ -45,22 +46,22 @@ import { UsefulVoteComponent } from './useful-vote.component';
               <div class="balao">
                 <p class="topo">
                   <strong>{{ c.author.isMe ? c.author.name + ' (você)' : c.author.name }}</strong>
-                  @if (c.author.isStaff) { <span class="selo-texto equipe">Equipe</span> }
+                  @if (c.author.isStaff) { <span class="selo-texto equipe">{{ 'auto.me03e3996dc' | translate }}</span> }
                   <time class="quando" [attr.datetime]="c.createdAt" [title]="c.createdAt | data: true">{{ c.createdAt | relativo }}</time>
                 </p>
                 @if (c.replyTo && !n.nested) {
-                  <p class="citacao"><ut-icon name="arrow-right" [size]="14" />Em resposta a {{ c.replyTo.name ?? 'um comentário' }}{{ c.replyTo.excerpt ? ': “' + c.replyTo.excerpt + '”' : ' (removido)' }}</p>
+                  <p class="citacao"><ut-icon name="arrow-right" [size]="14" />Em resposta a {{ c.replyTo.name ?? ('auto.mbd8940bd5a' | translate) }}{{ c.replyTo.excerpt ? ': “' + c.replyTo.excerpt + '”' : ' (removido)' }}</p>
                 }
                 <p class="texto">{{ c.body }}</p>
                 <div class="acoes">
                   @if (session.user() && !locked()) {
-                    <button type="button" class="btn btn-texto btn-sm" (click)="startReply(c)">Responder<span class="sr-only"> a {{ c.author.name }}</span></button>
+                    <button type="button" class="btn btn-texto btn-sm" (click)="startReply(c)">{{ 'auto.m20c9b55802' | translate }}<span class="sr-only"> a {{ c.author.name }}</span></button>
                   }
                   @if (c.canReport) {
                     <ut-denunciar type="comment" [targetId]="c.id" />
                   }
                   @if (c.canDelete) {
-                    <button type="button" class="btn btn-texto btn-sm apagar" (click)="remove(c)">{{ c.author.isMe ? 'Apagar' : 'Remover' }}<span class="sr-only"> comentário</span></button>
+                    <button type="button" class="btn btn-texto btn-sm apagar" (click)="remove(c)">{{ c.author.isMe ? ('auto.m5733a8c200' | translate) : ('auto.m4bd4ea8342' | translate) }}<span class="sr-only"> {{ 'auto.m8001800f20' | translate }}</span></button>
                   }
                 </div>
                 @if (replyTo()?.id === c.id) {
@@ -71,14 +72,14 @@ import { UsefulVoteComponent } from './useful-vote.component';
           }
         </ol>
         @if (nextAfter()) {
-          <button type="button" class="btn btn-secundario btn-sm" (click)="load(true)">Ver mais comentários</button>
+          <button type="button" class="btn btn-secundario btn-sm" (click)="load(true)">{{ 'auto.me753bd4621' | translate }}</button>
         }
       }
 
       @if (locked()) {
-        <p class="aviso"><ut-icon name="lock" [size]="18" />Esta conversa foi encerrada pela moderação e não recebe novas respostas.</p>
+        <p class="aviso"><ut-icon name="lock" [size]="18" />{{ 'auto.m5f26841019' | translate }}</p>
       } @else if (!session.user()) {
-        <p class="aviso aviso-info"><ut-icon name="info" [size]="18" /><span><a routerLink="/entrar" [queryParams]="{ volta: returnUrl() }">Entre</a> ou <a routerLink="/cadastro">crie uma conta</a> para participar da conversa.</span></p>
+        <p class="aviso aviso-info"><ut-icon name="info" [size]="18" /><span><a routerLink="/entrar" [queryParams]="{ volta: returnUrl() }">{{ 'auto.m4ea354d383' | translate }}</a> {{ 'auto.md5f10c9bc8' | translate }} <a routerLink="/cadastro">{{ 'auto.mbb5f640178' | translate }}</a> {{ 'auto.m191a4829b1' | translate }}</span></p>
       } @else {
         @if (!replyTo()) {
           <ng-container *ngTemplateOutlet="form; context: { $implicit: null }" />
@@ -88,18 +89,18 @@ import { UsefulVoteComponent } from './useful-vote.component';
       <ng-template #form let-parent>
         <form class="compor" [class.inline]="!!parent" (submit)="$event.preventDefault(); send()">
           @if (parent) {
-            <p class="respondendo">Respondendo a <strong>{{ parent.author.name }}</strong>
-              <button type="button" class="btn btn-texto btn-sm" (click)="replyTo.set(null)">Cancelar</button>
+            <p class="respondendo">{{ 'auto.m69991fae62' | translate }} <strong>{{ parent.author.name }}</strong>
+              <button type="button" class="btn btn-texto btn-sm" (click)="replyTo.set(null)">{{ 'auto.mc111e0ab9d' | translate }}</button>
             </p>
           }
-          <label class="sr-only" [for]="'novo-' + targetId()">Escreva seu comentário</label>
+          <label class="sr-only" [for]="'novo-' + targetId()">{{ 'auto.m582c3347dd' | translate }}</label>
           <textarea class="entrada" rows="3" maxlength="1000" [id]="'novo-' + targetId()" [placeholder]="parent ? 'Escreva sua resposta…' : 'Escreva seu comentário…'" [value]="draft()" (input)="draft.set($any($event.target).value)" [attr.aria-invalid]="!!sendError()"></textarea>
           @if (sendError()) {
             <p class="erro" role="alert">{{ sendError() }}</p>
           }
           <div class="rodape">
-            <span class="dica">Sem dados pessoais de outras pessoas. Respeito sempre.</span>
-            <button type="submit" class="btn btn-primario btn-sm" [disabled]="!draft().trim() || sending()"><ut-icon name="send" [size]="16" />{{ sending() ? 'Enviando…' : parent ? 'Responder' : 'Comentar' }}</button>
+            <span class="dica">{{ 'auto.mfb2565c545' | translate }}</span>
+            <button type="submit" class="btn btn-primario btn-sm" [disabled]="!draft().trim() || sending()"><ut-icon name="send" [size]="16" />{{ sending() ? ('auto.m5e91dcdc57' | translate) : parent ? ('auto.m20c9b55802' | translate) : ('auto.mf5da88859d' | translate) }}</button>
           </div>
         </form>
       </ng-template>

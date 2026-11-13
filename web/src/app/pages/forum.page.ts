@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@ngx-translate/core';
 import { ChangeDetectionStrategy, Component, effect, inject, input, signal, untracked } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { toApiError } from '../core/api-error';
@@ -20,24 +21,24 @@ export const splitTags = (s: string) => [...new Set(s.split(/[,\s]+/).map((t) =>
 
 @Component({
   selector: 'ut-forum',
-  imports: [RouterLink, IconComponent, PaginationComponent, EmptyStateComponent, ErrorStateComponent, RelativePipe, DatePipe, ReportButtonComponent, UsefulVoteComponent],
+  imports: [RouterLink, IconComponent, PaginationComponent, EmptyStateComponent, ErrorStateComponent, RelativePipe, DatePipe, ReportButtonComponent, UsefulVoteComponent, TranslatePipe],
   template: `
-    <nav class="trilha" aria-label="Você está em"><a routerLink="/comunidade/foruns">Fóruns</a><span aria-hidden="true" class="sep"> › </span><span>{{ forum()?.name ?? '…' }}</span></nav>
+    <nav class="trilha" [aria-label]="'auto.m8fb521bd83' | translate"><a routerLink="/comunidade/foruns">{{ 'auto.m17f0d26d2c' | translate }}</a><span aria-hidden="true" class="sep"> › </span><span>{{ forum()?.name ?? '…' }}</span></nav>
 
     @if (error(); as e) {
       <ut-erro [message]="e" (retry)="load()" />
     } @else if (forum(); as f) {
       @if (f.status === 'pendente') {
-        <p class="aviso aviso-atencao"><ut-icon name="clock" [size]="18" /><span>Este fórum está aguardando aprovação da equipe. Só você e a equipe conseguem vê-lo por enquanto; as discussões ficam liberadas depois da aprovação.</span></p>
+        <p class="aviso aviso-atencao"><ut-icon name="clock" [size]="18" /><span>{{ 'auto.mf1183c5a51' | translate }}</span></p>
       } @else if (f.status === 'recusado') {
-        <p class="aviso aviso-erro"><ut-icon name="alert" [size]="18" /><span>A equipe não aprovou este fórum. Ele não aparece para outras pessoas.</span></p>
+        <p class="aviso aviso-erro"><ut-icon name="alert" [size]="18" /><span>{{ 'auto.m394f20d98b' | translate }}</span></p>
       }
-      @if (f.hidden) { <p class="aviso aviso-erro"><ut-icon name="shield" [size]="18" /><span>Fórum ocultado pela moderação. Só a equipe vê.</span></p> }
+      @if (f.hidden) { <p class="aviso aviso-erro"><ut-icon name="shield" [size]="18" /><span>{{ 'auto.m8c6e3c03d9' | translate }}</span></p> }
 
       <header class="cab">
         <span class="ico" [class.oficial]="f.kind === 'oficial'"><ut-icon [name]="f.icon" [size]="26" /></span>
         <div class="cab-txt">
-          <p class="tipo">{{ f.kind === 'oficial' ? 'Fórum oficial' : 'Fórum da comunidade' }} · {{ f.theme.name }}</p>
+          <p class="tipo">{{ f.kind === 'oficial' ? ('auto.m9d199de285' | translate) : ('auto.m4739c402b5' | translate) }} · {{ f.theme.name }}</p>
           <h1>{{ f.name }}</h1>
           <p class="desc">{{ f.description }}</p>
           <p class="meta">
@@ -49,13 +50,13 @@ export const splitTags = (s: string) => [...new Set(s.split(/[,\s]+/).map((t) =>
           @if (session.user()) {
             @if (f.status === 'ativo') {
               <button type="button" class="btn" [class.btn-primario]="!f.following" [class.btn-secundario]="f.following" [attr.aria-pressed]="f.following" [disabled]="busyFollow()" (click)="toggleFollow()">
-                <ut-icon [name]="f.following ? 'check' : 'plus'" [size]="18" />{{ f.following ? 'Seguindo' : 'Seguir' }}
+                <ut-icon [name]="f.following ? 'check' : 'plus'" [size]="18" />{{ f.following ? ('auto.m4762ff43bd' | translate) : ('auto.m71f253d648' | translate) }}
               </button>
             }
-            @if (f.canEdit) { <a class="btn btn-secundario" [routerLink]="['/comunidade/f', f.slug, 'editar']"><ut-icon name="edit" [size]="18" />Editar</a> }
+            @if (f.canEdit) { <a class="btn btn-secundario" [routerLink]="['/comunidade/f', f.slug, 'editar']"><ut-icon name="edit" [size]="18" />{{ 'auto.m2b5f23437f' | translate }}</a> }
             @if (f.canReport) { <ut-denunciar type="forum" [targetId]="f.id" /> }
           } @else {
-            <a class="btn btn-primario" routerLink="/entrar" [queryParams]="{ volta: '/comunidade/f/' + f.slug }">Entre para participar</a>
+            <a class="btn btn-primario" routerLink="/entrar" [queryParams]="{ volta: '/comunidade/f/' + f.slug }">{{ 'auto.m92f9013230' | translate }}</a>
           }
         </div>
       </header>
@@ -63,65 +64,65 @@ export const splitTags = (s: string) => [...new Set(s.split(/[,\s]+/).map((t) =>
       <div class="grade">
         <div class="coluna">
           <div class="barra">
-            <div class="segmentado ordem" role="group" aria-label="Ordenar discussões">
+            <div class="segmentado ordem" role="group" [aria-label]="'auto.m9034e89609' | translate">
               @for (s of sorts; track s.id) {
                 <button type="button" [attr.aria-pressed]="sort() === s.id" (click)="setSort(s.id)">{{ s.label }}</button>
               }
             </div>
             @if (f.canPost) {
-              <button type="button" class="btn btn-primario" (click)="composing.set(!composing())" [attr.aria-expanded]="composing()"><ut-icon name="plus" [size]="18" />Nova discussão</button>
+              <button type="button" class="btn btn-primario" (click)="composing.set(!composing())" [attr.aria-expanded]="composing()"><ut-icon name="plus" [size]="18" />{{ 'auto.m104caa05e2' | translate }}</button>
             }
           </div>
-          <form class="busca" role="search" aria-label="Procurar neste fórum" (submit)="$event.preventDefault(); search()">
-            <label for="tq" class="sr-only">Procurar neste fórum</label>
-            <input id="tq" class="entrada" type="search" maxlength="80" placeholder="Procurar neste fórum" [value]="q()" (input)="q.set($any($event.target).value)" (search)="search()" />
-            <button type="submit" class="btn btn-secundario"><ut-icon name="search" [size]="18" /><span class="sr-only">Buscar</span></button>
+          <form class="busca" role="search" [aria-label]="'auto.mfe4b9777b1' | translate" (submit)="$event.preventDefault(); search()">
+            <label for="tq" class="sr-only">{{ 'auto.mfe4b9777b1' | translate }}</label>
+            <input id="tq" class="entrada" type="search" maxlength="80" [placeholder]="'auto.mfe4b9777b1' | translate" [value]="q()" (input)="q.set($any($event.target).value)" (search)="search()" />
+            <button type="submit" class="btn btn-secundario"><ut-icon name="search" [size]="18" /><span class="sr-only">{{ 'auto.ma62405e2ce' | translate }}</span></button>
           </form>
           @if (tag()) {
-            <p class="filtro-tag">Mostrando discussões com <strong>#{{ tag() }}</strong> <button type="button" class="btn btn-texto btn-sm" (click)="setTag(null)">Ver todas</button></p>
+            <p class="filtro-tag">{{ 'auto.mdbc735ff75' | translate }} <strong>#{{ tag() }}</strong> <button type="button" class="btn btn-texto btn-sm" (click)="setTag(null)">{{ 'auto.m3efc403aa6' | translate }}</button></p>
           }
 
           @if (composing()) {
             <form class="painel novo" (submit)="$event.preventDefault(); create()" novalidate aria-labelledby="novo-t">
-              <h2 id="novo-t">Nova discussão</h2>
+              <h2 id="novo-t">{{ 'auto.m104caa05e2' | translate }}</h2>
               <div class="campo">
-                <label for="t-titulo">Título</label>
+                <label for="t-titulo">{{ 'auto.m98a5efa60b' | translate }}</label>
                 <input id="t-titulo" class="entrada" maxlength="140" [value]="title()" (input)="title.set($any($event.target).value)" [attr.aria-invalid]="!!fields()['title']" />
                 @if (fields()['title']) { <span class="erro">{{ fields()['title'] }}</span> }
               </div>
               <div class="campo">
-                <label for="t-texto">Texto</label>
+                <label for="t-texto">{{ 'auto.m6eeba656c0' | translate }}</label>
                 <textarea id="t-texto" class="entrada" rows="5" maxlength="3000" [value]="body()" (input)="body.set($any($event.target).value)" [attr.aria-invalid]="!!fields()['body']"></textarea>
-                <span class="dica">Conte o contexto. Não publique endereço, telefone ou foto que identifique moradores.</span>
+                <span class="dica">{{ 'auto.mf3105b968d' | translate }}</span>
                 @if (fields()['body']) { <span class="erro">{{ fields()['body'] }}</span> }
               </div>
               <div class="duas">
                 <div class="campo">
-                  <label for="t-tags">Tags <span class="muted">(opcional)</span></label>
-                  <input id="t-tags" class="entrada" maxlength="120" placeholder="Ex.: calçada, escola" [value]="tagsText()" (input)="tagsText.set($any($event.target).value)" [attr.aria-invalid]="!!fields()['tags']" />
-                  <span class="dica">Até 5, separadas por vírgula.</span>
+                  <label for="t-tags">{{ 'auto.m848eed0fbd' | translate }} <span class="muted">{{ 'auto.m813486d257' | translate }}</span></label>
+                  <input id="t-tags" class="entrada" maxlength="120" [placeholder]="'auto.md7856836f2' | translate" [value]="tagsText()" (input)="tagsText.set($any($event.target).value)" [attr.aria-invalid]="!!fields()['tags']" />
+                  <span class="dica">{{ 'auto.m6a20f3e1df' | translate }}</span>
                   @if (fields()['tags']) { <span class="erro">{{ fields()['tags'] }}</span> }
                 </div>
                 <div class="campo">
-                  <label for="t-occ">Reclamação relacionada <span class="muted">(opcional)</span></label>
-                  <input id="t-occ" class="entrada" maxlength="12" placeholder="Ex.: UT-00012" [value]="occText()" (input)="occText.set($any($event.target).value)" [attr.aria-invalid]="!!fields()['occurrenceId']" />
-                  <span class="dica">Liga a discussão a uma reclamação que já existe, sem criar outra.</span>
+                  <label for="t-occ">{{ 'auto.m91ad48adcc' | translate }} <span class="muted">{{ 'auto.m813486d257' | translate }}</span></label>
+                  <input id="t-occ" class="entrada" maxlength="12" [placeholder]="'auto.m300ad036e1' | translate" [value]="occText()" (input)="occText.set($any($event.target).value)" [attr.aria-invalid]="!!fields()['occurrenceId']" />
+                  <span class="dica">{{ 'auto.m2e9a74d4cb' | translate }}</span>
                   @if (fields()['occurrenceId']) { <span class="erro">{{ fields()['occurrenceId'] }}</span> }
                 </div>
               </div>
               @if (formError()) { <p class="aviso aviso-erro" role="alert"><ut-icon name="alert" />{{ formError() }}</p> }
               <div class="acoes">
-                <button type="button" class="btn btn-secundario" (click)="composing.set(false)">Cancelar</button>
-                <button type="submit" class="btn btn-primario" [disabled]="saving()">{{ saving() ? 'Publicando…' : 'Publicar discussão' }}</button>
+                <button type="button" class="btn btn-secundario" (click)="composing.set(false)">{{ 'auto.mc111e0ab9d' | translate }}</button>
+                <button type="submit" class="btn btn-primario" [disabled]="saving()">{{ saving() ? ('auto.mecbf570d2c' | translate) : ('auto.m50b25f161e' | translate) }}</button>
               </div>
             </form>
           }
 
           @if (loadingTopics()) {
-            <p class="carregando">Carregando discussões…</p>
+            <p class="carregando">{{ 'auto.m2679918669' | translate }}</p>
           } @else if (topics().length === 0) {
             <ut-vazio icon="chat" [title]="q() || tag() ? 'Nenhuma discussão encontrada' : 'Nenhuma discussão por aqui ainda'" [text]="q() || tag() ? 'Tente outras palavras ou veja todas as discussões.' : 'Abra a primeira conversa: uma dúvida, um alerta ou uma sugestão.'">
-              @if (f.canPost && !composing()) { <button type="button" class="btn btn-primario" (click)="composing.set(true)"><ut-icon name="plus" [size]="18" />Abrir a primeira discussão</button> }
+              @if (f.canPost && !composing()) { <button type="button" class="btn btn-primario" (click)="composing.set(true)"><ut-icon name="plus" [size]="18" />{{ 'auto.maff6e82137' | translate }}</button> }
             </ut-vazio>
           } @else {
             <ul class="topicos">
@@ -132,15 +133,15 @@ export const splitTags = (s: string) => [...new Set(s.split(/[,\s]+/).map((t) =>
                   }
                   <a class="t-corpo" [routerLink]="['/comunidade/discussoes', t.id]">
                     <span class="t-linha">
-                      @if (t.pinned) { <span class="selo-texto"><ut-icon name="pin" [size]="12" />Fixada</span> }
+                      @if (t.pinned) { <span class="selo-texto"><ut-icon name="pin" [size]="12" />{{ 'auto.m3cd092ac55' | translate }}</span> }
                       @if (t.isInstitutional) { <span class="selo-texto publica">{{ institutional }}</span> }
-                      @if (t.locked) { <span class="selo-texto"><ut-icon name="lock" [size]="12" />Encerrada</span> }
+                      @if (t.locked) { <span class="selo-texto"><ut-icon name="lock" [size]="12" />{{ 'auto.m621d09d9ca' | translate }}</span> }
                       @if (t.occurrenceCode) { <span class="selo-texto"><ut-icon name="file" [size]="12" />{{ t.occurrenceCode }}</span> }
                     </span>
                     <span class="t-titulo">{{ t.title }}</span>
                     <span class="t-trecho">{{ t.excerpt }}</span>
                     <span class="t-meta">
-                      @if (t.author; as a) { {{ a.isMe ? 'Você' : a.name }}@if (a.isStaff) { (equipe)} · }
+                      @if (t.author; as a) { {{ a.isMe ? ('auto.m281007a883' | translate) : a.name }}@if (a.isStaff) { (equipe)} · }
                       {{ replies(t) }} · {{ t.lastActivityAt | relativo }}
                       @for (g of t.tags; track g) { <span class="t-tag">#{{ g }}</span> }
                     </span>
@@ -152,40 +153,40 @@ export const splitTags = (s: string) => [...new Set(s.split(/[,\s]+/).map((t) =>
           }
         </div>
 
-        <aside class="lado" aria-label="Sobre o fórum">
+        <aside class="lado" [aria-label]="'auto.m3ed5301382' | translate">
           <section class="painel sobre">
-            <h2>Sobre</h2>
+            <h2>{{ 'auto.m23930282a1' | translate }}</h2>
             <dl class="numeros">
-              <div><dt>Discussões</dt><dd class="tabular">{{ f.topics }}</dd></div>
-              <div><dt>Participantes</dt><dd class="tabular">{{ f.participants }}</dd></div>
-              <div><dt>Seguidores</dt><dd class="tabular">{{ f.followers }}</dd></div>
+              <div><dt>{{ 'auto.m1879a13f52' | translate }}</dt><dd class="tabular">{{ f.topics }}</dd></div>
+              <div><dt>{{ 'auto.m5bb68ad174' | translate }}</dt><dd class="tabular">{{ f.participants }}</dd></div>
+              <div><dt>{{ 'auto.m3010b39ac6' | translate }}</dt><dd class="tabular">{{ f.followers }}</dd></div>
             </dl>
             <p class="nota">
-              @if (f.creator; as c) { Criado por {{ c.isMe ? 'você' : c.name }} em {{ f.createdAt | data }}. } @else { Fórum mantido pela equipe do UrbanTalk. }
+              @if (f.creator; as c) { Criado por {{ c.isMe ? ('auto.m4e55c9bfde' | translate) : c.name }} em {{ f.createdAt | data }}. } @else { Fórum mantido pela equipe do UrbanTalk. }
               @if (f.lastActivity) { Última atividade {{ f.lastActivity | relativo }}. }
             </p>
             @if (f.neighborhoodName) {
               <div class="links-bairro">
-                <a class="btn btn-secundario btn-sm" routerLink="/mapa" [queryParams]="{ bairro: f.neighborhoodName }"><ut-icon name="map" [size]="16" />Reclamações do bairro</a>
-                <a class="btn btn-texto btn-sm" routerLink="/propostas" [queryParams]="{ bairro: f.neighborhoodName }">Propostas do bairro</a>
+                <a class="btn btn-secundario btn-sm" routerLink="/mapa" [queryParams]="{ bairro: f.neighborhoodName }"><ut-icon name="map" [size]="16" />{{ 'auto.m3013a750d9' | translate }}</a>
+                <a class="btn btn-texto btn-sm" routerLink="/propostas" [queryParams]="{ bairro: f.neighborhoodName }">{{ 'auto.mc55436accc' | translate }}</a>
               </div>
             }
           </section>
           <section class="painel sobre">
-            <h2>Regras</h2>
+            <h2>{{ 'auto.mc3aec15974' | translate }}</h2>
             @if (f.rules) {
               <p class="regras">{{ f.rules }}</p>
             }
             <ul class="combinados">
-              <li>Fale do problema, não da pessoa.</li>
-              <li>Nada de dados pessoais de ninguém.</li>
-              <li>Discussão não é reclamação oficial: para a equipe acompanhar, <a routerLink="/registrar">registre uma reclamação</a>.</li>
+              <li>{{ 'auto.m8683d31ccd' | translate }}</li>
+              <li>{{ 'auto.m5c67f2ad68' | translate }}</li>
+              <li>{{ 'auto.m92aec342f7' | translate }} <a routerLink="/registrar">{{ 'auto.m144a514c70' | translate }}</a>.</li>
             </ul>
           </section>
         </aside>
       </div>
     } @else {
-      <p class="carregando">Carregando…</p>
+      <p class="carregando">{{ 'auto.mbca482b745' | translate }}</p>
     }
   `,
   styles: `

@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@ngx-translate/core';
 import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -15,84 +16,84 @@ const MAX_IMAGES = 3;
 
 @Component({
   selector: 'ut-nova-proposta',
-  imports: [AsyncPipe, RouterLink, IconComponent, PageHeaderComponent, VoteExplainerComponent, NeighborhoodInputComponent],
+  imports: [AsyncPipe, RouterLink, IconComponent, PageHeaderComponent, VoteExplainerComponent, NeighborhoodInputComponent, TranslatePipe],
   template: `
     <div class="pagina estreita">
-      <nav class="trilha" aria-label="Você está em"><a routerLink="/propostas">Ideias e propostas</a><span aria-hidden="true" class="sep"> › </span>Nova proposta</nav>
-      <ut-cabecalho-pagina title="Nova proposta" description="Descreva o problema que a ideia resolve, onde ela se aplica e como imagina a solução." />
+      <nav class="trilha" [aria-label]="'auto.m8fb521bd83' | translate"><a routerLink="/propostas">{{ 'auto.mcf7e4554c3' | translate }}</a><span aria-hidden="true" class="sep"> › </span>{{ 'auto.m7e10c8ba98' | translate }}</nav>
+      <ut-cabecalho-pagina [title]="'auto.m7e10c8ba98' | translate" [description]="'auto.m1a67ef4795' | translate" />
       <ut-explica-voto />
 
       <form class="painel form" (submit)="$event.preventDefault(); submit()" novalidate>
         <div class="campo">
-          <label for="pr-titulo">Título</label>
-          <input id="pr-titulo" class="entrada" maxlength="120" placeholder="Ex.: Faixa elevada na saída da escola da Rua Tal" [value]="title()" (input)="title.set($any($event.target).value)" [attr.aria-invalid]="!!fields()['title']" aria-describedby="pr-titulo-d" />
+          <label for="pr-titulo">{{ 'auto.m98a5efa60b' | translate }}</label>
+          <input id="pr-titulo" class="entrada" maxlength="120" [placeholder]="'auto.m2297751015' | translate" [value]="title()" (input)="title.set($any($event.target).value)" [attr.aria-invalid]="!!fields()['title']" aria-describedby="pr-titulo-d" />
           <span class="dica" id="pr-titulo-d">{{ title().length }}/120. Diga o que muda, de forma direta.</span>
           @if (fields()['title']) { <span class="erro">{{ fields()['title'] }}</span> }
         </div>
         <div class="campo">
-          <label for="pr-texto">Descrição</label>
+          <label for="pr-texto">{{ 'auto.m469768598e' | translate }}</label>
           <textarea id="pr-texto" class="entrada" rows="8" maxlength="4000" [value]="body()" (input)="body.set($any($event.target).value)" [attr.aria-invalid]="!!fields()['body']" aria-describedby="pr-texto-d"></textarea>
-          <span class="dica" id="pr-texto-d">Pelo menos 30 caracteres. Sugestão: qual é o problema hoje, quem é afetado e o que você propõe.</span>
+          <span class="dica" id="pr-texto-d">{{ 'auto.m82b2c56fd2' | translate }}</span>
           @if (fields()['body']) { <span class="erro">{{ fields()['body'] }}</span> }
         </div>
         <div class="duas">
           <div class="campo">
-            <label for="pr-cat">Categoria (opcional)</label>
+            <label for="pr-cat">{{ 'auto.md0ce7ff514' | translate }}</label>
             <select id="pr-cat" class="entrada" (change)="categoryId.set($any($event.target).value)">
-              <option value="">Sem categoria</option>
+              <option value="">{{ 'auto.mde2bff852f' | translate }}</option>
               @for (c of api.categories$ | async; track c.id) { <option [value]="c.id">{{ c.name }}</option> }
             </select>
             @if (fields()['categoryId']) { <span class="erro">{{ fields()['categoryId'] }}</span> }
           </div>
           <div class="campo">
-            <label for="pr-onde">Onde se aplica?</label>
+            <label for="pr-onde">{{ 'auto.me3276f44eb' | translate }}</label>
             <select id="pr-onde" class="entrada" (change)="setScope($any($event.target).value)">
-              <option value="cidade" [selected]="scope() === 'cidade'">Cidade toda</option>
-              <option value="bairro" [selected]="scope() === 'bairro'">Bairro</option>
+              <option value="cidade" [selected]="scope() === 'cidade'">{{ 'auto.mf42a4c41ae' | translate }}</option>
+              <option value="bairro" [selected]="scope() === 'bairro'">{{ 'auto.m49f7179a65' | translate }}</option>
             </select>
           </div>
         </div>
         @if (scope() === 'bairro') {
           <div class="campo bairro">
-            <label for="pr-bairro">Nome do bairro</label>
+            <label for="pr-bairro">{{ 'auto.m962e12cc72' | translate }}</label>
             <ut-bairro inputId="pr-bairro" [required]="true" [invalid]="!!fields()['neighborhoodName']" [value]="neighborhoodName()" (valueChange)="neighborhoodName.set($event)" />
-            <span class="dica">Escreva como você conhece o bairro; nomes novos são aceitos.</span>
+            <span class="dica">{{ 'auto.macbd7cbbbd' | translate }}</span>
             @if (fields()['neighborhoodName']) { <span class="erro">{{ fields()['neighborhoodName'] }}</span> }
           </div>
         }
 
         <fieldset class="campo grupo">
-          <legend class="rotulo">Imagens ou referências (opcional)</legend>
+          <legend class="rotulo">{{ 'auto.m7e3f97683c' | translate }}</legend>
           <span class="dica">Até {{ maxImages }} fotos (JPG, PNG ou WebP, até {{ maxMb }} MB cada). Os dados de localização das fotos são removidos ao salvar.</span>
           @if (previews().length) {
             <ul class="previas">
               @for (p of previews(); track p.url; let i = $index) {
-                <li><img [src]="p.url" [alt]="'Imagem ' + (i + 1)" /><button type="button" class="btn btn-texto btn-sm" (click)="removeImage(i)">Remover<span class="sr-only"> imagem {{ i + 1 }}</span></button></li>
+                <li><img [src]="p.url" [alt]="'Imagem ' + (i + 1)" /><button type="button" class="btn btn-texto btn-sm" (click)="removeImage(i)">{{ 'auto.m4bd4ea8342' | translate }}<span class="sr-only"> imagem {{ i + 1 }}</span></button></li>
               }
             </ul>
           }
           @if (previews().length < maxImages) {
-            <label class="btn btn-secundario btn-sm arquivo"><ut-icon name="camera" [size]="16" />Adicionar foto<input type="file" accept="image/jpeg,image/png,image/webp" multiple (change)="addImages($any($event.target))" class="sr-only" /></label>
+            <label class="btn btn-secundario btn-sm arquivo"><ut-icon name="camera" [size]="16" />{{ 'auto.ma93e1378f7' | translate }}<input type="file" accept="image/jpeg,image/png,image/webp" multiple (change)="addImages($any($event.target))" class="sr-only" /></label>
           }
           @if (imageError()) { <span class="erro">{{ imageError() }}</span> }
           @if (fields()['images']) { <span class="erro">{{ fields()['images'] }}</span> }
-          <label for="pr-link" class="rotulo link-rot">Link de referência</label>
+          <label for="pr-link" class="rotulo link-rot">{{ 'auto.me9ca989deb' | translate }}</label>
           <input id="pr-link" class="entrada" type="url" maxlength="300" placeholder="https://…" [value]="link()" (input)="link.set($any($event.target).value)" [attr.aria-invalid]="!!fields()['referenceUrl']" />
           @if (fields()['referenceUrl']) { <span class="erro">{{ fields()['referenceUrl'] }}</span> }
         </fieldset>
 
         <div class="campo">
-          <label for="pr-occ">Reclamações relacionadas (opcional)</label>
-          <input id="pr-occ" class="entrada" placeholder="Ex.: UT-00012, UT-00031" [value]="codes()" (input)="codes.set($any($event.target).value)" [attr.aria-invalid]="!!codesError() || !!fields()['occurrenceIds']" />
-          <span class="dica">Códigos de reclamações do mapa que mostram o problema. Separe por vírgula.</span>
+          <label for="pr-occ">{{ 'auto.meeb3086e66' | translate }}</label>
+          <input id="pr-occ" class="entrada" [placeholder]="'auto.me1c2703ca1' | translate" [value]="codes()" (input)="codes.set($any($event.target).value)" [attr.aria-invalid]="!!codesError() || !!fields()['occurrenceIds']" />
+          <span class="dica">{{ 'auto.m003bfccb23' | translate }}</span>
           @if (codesError()) { <span class="erro">{{ codesError() }}</span> }
           @if (fields()['occurrenceIds']) { <span class="erro">{{ fields()['occurrenceIds'] }}</span> }
         </div>
 
         @if (formError()) { <p class="aviso aviso-erro" role="alert"><ut-icon name="alert" />{{ formError() }}</p> }
         <div class="acoes">
-          <a class="btn btn-secundario" routerLink="/propostas">Cancelar</a>
-          <button type="submit" class="btn btn-primario" [disabled]="saving()">{{ saving() ? 'Publicando…' : 'Publicar proposta' }}</button>
+          <a class="btn btn-secundario" routerLink="/propostas">{{ 'auto.mc111e0ab9d' | translate }}</a>
+          <button type="submit" class="btn btn-primario" [disabled]="saving()">{{ saving() ? ('auto.mecbf570d2c' | translate) : ('auto.mb1a77f4a24' | translate) }}</button>
         </div>
       </form>
     </div>

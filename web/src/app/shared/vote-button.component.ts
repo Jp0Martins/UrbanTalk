@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@ngx-translate/core';
 import { ChangeDetectionStrategy, Component, inject, input, output, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { toApiError } from '../core/api-error';
@@ -9,12 +10,12 @@ import { IconComponent } from './icon.component';
 // apoio a uma proposta: o número mostrado é sempre o devolvido pelo servidor
 @Component({
   selector: 'ut-apoio',
-  imports: [IconComponent],
+  imports: [TranslatePipe, IconComponent],
   template: `
     <button type="button" class="apoio" [class.ativo]="voted()" [class.grande]="size() === 'lg'" [attr.aria-pressed]="voted()" [disabled]="busy() || (session.user() && !canVote() && !voted())" (click)="toggle()" [title]="title()">
       <ut-icon [name]="voted() ? 'check' : 'arrow-up'" [size]="size() === 'lg' ? 22 : 18" />
       <span class="n tabular">{{ votes() }}</span>
-      <span class="rot">{{ voted() ? 'Apoiada' : 'Apoiar' }}</span>
+      <span class="rot">{{ voted() ? ('auto.m371879f2d9' | translate) : ('auto.mf1c30fb6ef' | translate) }}</span>
     </button>
   `,
   styles: `

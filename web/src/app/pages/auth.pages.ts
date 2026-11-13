@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@ngx-translate/core';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -26,30 +27,30 @@ const authStyles = `
 
 @Component({
   selector: 'ut-login',
-  imports: [ReactiveFormsModule, RouterLink, IconComponent],
+  imports: [ReactiveFormsModule, RouterLink, IconComponent, TranslatePipe],
   template: `
     <div class="auth">
     <div class="caixa">
-      <h1>{{ profile() === 'funcionario' ? 'Entrar na área da equipe' : 'Entrar' }}</h1>
-      <p class="sub">{{ profile() === 'funcionario' ? 'Entre com a conta de funcionário que a administração liberou para você.' : 'Use o e-mail e a senha da sua conta UrbanTalk.' }}</p>
+      <h1>{{ (profile() === 'funcionario' ? 'auth.staffLogin' : 'nav.login') | translate }}</h1>
+      <p class="sub">{{ (profile() === 'funcionario' ? 'auth.staffHint' : 'auth.loginHint') | translate }}</p>
       @if (expired) {
-        <div class="aviso aviso-info" role="status"><ut-icon name="info" />Sua sessão terminou. Entre de novo para continuar.</div>
+        <div class="aviso aviso-info" role="status"><ut-icon name="info" />{{ 'auto.m4eb621087b' | translate }}</div>
       }
       <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
         <fieldset class="perfil">
-          <legend class="rotulo">Como você quer entrar?</legend>
+          <legend class="rotulo">{{ 'auto.m32a6418155' | translate }}</legend>
           <div class="segmentado">
             <label [class.marcado]="profile() === 'cliente'">
               <input type="radio" name="perfil" value="cliente" [checked]="profile() === 'cliente'" (change)="setProfile('cliente')" />
-              <ut-icon name="user" [size]="18" />Cliente
+              <ut-icon name="user" [size]="18" />{{ 'auto.mc5c7d5ee3d' | translate }}
             </label>
             <label [class.marcado]="profile() === 'funcionario'">
               <input type="radio" name="perfil" value="funcionario" [checked]="profile() === 'funcionario'" (change)="setProfile('funcionario')" />
-              <ut-icon name="shield" [size]="18" />Funcionário
+              <ut-icon name="shield" [size]="18" />{{ 'auto.m43270d7695' | translate }}
             </label>
           </div>
           @if (profile() === 'funcionario') {
-            <p class="dica-perfil">O acesso de funcionário é liberado pela administração do UrbanTalk. Não existe cadastro aberto para a equipe.</p>
+            <p class="dica-perfil">{{ 'auto.m959809455e' | translate }}</p>
           }
         </fieldset>
         @if (error()) {
@@ -58,32 +59,32 @@ const authStyles = `
             <div class="erro-corpo">
               <span>{{ error() }}</span>
               @if (suggest(); as other) {
-                <button type="button" class="btn btn-secundario btn-sm" (click)="setProfile(other); submit()">Entrar como {{ other === 'funcionario' ? 'Funcionário' : 'Cliente' }}</button>
+                <button type="button" class="btn btn-secundario btn-sm" (click)="setProfile(other); submit()">{{ 'auth.loginAs' | translate }} {{ (other === 'funcionario' ? 'auth.staff' : 'auth.citizen') | translate }}</button>
               }
             </div>
           </div>
         }
         <div class="campo">
-          <label for="email">E-mail</label>
+          <label for="email">{{ 'auto.m0d01e2e866' | translate }}</label>
           <input id="email" class="entrada" type="email" formControlName="email" autocomplete="email" [attr.aria-invalid]="invalid('email')" aria-describedby="email-erro" />
           @if (invalid('email')) {
-            <span class="erro" id="email-erro">Informe um e-mail válido.</span>
+            <span class="erro" id="email-erro">{{ 'auto.ma3560c0ea8' | translate }}</span>
           }
         </div>
         <div class="campo">
-          <label for="senha">Senha</label>
+          <label for="senha">{{ 'auto.mdeba017251' | translate }}</label>
           <div class="senha">
             <input id="senha" class="entrada" [type]="show() ? 'text' : 'password'" formControlName="password" autocomplete="current-password" [attr.aria-invalid]="invalid('password')" aria-describedby="senha-erro" />
-            <button type="button" class="btn btn-texto btn-sm ver" (click)="show.set(!show())" [attr.aria-pressed]="show()">{{ show() ? 'Ocultar' : 'Mostrar' }}</button>
+            <button type="button" class="btn btn-texto btn-sm ver" (click)="show.set(!show())" [attr.aria-pressed]="show()">{{ (show() ? 'auth.hide' : 'auth.show') | translate }}</button>
           </div>
           @if (invalid('password')) {
-            <span class="erro" id="senha-erro">Informe sua senha.</span>
+            <span class="erro" id="senha-erro">{{ 'auto.m0eab8e165b' | translate }}</span>
           }
         </div>
-        <button type="submit" class="btn btn-primario" [disabled]="busy()">{{ busy() ? 'Entrando…' : profile() === 'funcionario' ? 'Entrar na área da equipe' : 'Entrar' }}</button>
+        <button type="submit" class="btn btn-primario" [disabled]="busy()">{{ (busy() ? 'auth.loggingIn' : profile() === 'funcionario' ? 'auth.staffLogin' : 'nav.login') | translate }}</button>
       </form>
       @if (profile() === 'cliente') {
-        <p class="troca">Ainda não tem conta? <a routerLink="/cadastro" [queryParams]="{ volta: back }">Criar conta de cliente</a></p>
+        <p class="troca">{{ 'auto.m3553721539' | translate }} <a routerLink="/cadastro" [queryParams]="{ volta: back }">{{ 'auto.mf644041182' | translate }}</a></p>
       }
     </div>
     </div>
@@ -165,46 +166,47 @@ export class LoginPage {
 
 @Component({
   selector: 'ut-cadastro',
-  imports: [ReactiveFormsModule, RouterLink, IconComponent],
+  imports: [ReactiveFormsModule, RouterLink, IconComponent, TranslatePipe],
   template: `
     <div class="auth">
     <div class="caixa">
-      <h1>Criar conta</h1>
-      <p class="sub">Leva menos de um minuto. Com ela você registra reclamações, confirma as dos vizinhos, conversa na Comunidade e acompanha o andamento.</p>
+      <h1>{{ 'auto.mb03ff67468' | translate }}</h1>
+      <p class="sub">{{ 'auto.m3b8ca99dec' | translate }}</p>
       <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
         @if (error()) {
           <div class="aviso aviso-erro" role="alert"><ut-icon name="alert" />{{ error() }}</div>
         }
         <div class="campo">
-          <label for="nome">Nome</label>
+          <label for="nome">{{ 'auto.m13030dd962' | translate }}</label>
           <input id="nome" class="entrada" formControlName="name" autocomplete="name" [attr.aria-invalid]="!!msg('name')" aria-describedby="nome-erro" />
           @if (msg('name'); as m) {
             <span class="erro" id="nome-erro">{{ m }}</span>
           }
         </div>
         <div class="campo">
-          <label for="email">E-mail</label>
+          <label for="email">{{ 'auto.m0d01e2e866' | translate }}</label>
           <input id="email" class="entrada" type="email" formControlName="email" autocomplete="email" [attr.aria-invalid]="!!msg('email')" aria-describedby="email-erro" />
           @if (msg('email'); as m) {
             <span class="erro" id="email-erro">{{ m }}</span>
           }
         </div>
         <div class="campo">
-          <label for="senha">Senha</label>
+          <label for="senha">{{ 'auto.mdeba017251' | translate }}</label>
           <div class="senha">
             <input id="senha" class="entrada" [type]="show() ? 'text' : 'password'" formControlName="password" autocomplete="new-password" [attr.aria-invalid]="!!msg('password')" aria-describedby="senha-dica senha-erro" />
-            <button type="button" class="btn btn-texto btn-sm ver" (click)="show.set(!show())" [attr.aria-pressed]="show()">{{ show() ? 'Ocultar' : 'Mostrar' }}</button>
+            <button type="button" class="btn btn-texto btn-sm ver" (click)="show.set(!show())" [attr.aria-pressed]="show()">{{ (show() ? 'auth.hide' : 'auth.show') | translate }}</button>
           </div>
-          <span class="dica" id="senha-dica">Pelo menos 8 caracteres, com letras e números.</span>
+          <span class="dica" id="senha-dica">{{ 'auto.m1f8b1e760a' | translate }}</span>
           @if (msg('password'); as m) {
             <span class="erro" id="senha-erro">{{ m }}</span>
           }
         </div>
-        <p class="dica privacidade">Seu e-mail nunca aparece para outras pessoas. Nas reclamações públicas não mostramos seu nome; na Comunidade aparece só o primeiro nome e a inicial do sobrenome.</p>
-        <button type="submit" class="btn btn-primario" [disabled]="busy()">{{ busy() ? 'Criando conta…' : 'Criar conta de cliente' }}</button>
+        <p class="dica privacidade">{{ 'auto.m4d723dae74' | translate }}</p>
+        <p class="dica privacidade"><a routerLink="/privacidade">{{ 'privacy.readMore' | translate }}</a></p>
+        <button type="submit" class="btn btn-primario" [disabled]="busy()">{{ (busy() ? 'auth.creating' : 'auth.createCitizen') | translate }}</button>
       </form>
-      <p class="troca">Já tem conta? <a routerLink="/entrar" [queryParams]="{ volta: back }">Entrar</a></p>
-      <p class="troca equipe">Faz parte da equipe? O acesso de funcionário é liberado pela administração.</p>
+      <p class="troca">{{ 'auto.me2c24f7bb6' | translate }} <a routerLink="/entrar" [queryParams]="{ volta: back }">{{ 'auto.m7573ba8515' | translate }}</a></p>
+      <p class="troca equipe">{{ 'auto.m208a92114f' | translate }}</p>
     </div>
     </div>
   `,

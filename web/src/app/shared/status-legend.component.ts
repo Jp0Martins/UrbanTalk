@@ -1,12 +1,13 @@
 import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
 import { StatusCatalog } from '../core/status-catalog';
+import { LanguageService } from '../core/i18n';
 
 // legenda das cores do mapa, montada com os status ativos
 @Component({
   selector: 'ut-legenda-status',
   template: `
     @for (s of catalog.active(); track s.slug) {
-      <span [attr.data-color]="s.color"><i aria-hidden="true"></i>{{ s.name }}</span>
+      <span [attr.data-color]="s.color"><i aria-hidden="true"></i>{{ language.statusName(s) }}</span>
     }
     @if (hint()) {
       <span class="dica">{{ hint() }}</span>
@@ -22,5 +23,6 @@ import { StatusCatalog } from '../core/status-catalog';
 })
 export class StatusLegendComponent {
   catalog = inject(StatusCatalog);
+  language = inject(LanguageService);
   hint = input('');
 }

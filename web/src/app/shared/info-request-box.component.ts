@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@ngx-translate/core';
 import { ChangeDetectionStrategy, Component, inject, input, output, signal } from '@angular/core';
 import { ApiService } from '../core/api.service';
 import { toApiError } from '../core/api-error';
@@ -9,22 +10,22 @@ import { IconComponent } from './icon.component';
 // pergunta da equipe para quem registrou, com resposta e foto opcional
 @Component({
   selector: 'ut-pedido-info',
-  imports: [IconComponent, DatePipe],
+  imports: [IconComponent, DatePipe, TranslatePipe],
   template: `
     @if (occ().infoRequest; as q) {
       <section id="pedido" class="pedido" aria-labelledby="pedido-t">
-        <h2 id="pedido-t"><ut-icon name="info" [size]="20" />A equipe precisa de mais informações</h2>
+        <h2 id="pedido-t"><ut-icon name="info" [size]="20" />{{ 'auto.mae8ab72b8f' | translate }}</h2>
         <p class="pergunta">{{ q.question }}</p>
         <p class="quando">Perguntado em {{ q.createdAt | data: true }}. Só você e a equipe veem esta conversa.</p>
         <form (submit)="$event.preventDefault(); send(q.id)">
           <div class="campo">
-            <label for="resp-txt">Sua resposta</label>
+            <label for="resp-txt">{{ 'auto.mdc7fb5a59e' | translate }}</label>
             <textarea id="resp-txt" class="entrada" rows="3" maxlength="1000" [value]="answer()" (input)="answer.set($any($event.target).value)" [attr.aria-invalid]="!!error()"></textarea>
           </div>
-          <label class="btn btn-secundario btn-sm arquivo"><ut-icon name="camera" [size]="16" />{{ photo() ? 'Trocar foto' : 'Anexar foto (opcional)' }}<input type="file" class="sr-only" accept="image/jpeg,image/png,image/webp" (change)="pick($any($event.target))" /></label>
-          @if (photo(); as p) { <span class="arquivo-nome">{{ p.name }} <button type="button" class="btn btn-texto btn-sm" (click)="photo.set(null)">Remover</button></span> }
+          <label class="btn btn-secundario btn-sm arquivo"><ut-icon name="camera" [size]="16" />{{ photo() ? ('auto.m5f51f95ef7' | translate) : ('auto.mbe335a6348' | translate) }}<input type="file" class="sr-only" accept="image/jpeg,image/png,image/webp" (change)="pick($any($event.target))" /></label>
+          @if (photo(); as p) { <span class="arquivo-nome">{{ p.name }} <button type="button" class="btn btn-texto btn-sm" (click)="photo.set(null)">{{ 'auto.m4bd4ea8342' | translate }}</button></span> }
           @if (error()) { <p class="erro" role="alert">{{ error() }}</p> }
-          <button type="submit" class="btn btn-primario" [disabled]="sending() || answer().trim().length < 3">{{ sending() ? 'Enviando…' : 'Enviar resposta' }}</button>
+          <button type="submit" class="btn btn-primario" [disabled]="sending() || answer().trim().length < 3">{{ sending() ? ('auto.m5e91dcdc57' | translate) : ('auto.mc50a433c1e' | translate) }}</button>
         </form>
       </section>
     }

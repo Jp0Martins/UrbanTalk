@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@ngx-translate/core';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { toApiError } from '../core/api-error';
 import { SessionStore } from '../core/session.store';
@@ -11,10 +12,10 @@ import { NeighborhoodInputComponent } from '../shared/neighborhood-input.compone
 
 @Component({
   selector: 'ut-perfil',
-  imports: [PageHeaderComponent, AvatarComponent, IconComponent, NeighborhoodInputComponent],
+  imports: [PageHeaderComponent, AvatarComponent, IconComponent, NeighborhoodInputComponent, TranslatePipe],
   template: `
     <div class="pagina">
-      <ut-cabecalho-pagina title="Meu perfil" description="Seus dados de acesso e como você aparece para outras pessoas." />
+      <ut-cabecalho-pagina [title]="'auto.m742e3d06ca' | translate" [description]="'auto.m8740d315fc' | translate" />
       @let u = session.user()!;
       <div class="grade">
         <section class="painel cartao-perfil" aria-labelledby="quem-t">
@@ -25,67 +26,67 @@ import { NeighborhoodInputComponent } from '../shared/neighborhood-input.compone
             <p class="papel"><ut-icon [name]="session.isStaff() ? 'shield' : 'user'" [size]="16" />{{ roleText() }}</p>
           </div>
           <div class="como-aparece">
-            <p class="rotulo">Como você aparece</p>
+            <p class="rotulo">{{ 'auto.mf32e936c71' | translate }}</p>
             <ul>
-              <li>Na Comunidade: <strong>{{ publicName() }}</strong>{{ session.isStaff() ? ', com o selo Equipe UrbanTalk' : '' }}</li>
+              <li>{{ 'auto.m92fb215ab0' | translate }} <strong>{{ publicName() }}</strong>{{ session.isStaff() ? ', com o selo Equipe UrbanTalk' : '' }}</li>
               @if (session.isCitizen()) {
-                <li>Nas reclamações públicas: <strong>sem nome</strong>. Só a equipe sabe quem registrou.</li>
+                <li>{{ 'auto.m5087decf14' | translate }} <strong>{{ 'auto.m5f460de115' | translate }}</strong>{{ 'auto.m8f78e13272' | translate }}</li>
               }
-              <li>Seu e-mail <strong>nunca</strong> aparece para outras pessoas.</li>
+              <li>{{ 'auto.me45556393e' | translate }} <strong>{{ 'auto.m21174b125e' | translate }}</strong> {{ 'auto.mc65628cebb' | translate }}</li>
             </ul>
           </div>
         </section>
 
         <div class="formularios">
           <form id="bairros" class="painel form" (submit)="$event.preventDefault(); saveInterests()" aria-labelledby="bairros-t">
-            <h2 id="bairros-t">Bairros de interesse</h2>
-            <p class="muted">Até 5 bairros, digitados do seu jeito. Os fóruns que citam esses bairros aparecem em destaque na aba Fóruns da Comunidade. <strong>Ninguém mais vê essa escolha</strong>, e ela não precisa ser onde você mora.</p>
+            <h2 id="bairros-t">{{ 'auto.m05b5398f79' | translate }}</h2>
+            <p class="muted">{{ 'auto.m08eb68d3c8' | translate }} <strong>{{ 'auto.mbebaa5c1b3' | translate }}</strong>{{ 'auto.m26176c47d6' | translate }}</p>
             @if (interestsLoaded()) {
               @if (chosen().length) {
                 <ul class="escolhidos">
                   @for (n of chosen(); track n) {
-                    <li><span>{{ n }}</span><button type="button" class="btn btn-texto btn-sm" (click)="removeHood(n)">Remover<span class="sr-only"> {{ n }}</span></button></li>
+                    <li><span>{{ n }}</span><button type="button" class="btn btn-texto btn-sm" (click)="removeHood(n)">{{ 'auto.m4bd4ea8342' | translate }}<span class="sr-only"> {{ n }}</span></button></li>
                   }
                 </ul>
               }
               <div class="campo">
-                <label for="add-bairro">Adicionar bairro</label>
+                <label for="add-bairro">{{ 'auto.mafdaf70476' | translate }}</label>
                 <div class="add-linha">
                   <ut-bairro inputId="add-bairro" [placeholder]="chosen().length >= 5 ? 'Limite de 5 bairros' : 'Digite o nome do bairro'" [value]="draftHood()" (valueChange)="draftHood.set($event)" />
-                  <button type="button" class="btn btn-secundario" [disabled]="chosen().length >= 5 || !draftHood().trim()" (click)="addHood()">Adicionar</button>
+                  <button type="button" class="btn btn-secundario" [disabled]="chosen().length >= 5 || !draftHood().trim()" (click)="addHood()">{{ 'auto.mfadcf2d5a3' | translate }}</button>
                 </div>
               </div>
-              <button type="submit" class="btn btn-primario" [disabled]="savingInterests() || !interestsDirty()">{{ savingInterests() ? 'Salvando…' : 'Salvar bairros' }}</button>
+              <button type="submit" class="btn btn-primario" [disabled]="savingInterests() || !interestsDirty()">{{ savingInterests() ? ('auto.m87ef46e99f' | translate) : ('auto.m76915ea865' | translate) }}</button>
             } @else {
-              <p class="carregando">Carregando…</p>
+              <p class="carregando">{{ 'auto.mbca482b745' | translate }}</p>
             }
           </form>
 
           <form class="painel form" (submit)="$event.preventDefault(); saveName()" novalidate>
-            <h2>Nome</h2>
+            <h2>{{ 'auto.m13030dd962' | translate }}</h2>
             <div class="campo">
-              <label for="nome">Nome completo</label>
+              <label for="nome">{{ 'auto.m695fc3f316' | translate }}</label>
               <input id="nome" class="entrada" autocomplete="name" maxlength="120" [value]="name()" (input)="name.set($any($event.target).value)" [attr.aria-invalid]="!!nameError()" />
               @if (nameError()) {
                 <span class="erro">{{ nameError() }}</span>
               }
             </div>
-            <button type="submit" class="btn btn-primario" [disabled]="savingName() || name().trim() === u.name">{{ savingName() ? 'Salvando…' : 'Salvar nome' }}</button>
+            <button type="submit" class="btn btn-primario" [disabled]="savingName() || name().trim() === u.name">{{ savingName() ? ('auto.m87ef46e99f' | translate) : ('auto.ma89224d24b' | translate) }}</button>
           </form>
 
           <form class="painel form" (submit)="$event.preventDefault(); savePassword()" novalidate>
-            <h2>Senha</h2>
+            <h2>{{ 'auto.mdeba017251' | translate }}</h2>
             <div class="campo">
-              <label for="atual">Senha atual</label>
+              <label for="atual">{{ 'auto.m9fc16a9950' | translate }}</label>
               <input id="atual" class="entrada" type="password" autocomplete="current-password" [value]="current()" (input)="current.set($any($event.target).value)" [attr.aria-invalid]="!!pwFields()['current']" />
               @if (pwFields()['current']) {
                 <span class="erro">{{ pwFields()['current'] }}</span>
               }
             </div>
             <div class="campo">
-              <label for="nova">Nova senha</label>
+              <label for="nova">{{ 'auto.ma0fe29bce7' | translate }}</label>
               <input id="nova" class="entrada" type="password" autocomplete="new-password" [value]="next()" (input)="next.set($any($event.target).value)" [attr.aria-invalid]="!!pwFields()['next']" aria-describedby="nova-dica" />
-              <span class="dica" id="nova-dica">Pelo menos 8 caracteres, com letras e números.</span>
+              <span class="dica" id="nova-dica">{{ 'auto.m1f8b1e760a' | translate }}</span>
               @if (pwFields()['next']) {
                 <span class="erro">{{ pwFields()['next'] }}</span>
               }
@@ -93,7 +94,7 @@ import { NeighborhoodInputComponent } from '../shared/neighborhood-input.compone
             @if (pwError()) {
               <div class="aviso aviso-erro" role="alert"><ut-icon name="alert" />{{ pwError() }}</div>
             }
-            <button type="submit" class="btn btn-secundario" [disabled]="savingPw() || !current() || !next()">{{ savingPw() ? 'Salvando…' : 'Trocar senha' }}</button>
+            <button type="submit" class="btn btn-secundario" [disabled]="savingPw() || !current() || !next()">{{ savingPw() ? ('auto.m87ef46e99f' | translate) : ('auto.m1c289ed823' | translate) }}</button>
           </form>
         </div>
       </div>

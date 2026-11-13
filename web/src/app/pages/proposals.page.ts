@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@ngx-translate/core';
 import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -19,62 +20,62 @@ import { VoteExplainerComponent } from '../shared/vote-explainer.component';
 
 @Component({
   selector: 'ut-propostas',
-  imports: [NeighborhoodInputComponent, AsyncPipe, RouterLink, IconComponent, PageHeaderComponent, PaginationComponent, PhaseBadgeComponent, EmptyStateComponent, ErrorStateComponent, VoteButtonComponent, VoteExplainerComponent, RelativePipe],
+  imports: [NeighborhoodInputComponent, AsyncPipe, RouterLink, IconComponent, PageHeaderComponent, PaginationComponent, PhaseBadgeComponent, EmptyStateComponent, ErrorStateComponent, VoteButtonComponent, VoteExplainerComponent, RelativePipe, TranslatePipe],
   template: `
     <div class="pagina">
-      <ut-cabecalho-pagina title="Ideias e propostas" description="Sugestões de moradores para melhorar a cidade. Apoie as que fazem sentido para você e ajude a melhorar as outras nos comentários.">
+      <ut-cabecalho-pagina [title]="'auto.mcf7e4554c3' | translate" [description]="'auto.m8a72614072' | translate">
         @if (session.isCitizen()) {
-          <a class="btn btn-primario" routerLink="/propostas/nova"><ut-icon name="plus" [size]="18" />Nova proposta</a>
+          <a class="btn btn-primario" routerLink="/propostas/nova"><ut-icon name="plus" [size]="18" />{{ 'auto.m7e10c8ba98' | translate }}</a>
         } @else if (!session.user()) {
-          <a class="btn btn-secundario" routerLink="/entrar" [queryParams]="{ volta: '/propostas/nova' }">Entre para propor</a>
+          <a class="btn btn-secundario" routerLink="/entrar" [queryParams]="{ volta: '/propostas/nova' }">{{ 'auto.m1b05cecbe8' | translate }}</a>
         }
       </ut-cabecalho-pagina>
 
       <ut-explica-voto />
 
-      <form class="filtros painel" (submit)="$event.preventDefault(); apply()" aria-label="Filtrar propostas">
+      <form class="filtros painel" (submit)="$event.preventDefault(); apply()" [aria-label]="'auto.m68ddcbbbde' | translate">
         <div class="campo cresce">
-          <label for="p-q">Buscar</label>
-          <input id="p-q" class="entrada" type="search" maxlength="100" placeholder="Palavra no título ou na descrição" [value]="f().q ?? ''" (input)="patch({ q: $any($event.target).value })" />
+          <label for="p-q">{{ 'auto.ma62405e2ce' | translate }}</label>
+          <input id="p-q" class="entrada" type="search" maxlength="100" [placeholder]="'auto.mdc5d7811d0' | translate" [value]="f().q ?? ''" (input)="patch({ q: $any($event.target).value })" />
         </div>
         <div class="campo">
-          <label for="p-cat">Categoria</label>
+          <label for="p-cat">{{ 'auto.m5966b0ce8b' | translate }}</label>
           <select id="p-cat" class="entrada" [value]="f().category ?? ''" (change)="patch({ category: num($any($event.target).value) })">
-            <option value="">Todas</option>
+            <option value="">{{ 'auto.m8a3c344036' | translate }}</option>
             @for (c of api.categories$ | async; track c.id) { <option [value]="c.id" [selected]="f().category === c.id">{{ c.name }}</option> }
           </select>
         </div>
         <div class="campo">
-          <label for="p-onde">Onde se aplica</label>
+          <label for="p-onde">{{ 'auto.m769815f878' | translate }}</label>
           <select id="p-onde" class="entrada" (change)="setMode($any($event.target).value)">
-            <option value="" [selected]="mode() === ''">Todas</option>
-            <option value="cidade" [selected]="mode() === 'cidade'">Cidade toda</option>
-            <option value="bairro" [selected]="mode() === 'bairro'">Um bairro</option>
+            <option value="" [selected]="mode() === ''">{{ 'auto.m8a3c344036' | translate }}</option>
+            <option value="cidade" [selected]="mode() === 'cidade'">{{ 'auto.mf42a4c41ae' | translate }}</option>
+            <option value="bairro" [selected]="mode() === 'bairro'">{{ 'auto.mbffa93cc42' | translate }}</option>
           </select>
         </div>
         @if (mode() === 'bairro') {
           <div class="campo">
-            <label for="p-bairro">Bairro</label>
-            <ut-bairro inputId="p-bairro" placeholder="Digite o nome do bairro" [value]="f().neighborhood ?? ''" (committed)="patch({ neighborhood: $event.trim() || null })" />
+            <label for="p-bairro">{{ 'auto.m49f7179a65' | translate }}</label>
+            <ut-bairro inputId="p-bairro" [placeholder]="'auto.m50e3a9511c' | translate" [value]="f().neighborhood ?? ''" (committed)="patch({ neighborhood: $event.trim() || null })" />
           </div>
         }
         <div class="campo">
-          <label for="p-fase">Fase</label>
+          <label for="p-fase">{{ 'auto.m376f40395f' | translate }}</label>
           <select id="p-fase" class="entrada" [value]="phaseValue()" (change)="setPhase($any($event.target).value)">
-            <option value="">Todas</option>
-            <option value="sit:abertas">Em andamento</option>
-            <option value="sit:finais">Concluídas (aceita, recusada…)</option>
+            <option value="">{{ 'auto.m8a3c344036' | translate }}</option>
+            <option value="sit:abertas">{{ 'auto.m5ca3739c28' | translate }}</option>
+            <option value="sit:finais">{{ 'auto.macc8fb1a8d' | translate }}</option>
             @for (s of catalog.all(); track s.id) { <option [value]="s.slug" [selected]="f().status === s.slug">{{ s.name }}</option> }
           </select>
         </div>
         <div class="filtro-acoes">
-          <button type="submit" class="btn btn-primario">Filtrar</button>
-          @if (hasFilters()) { <button type="button" class="btn btn-texto" (click)="clear()">Limpar</button> }
+          <button type="submit" class="btn btn-primario">{{ 'auto.md878f8c67e' | translate }}</button>
+          @if (hasFilters()) { <button type="button" class="btn btn-texto" (click)="clear()">{{ 'auto.m765fbe39a2' | translate }}</button> }
         </div>
       </form>
 
       <div class="barra">
-        <div class="segmentado" role="tablist" aria-label="Ordenar propostas">
+        <div class="segmentado" role="tablist" [aria-label]="'auto.m7d4c67527e' | translate">
           @for (s of sorts; track s.id) {
             <button type="button" role="tab" [attr.aria-selected]="(f().sort ?? 'votos') === s.id" (click)="setSort(s.id)">{{ s.label }}</button>
           }
@@ -83,12 +84,12 @@ import { VoteExplainerComponent } from '../shared/vote-explainer.component';
       </div>
 
       @if (loading()) {
-        <p class="carregando">Carregando propostas…</p>
+        <p class="carregando">{{ 'auto.m3ea29901b8' | translate }}</p>
       } @else if (error(); as e) {
         <ut-erro [message]="e" (retry)="load()" />
       } @else if (items().length === 0) {
         <ut-vazio icon="sparkle" [title]="hasFilters() ? 'Nenhuma proposta com esses filtros' : 'Ainda não há propostas'" [text]="hasFilters() ? 'Tente outro bairro ou categoria.' : 'Tem uma ideia para a cidade? Descreva o problema que ela resolve e onde se aplica.'">
-          @if (session.isCitizen()) { <a class="btn btn-primario btn-sm" routerLink="/propostas/nova">Criar a primeira proposta</a> }
+          @if (session.isCitizen()) { <a class="btn btn-primario btn-sm" routerLink="/propostas/nova">{{ 'auto.mfbbbdb6db9' | translate }}</a> }
         </ut-vazio>
       } @else {
         <ul class="lista">
@@ -97,7 +98,7 @@ import { VoteExplainerComponent } from '../shared/vote-explainer.component';
               <ut-apoio [proposalId]="p.id" [votes]="p.votes" [voted]="p.votedByMe" [canVote]="p.canVote" [isFinal]="p.isFinal" (changed)="update(p.id, $event)" />
               <a class="corpo" [routerLink]="['/propostas', p.id]">
                 <span class="linha"><ut-fase [status]="p.status" />
-                  @if (p.neighborhood) { <span class="selo-texto"><ut-icon name="pin" [size]="12" />{{ p.neighborhood.name }}</span> } @else { <span class="selo-texto">Cidade toda</span> }
+                  @if (p.neighborhood) { <span class="selo-texto"><ut-icon name="pin" [size]="12" />{{ p.neighborhood.name }}</span> } @else { <span class="selo-texto">{{ 'auto.mf42a4c41ae' | translate }}</span> }
                   @if (p.category) { <span class="selo-texto">{{ p.category.name }}</span> }
                 </span>
                 <span class="titulo">{{ p.title }}</span>

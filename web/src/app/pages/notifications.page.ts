@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@ngx-translate/core';
 import { ChangeDetectionStrategy, Component, OnInit, effect, inject, signal, untracked } from '@angular/core';
 import { Router } from '@angular/router';
 import { toApiError } from '../core/api-error';
@@ -31,23 +32,23 @@ const ICON_BY_KIND: Record<string, string> = {
 
 @Component({
   selector: 'ut-notificacoes',
-  imports: [IconComponent, PageHeaderComponent, EmptyStateComponent, ErrorStateComponent, RelativePipe, DatePipe],
+  imports: [IconComponent, PageHeaderComponent, EmptyStateComponent, ErrorStateComponent, RelativePipe, DatePipe, TranslatePipe],
   template: `
     <div class="pagina estreita">
-      <ut-cabecalho-pagina title="Notificações" description="Novidades sobre o que você registrou, confirmou, propôs ou acompanha. Avisos parecidos são agrupados para não lotar sua caixa.">
-        <button type="button" class="btn btn-secundario" [disabled]="notes.unread() === 0" (click)="markAll()"><ut-icon name="check" [size]="18" />Marcar todas como lidas</button>
+      <ut-cabecalho-pagina [title]="'auto.me9c967ca10' | translate" [description]="'auto.mf7e25194b9' | translate">
+        <button type="button" class="btn btn-secundario" [disabled]="notes.unread() === 0" (click)="markAll()"><ut-icon name="check" [size]="18" />{{ 'auto.m5dacc5980c' | translate }}</button>
       </ut-cabecalho-pagina>
-      <div class="segmentado" role="tablist" aria-label="Filtrar notificações">
-        <button type="button" role="tab" [attr.aria-selected]="filter() === 'todas'" (click)="setFilter('todas')">Todas</button>
-        <button type="button" role="tab" [attr.aria-selected]="filter() === 'nao-lidas'" (click)="setFilter('nao-lidas')">Não lidas <span class="tabular">({{ notes.unread() }})</span></button>
+      <div class="segmentado" role="tablist" [aria-label]="'auto.m302569c588' | translate">
+        <button type="button" role="tab" [attr.aria-selected]="filter() === 'todas'" (click)="setFilter('todas')">{{ 'auto.m8a3c344036' | translate }}</button>
+        <button type="button" role="tab" [attr.aria-selected]="filter() === 'nao-lidas'" (click)="setFilter('nao-lidas')">{{ 'auto.m6f2f8e3763' | translate }} <span class="tabular">({{ notes.unread() }})</span></button>
       </div>
 
       @if (loading()) {
-        <p class="carregando">Carregando notificações…</p>
+        <p class="carregando">{{ 'auto.m8b744d81d8' | translate }}</p>
       } @else if (error(); as e) {
         <ut-erro [message]="e" (retry)="load()" />
       } @else if (items().length === 0) {
-        <ut-vazio icon="inbox" [title]="filter() === 'nao-lidas' ? 'Nada novo por aqui' : 'Você ainda não tem notificações'" text="Quando houver novidade em algo que você registrou, confirmou ou acompanha, ela aparece aqui." />
+        <ut-vazio icon="inbox" [title]="filter() === 'nao-lidas' ? 'Nada novo por aqui' : 'Você ainda não tem notificações'" [text]="'auto.m4fa6f44d9e' | translate" />
       } @else {
         <ul class="lista">
           @for (n of items(); track n.id) {
@@ -59,13 +60,13 @@ const ICON_BY_KIND: Record<string, string> = {
                   @if (n.body) { <span class="corpo">{{ n.body }}</span> }
                   <time class="quando" [attr.datetime]="n.createdAt" [title]="n.createdAt | data: true">{{ n.createdAt | relativo }}</time>
                 </span>
-                @if (!n.read) { <span class="ponto" aria-label="Não lida"></span> }
+                @if (!n.read) { <span class="ponto" [aria-label]="'auto.me1ba201240' | translate"></span> }
               </button>
             </li>
           }
         </ul>
         @if (nextBefore()) {
-          <button type="button" class="btn btn-secundario mais" (click)="load(true)">Carregar mais antigas</button>
+          <button type="button" class="btn btn-secundario mais" (click)="load(true)">{{ 'auto.m0222eecf43' | translate }}</button>
         }
       }
     </div>

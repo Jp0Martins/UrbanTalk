@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@ngx-translate/core';
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { RelativePipe, plural } from '../core/format';
@@ -7,7 +8,7 @@ import { IconComponent } from './icon.component';
 // cartão de fórum usado nas listas da Comunidade
 @Component({
   selector: 'ut-forum-card',
-  imports: [RouterLink, IconComponent, RelativePipe],
+  imports: [RouterLink, IconComponent, RelativePipe, TranslatePipe],
   template: `
     @let f = forum();
     <a class="card" [routerLink]="['/comunidade/f', f.slug]">
@@ -15,9 +16,9 @@ import { IconComponent } from './icon.component';
       <span class="corpo">
         <span class="topo">
           <span class="nome">{{ f.name }}</span>
-          @if (f.kind === 'oficial') { <span class="selo-texto equipe">Oficial</span> }
-          @if (f.status === 'pendente') { <span class="selo-texto interna">Aguardando aprovação</span> }
-          @if (f.following) { <span class="selo-texto publica">Seguindo</span> }
+          @if (f.kind === 'oficial') { <span class="selo-texto equipe">{{ 'auto.m45ce87990a' | translate }}</span> }
+          @if (f.status === 'pendente') { <span class="selo-texto interna">{{ 'auto.mfb02485822' | translate }}</span> }
+          @if (f.following) { <span class="selo-texto publica">{{ 'auto.m4762ff43bd' | translate }}</span> }
         </span>
         <span class="desc">{{ f.description }}</span>
         <span class="meta">
@@ -28,7 +29,7 @@ import { IconComponent } from './icon.component';
         <span class="nums tabular">
           {{ topics(f) }} · {{ people(f) }}
           @if (f.lastActivity) { · ativo {{ f.lastActivity | relativo }} }
-          @if (f.creator && !compact()) { · criado por {{ f.creator.isMe ? 'você' : f.creator.name }} }
+          @if (f.creator && !compact()) { · criado por {{ f.creator.isMe ? ('auto.m4e55c9bfde' | translate) : f.creator.name }} }
         </span>
       </span>
     </a>

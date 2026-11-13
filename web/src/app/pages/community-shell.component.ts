@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@ngx-translate/core';
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterLink, RouterOutlet } from '@angular/router';
@@ -10,19 +11,19 @@ type Tab = 'feed' | 'foruns' | 'explorar' | 'minhas';
 // Comunidade: feed, fóruns, explorar e minhas participações dentro de uma só área
 @Component({
   selector: 'ut-comunidade-area',
-  imports: [RouterOutlet, RouterLink, IconComponent],
+  imports: [RouterOutlet, RouterLink, IconComponent, TranslatePipe],
   template: `
     <div class="pagina">
       <header class="cab">
         <div>
-          <h1>Comunidade</h1>
-          <p class="desc">Conversas sobre o bairro, a mobilidade e os espaços públicos de Sorocaba. Publicações e discussões não viram reclamações oficiais: para a equipe acompanhar, <a routerLink="/registrar">registre uma reclamação</a>.</p>
+          <h1>{{ 'auto.m3cc52f916c' | translate }}</h1>
+          <p class="desc">{{ 'auto.maa0296fe1e' | translate }} <a routerLink="/registrar">{{ 'auto.m144a514c70' | translate }}</a>.</p>
         </div>
         @if (tab() === 'foruns' && session.user()) {
-          <a routerLink="/comunidade/foruns/novo" class="btn btn-primario"><ut-icon name="plus" [size]="18" />Criar fórum</a>
+          <a routerLink="/comunidade/foruns/novo" class="btn btn-primario"><ut-icon name="plus" [size]="18" />{{ 'auto.ma97e989a61' | translate }}</a>
         }
       </header>
-      <nav class="abas-area" aria-label="Seções da Comunidade">
+      <nav class="abas-area" [aria-label]="'auto.ma4a085ba84' | translate">
         @for (t of tabs; track t.id) {
           <a [routerLink]="t.link" [attr.aria-current]="tab() === t.id ? 'page' : null" [class.ativa]="tab() === t.id">
             <ut-icon [name]="t.icon" [size]="18" /><span class="longo">{{ t.label }}</span><span class="curto" aria-hidden="true">{{ t.short }}</span>

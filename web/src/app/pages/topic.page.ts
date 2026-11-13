@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@ngx-translate/core';
 import { ChangeDetectionStrategy, Component, effect, inject, input, signal, untracked } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { toApiError } from '../core/api-error';
@@ -18,14 +19,14 @@ import { UsefulVoteComponent } from '../shared/useful-vote.component';
 
 @Component({
   selector: 'ut-topico',
-  imports: [RouterLink, AvatarComponent, IconComponent, StatusBadgeComponent, PhaseBadgeComponent, DiscussionComponent, ReportButtonComponent, ErrorStateComponent, DatePipe, UsefulVoteComponent],
+  imports: [RouterLink, AvatarComponent, IconComponent, StatusBadgeComponent, PhaseBadgeComponent, DiscussionComponent, ReportButtonComponent, ErrorStateComponent, DatePipe, UsefulVoteComponent, TranslatePipe],
   template: `
     <div>
       @if (error(); as e) {
         <ut-erro [message]="e" [retryable]="notFound() === false" (retry)="load()" />
-        <p><a routerLink="/comunidade/foruns">Voltar para os fóruns</a></p>
+        <p><a routerLink="/comunidade/foruns">{{ 'auto.m08ef2cbf6e' | translate }}</a></p>
       } @else if (topic(); as t) {
-        <nav class="trilha" aria-label="Você está em"><a routerLink="/comunidade/foruns">Fóruns</a><span aria-hidden="true" class="sep"> › </span><a [routerLink]="['/comunidade/f', t.forum.slug]">{{ t.forum.name }}</a></nav>
+        <nav class="trilha" [aria-label]="'auto.m8fb521bd83' | translate"><a routerLink="/comunidade/foruns">{{ 'auto.m17f0d26d2c' | translate }}</a><span aria-hidden="true" class="sep"> › </span><a [routerLink]="['/comunidade/f', t.forum.slug]">{{ t.forum.name }}</a></nav>
         <article class="topico" [class.inst]="t.isInstitutional">
           @if (!t.isInstitutional) {
             <div class="voto-lado"><ut-voto-util target="topic" [targetId]="t.id" [votes]="t.votes" [voted]="t.votedByMe" [canVote]="t.canVote" (changed)="topic.set({ ...t, votes: $event.votes, votedByMe: $event.votedByMe })" /></div>
@@ -33,16 +34,16 @@ import { UsefulVoteComponent } from '../shared/useful-vote.component';
           <div class="conteudo">
           <div class="selos">
             @if (t.isInstitutional) { <span class="selo-texto publica"><ut-icon name="info" [size]="12" />{{ institutional }}</span> }
-            @if (t.pinned) { <span class="selo-texto">Fixada</span> }
-            @if (t.locked) { <span class="selo-texto"><ut-icon name="lock" [size]="12" />Encerrada</span> }
+            @if (t.pinned) { <span class="selo-texto">{{ 'auto.m3cd092ac55' | translate }}</span> }
+            @if (t.locked) { <span class="selo-texto"><ut-icon name="lock" [size]="12" />{{ 'auto.m621d09d9ca' | translate }}</span> }
           </div>
           <h1>{{ t.title }}</h1>
           <p class="autor">
             @if (t.author; as a) {
               <ut-avatar [name]="a.name" [initials]="a.initials" [staff]="a.isStaff" [size]="30" />
-              <span><strong>{{ a.isMe ? a.name + ' (você)' : a.name }}</strong>@if (a.isStaff) { <span class="selo-texto equipe">Equipe</span> } · {{ t.createdAt | data: true }}</span>
+              <span><strong>{{ a.isMe ? a.name + ' (você)' : a.name }}</strong>@if (a.isStaff) { <span class="selo-texto equipe">{{ 'auto.me03e3996dc' | translate }}</span> } · {{ t.createdAt | data: true }}</span>
             } @else {
-              <span class="muted">Texto de apoio preparado pela equipe do UrbanTalk para orientar a conversa. Não é uma publicação de morador.</span>
+              <span class="muted">{{ 'auto.mcb860ea9cf' | translate }}</span>
             }
           </p>
           <p class="corpo">{{ t.body }}</p>
@@ -60,24 +61,24 @@ import { UsefulVoteComponent } from '../shared/useful-vote.component';
           <div class="acoes">
             @if (session.user()) {
               <button type="button" class="btn btn-secundario btn-sm" [attr.aria-pressed]="t.following" (click)="toggleFollow()">
-                <ut-icon [name]="t.following ? 'check' : 'plus'" [size]="16" />{{ t.following ? 'Acompanhando' : 'Acompanhar respostas' }}
+                <ut-icon [name]="t.following ? 'check' : 'plus'" [size]="16" />{{ t.following ? ('auto.m037c9cb05d' | translate) : ('auto.m577b8c5e00' | translate) }}
               </button>
             }
             @if (t.canReport) { <ut-denunciar type="topic" [targetId]="t.id" /> }
             @if (t.canModerate) {
-              <button type="button" class="btn btn-texto btn-sm" (click)="flags({ pinned: !t.pinned })">{{ t.pinned ? 'Desafixar' : 'Fixar no topo' }}</button>
-              <button type="button" class="btn btn-texto btn-sm" (click)="flags({ locked: !t.locked })">{{ t.locked ? 'Reabrir conversa' : 'Encerrar conversa' }}</button>
+              <button type="button" class="btn btn-texto btn-sm" (click)="flags({ pinned: !t.pinned })">{{ t.pinned ? ('auto.m400d46699b' | translate) : ('auto.m3787069895' | translate) }}</button>
+              <button type="button" class="btn btn-texto btn-sm" (click)="flags({ locked: !t.locked })">{{ t.locked ? ('auto.mbb398a8112' | translate) : ('auto.m53a0fd0b77' | translate) }}</button>
             }
             @if (t.canDelete) {
-              <button type="button" class="btn btn-texto btn-sm apagar" (click)="remove()">{{ t.author?.isMe ? 'Remover minha discussão' : 'Remover por moderação' }}</button>
+              <button type="button" class="btn btn-texto btn-sm apagar" (click)="remove()">{{ t.author?.isMe ? ('auto.mebfc13a989' | translate) : ('auto.m9b15b1047d' | translate) }}</button>
             }
           </div>
           </div>
         </article>
 
-        <ut-discussao target="topics" [votable]="true" [targetId]="t.id" [locked]="t.locked" [initialTotal]="t.replies" heading="Respostas" emptyText="Ninguém respondeu ainda. Que tal começar?" />
+        <ut-discussao target="topics" [votable]="true" [targetId]="t.id" [locked]="t.locked" [initialTotal]="t.replies" heading="Respostas" [emptyText]="'auto.mfe3f0d30b2' | translate" />
       } @else {
-        <p class="carregando">Carregando discussão…</p>
+        <p class="carregando">{{ 'auto.m1aa0f82f07' | translate }}</p>
       }
     </div>
   `,

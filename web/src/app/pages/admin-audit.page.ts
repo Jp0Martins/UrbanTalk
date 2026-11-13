@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@ngx-translate/core';
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AdminApi } from '../core/admin.api';
@@ -43,24 +44,24 @@ const ACTIONS: Record<string, string> = {
 
 @Component({
   selector: 'ut-auditoria',
-  imports: [RouterLink, PageHeaderComponent, PaginationComponent, EmptyStateComponent, ErrorStateComponent, DatePipe],
+  imports: [RouterLink, PageHeaderComponent, PaginationComponent, EmptyStateComponent, ErrorStateComponent, DatePipe, TranslatePipe],
   template: `
     <div class="pagina">
-      <ut-cabecalho-pagina title="Histórico administrativo" description="Ações relevantes da equipe, em ordem da mais recente. O registro não pode ser editado pela interface." />
+      <ut-cabecalho-pagina [title]="'auto.md50ee1cb4d' | translate" [description]="'auto.m4af482c2f8' | translate" />
       <div class="campo filtro">
-        <label for="acao">Tipo de ação</label>
+        <label for="acao">{{ 'auto.m47f31cc30c' | translate }}</label>
         <select id="acao" class="entrada" (change)="action.set($any($event.target).value); load(1)">
-          <option value="">Todas</option>
+          <option value="">{{ 'auto.m8a3c344036' | translate }}</option>
           @for (a of actions(); track a) { <option [value]="a" [selected]="action() === a">{{ label(a) }}</option> }
         </select>
       </div>
       @if (error(); as e) { <ut-erro [message]="e" (retry)="load(page())" /> }
-      @else if (items() === null) { <p class="carregando">Carregando…</p> }
-      @else if (items()!.length === 0) { <ut-vazio icon="history" title="Nenhuma ação registrada" /> }
+      @else if (items() === null) { <p class="carregando">{{ 'auto.mbca482b745' | translate }}</p> }
+      @else if (items()!.length === 0) { <ut-vazio icon="history" [title]="'auto.maebf4facca' | translate" /> }
       @else {
         <div class="rolagem painel">
           <table class="tabela">
-            <thead><tr><th>Quando</th><th>Quem</th><th>Ação</th><th>Alvo</th><th>Detalhes</th></tr></thead>
+            <thead><tr><th>{{ 'auto.m9cd63d01d8' | translate }}</th><th>{{ 'auto.m2af502b70a' | translate }}</th><th>{{ 'auto.md621dc8237' | translate }}</th><th>{{ 'auto.m58a82deb05' | translate }}</th><th>{{ 'auto.m6dd94e23a8' | translate }}</th></tr></thead>
             <tbody>
               @for (i of items(); track i.id) {
                 <tr>
@@ -70,7 +71,7 @@ const ACTIONS: Record<string, string> = {
                   <td>
                     @if (link(i); as l) { <a [routerLink]="l">{{ target(i) }}</a> } @else { {{ target(i) }} }
                   </td>
-                  <td>@if (i.details) { <details><summary>ver</summary><pre>{{ json(i.details) }}</pre></details> }</td>
+                  <td>@if (i.details) { <details><summary>{{ 'auto.m5e0b8aa15a' | translate }}</summary><pre>{{ json(i.details) }}</pre></details> }</td>
                 </tr>
               }
             </tbody>

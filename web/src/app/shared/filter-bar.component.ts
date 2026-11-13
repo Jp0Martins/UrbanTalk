@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@ngx-translate/core';
 import { ChangeDetectionStrategy, Component, computed, inject, input, output, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ApiService } from '../core/api.service';
@@ -9,12 +10,12 @@ import { NeighborhoodInputComponent } from './neighborhood-input.component';
 // filtros numa única linha acima do conteúdo; cada mudança é aplicada na hora
 @Component({
   selector: 'ut-filtros',
-  imports: [IconComponent, NeighborhoodInputComponent],
+  imports: [IconComponent, NeighborhoodInputComponent, TranslatePipe],
   template: `
     <form class="filtros" role="search" [attr.aria-label]="label()" (submit)="$event.preventDefault(); applySearch()">
       @if (showSearch()) {
         <div class="campo busca">
-          <label [for]="uid + 'q'">Buscar na descrição</label>
+          <label [for]="uid + 'q'">{{ 'auto.m5a1e253570' | translate }}</label>
           <div class="busca-wrap">
             <ut-icon name="search" [size]="18" />
             <input
@@ -24,40 +25,40 @@ import { NeighborhoodInputComponent } from './neighborhood-input.component';
               [value]="value().q ?? ''"
               (input)="draftQ.set($any($event.target).value)"
               (search)="applySearch()"
-              placeholder="Ex.: poste, praça"
+              [placeholder]="'auto.m7b9ebf994b' | translate"
               maxlength="100"
             />
           </div>
         </div>
       }
       <div class="campo">
-        <label [for]="uid + 'cat'">Categoria</label>
+        <label [for]="uid + 'cat'">{{ 'auto.m5966b0ce8b' | translate }}</label>
         <select class="entrada" [id]="uid + 'cat'" (change)="set('category', $any($event.target).value)">
-          <option value="" [selected]="!value().category">Todas</option>
+          <option value="" [selected]="!value().category">{{ 'auto.m8a3c344036' | translate }}</option>
           @for (c of categories(); track c.id) {
             <option [value]="c.id" [selected]="value().category === c.id">{{ c.name }}</option>
           }
         </select>
       </div>
       <div class="campo">
-        <label [for]="uid + 'onde'">Onde se aplica</label>
+        <label [for]="uid + 'onde'">{{ 'auto.m769815f878' | translate }}</label>
         <select class="entrada" [id]="uid + 'onde'" (change)="setScope($any($event.target).value)">
-          <option value="" [selected]="!value().scope">Todas</option>
-          <option value="cidade" [selected]="value().scope === 'cidade'">Cidade toda</option>
-          <option value="bairro" [selected]="value().scope === 'bairro'">Um bairro</option>
+          <option value="" [selected]="!value().scope">{{ 'auto.m8a3c344036' | translate }}</option>
+          <option value="cidade" [selected]="value().scope === 'cidade'">{{ 'auto.mf42a4c41ae' | translate }}</option>
+          <option value="bairro" [selected]="value().scope === 'bairro'">{{ 'auto.mbffa93cc42' | translate }}</option>
         </select>
       </div>
       @if (value().scope !== 'cidade') {
         <div class="campo">
-          <label [for]="uid + 'bairro'">Bairro</label>
-          <ut-bairro [inputId]="uid + 'bairro'" placeholder="Qualquer bairro" [value]="value().neighborhood ?? ''" (committed)="setHood($event)" />
+          <label [for]="uid + 'bairro'">{{ 'auto.m49f7179a65' | translate }}</label>
+          <ut-bairro [inputId]="uid + 'bairro'" [placeholder]="'auto.m035fe17a1c' | translate" [value]="value().neighborhood ?? ''" (committed)="setHood($event)" />
         </div>
       }
       @if (showStatus()) {
         <div class="campo">
-          <label [for]="uid + 'status'">Status</label>
+          <label [for]="uid + 'status'">{{ 'auto.mbae7d5be70' | translate }}</label>
           <select class="entrada" [id]="uid + 'status'" (change)="set('status', $any($event.target).value)">
-            <option value="" [selected]="!value().status">Todos</option>
+            <option value="" [selected]="!value().status">{{ 'auto.ma4114a83f4' | translate }}</option>
             @for (s of statuses(); track s.slug) {
               <option [value]="s.slug" [selected]="value().status === s.slug">{{ s.name }}{{ s.active ? '' : ' (desativado)' }}</option>
             }
@@ -66,22 +67,22 @@ import { NeighborhoodInputComponent } from './neighborhood-input.component';
       }
       @if (showStreet()) {
         <div class="campo">
-          <label [for]="uid + 'rua'">Rua ou via</label>
-          <input class="entrada" type="search" [id]="uid + 'rua'" [value]="value().street ?? ''" (input)="draftStreet.set($any($event.target).value)" (change)="applyStreet()" (search)="applyStreet()" placeholder="Ex.: XV de Novembro" maxlength="100" />
+          <label [for]="uid + 'rua'">{{ 'auto.mfc9738a160' | translate }}</label>
+          <input class="entrada" type="search" [id]="uid + 'rua'" [value]="value().street ?? ''" (input)="draftStreet.set($any($event.target).value)" (change)="applyStreet()" (search)="applyStreet()" [placeholder]="'auto.m7454b35252' | translate" maxlength="100" />
         </div>
       }
       @if (showDates()) {
         <div class="campo data">
-          <label [for]="uid + 'de'">De</label>
+          <label [for]="uid + 'de'">{{ 'auto.m6b98c9b528' | translate }}</label>
           <input class="entrada" type="date" [id]="uid + 'de'" [value]="value().from ?? ''" [max]="value().to ?? ''" (change)="set('from', $any($event.target).value)" />
         </div>
         <div class="campo data">
-          <label [for]="uid + 'ate'">Até</label>
+          <label [for]="uid + 'ate'">{{ 'auto.mfc45480037' | translate }}</label>
           <input class="entrada" type="date" [id]="uid + 'ate'" [value]="value().to ?? ''" [min]="value().from ?? ''" (change)="set('to', $any($event.target).value)" />
         </div>
       }
       @if (active()) {
-        <button type="button" class="btn btn-texto limpar" (click)="clear()">Limpar filtros</button>
+        <button type="button" class="btn btn-texto limpar" (click)="clear()">{{ 'auto.md22f68306a' | translate }}</button>
       }
     </form>
   `,

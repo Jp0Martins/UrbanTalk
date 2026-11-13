@@ -1,0 +1,124 @@
+{
+  "nav": {
+    "explore": "Explorar",
+    "map": "Mapa de ocorrências",
+    "proposals": "Propostas",
+    "community": "Comunidade",
+    "staff": "Área da equipe",
+    "home": "Ir para o início",
+    "login": "Entrar",
+    "register": "Criar conta"
+  },
+  "auth": {
+    "staffLogin": "Entrar na área da equipe",
+    "staffHint": "Entre com a conta de funcionário que a administração liberou para você.",
+    "loginHint": "Use o e-mail e a senha da sua conta UrbanTalk.",
+    "loginAs": "Entrar como",
+    "staff": "Funcionário",
+    "citizen": "Cliente",
+    "hide": "Ocultar",
+    "show": "Mostrar",
+    "loggingIn": "Entrando…",
+    "creating": "Criando conta…",
+    "createCitizen": "Criar conta de cliente"
+  },
+  "shell": {
+    "closeMenu": "Fechar menu",
+    "openMenu": "Abrir menu",
+    "admin": "Administração",
+    "view": "Consulta"
+  },
+  "home": {
+    "hero": {
+      "title": "Viu um problema na rua? Registre, confirme e acompanhe até a solução.",
+      "description": "O UrbanTalk reúne num só lugar as reclamações sobre buracos, iluminação, calçadas, lixo, sinalização e pontos de ônibus de Sorocaba, com foto e local exato. A equipe organiza os registros em relatórios por bairro e encaminha aos órgãos responsáveis.",
+      "report": "Registrar um problema",
+      "map": "Ver o mapa completo"
+    },
+    "mapEmpty": "Ainda não há ocorrências no mapa. A primeira pode ser a sua.",
+    "how": {
+      "title": "Como funciona",
+      "step1": "Registre",
+      "step1Text": "Escolha o tipo de problema, tire uma foto e marque o ponto no mapa. Leva menos de dois minutos.",
+      "step2": "Outras pessoas confirmam",
+      "step2Text": "Quem passa pelo mesmo lugar confirma o registro. Assim fica claro o que afeta mais gente.",
+      "step3": "A equipe encaminha",
+      "step3Text": "Os registros viram relatórios por bairro e categoria, enviados manualmente aos órgãos responsáveis.",
+      "step4": "Acompanhe",
+      "step4Text": "Cada ocorrência mostra o status e o histórico de mudanças, do registro até a solução."
+    },
+    "status": {
+      "title": "O que cada status quer dizer",
+      "text": "O UrbanTalk não tem ligação automática com a Prefeitura. Quem muda o status é a equipe do projeto, depois de enviar o relatório ou conferir a solução. Confirmações de cidadãos não mudam o status sozinhas."
+    },
+    "recent": {
+      "title": "Registros recentes",
+      "all": "Ver todos",
+      "loading": "Carregando registros…",
+      "first": "Registrar o primeiro"
+    },
+    "team": {
+      "title": "Quem somos nós",
+      "text": "Somos o EcoGestor, grupo de extensão do Centro Universitário Facens responsável pelo UrbanTalk.",
+      "gustavo": "Banco de dados e relatórios",
+      "henrik": "Back-end e API",
+      "joao": "Front-end e integração",
+      "pedro": "Qualidade e testes",
+      "vinicius": "Requisitos, telas e documentação",
+      "yasmin": "Gestão e análise de dados",
+      "previous": "Integrante anterior",
+      "next": "Próximo integrante",
+      "pause": "Pausar",
+      "play": "Reproduzir"
+    },
+    "privacy": {
+      "title": "Privacidade e LGPD",
+      "text1": "Seus dados ajudam a manter a conta e acompanhar ocorrências. Seu e-mail não é público; na Comunidade, exibimos apenas o primeiro nome e a inicial do sobrenome.",
+      "text2": "Você pode pedir acesso, correção ou exclusão dos seus dados. Leia o aviso completo para entender o uso das informações e seus direitos pela LGPD.",
+      "contact": "Falar sobre meus dados"
+    },
+    "contact": {
+      "title": "Fale com a equipe",
+      "text": "Dúvidas, sugestões ou pedidos sobre o UrbanTalk? Envie uma mensagem pelo WhatsApp.",
+      "button": "Conversar no WhatsApp"
+    },
+    "footer": {
+      "text": "UrbanTalk é um projeto de extensão do grupo EcoGestor, Centro Universitário Facens, Sorocaba, 2026. Não há integração automática com a Prefeitura de Sorocaba: os relatórios são encaminhados manualmente.",
+      "map": "Mapa: dados de colaboradores do OpenStreetMap.",
+      "team": "Equipe",
+      "contact": "Contato"
+    }
+  },
+  "privacy": {
+    "readMore": "Leia o aviso completo de privacidade",
+    "back": "Voltar à página inicial",
+    "title": "Privacidade e proteção de dados",
+    "intro": "Este aviso explica quais dados o UrbanTalk usa, o que fica público e como pedir informações ou correções. Ele descreve a versão atual da plataforma.",
+    "updated": "Atualizado em 12 de novembro de 2026",
+    "operatorTitle": "Quem opera o UrbanTalk",
+    "operatorText": "O UrbanTalk é um projeto de extensão do grupo EcoGestor, do Centro Universitário Facens, em Sorocaba. A equipe opera a plataforma e recebe pedidos sobre dados pessoais pelo canal indicado abaixo. O projeto não é um canal oficial da Prefeitura nem tem integração automática com ela.",
+    "dataTitle": "Quais dados usamos e por quê",
+    "dataAccount": "Conta: nome, e-mail, senha protegida por hash e perfil de acesso para cadastro, autenticação e controle de permissões.",
+    "dataIncidents": "Ocorrências: categoria, descrição, foto opcional, bairro, rua e ponto no mapa informados pela pessoa, além de datas e histórico, para publicar e acompanhar problemas urbanos.",
+    "dataCommunity": "Participação: publicações, comentários, propostas, votos, confirmações, denúncias e ações de moderação para manter os recursos comunitários e seu histórico. Bairros de interesse informados no perfil são privados.",
+    "dataSecurity": "Funcionamento: cookie de sessão e dados técnicos necessários para segurança e limitação de tentativas. A função “perto de você” usa a localização do navegador somente na consulta; essa posição não é salva no perfil.",
+    "publicTitle": "O que outras pessoas podem ver",
+    "publicText": "Ocorrências, fotos, pontos no mapa e interações públicas podem ser vistos por visitantes. O nome e o e-mail de quem registrou uma ocorrência não aparecem na página pública dela. Na Comunidade, aparece o primeiro nome e a inicial do sobrenome. Por isso, não inclua dados de terceiros, rostos ou informações privadas no texto ou nas fotos que publicar.",
+    "sharingText": "A versão publicada usa hospedagem da Render e mapas do OpenStreetMap, serviços que podem receber dados técnicos de acesso. A equipe pode encaminhar relatórios consolidados manualmente aos órgãos responsáveis. Ao abrir o contato por WhatsApp, você passa a usar um serviço externo ao UrbanTalk.",
+    "retentionTitle": "Conservação e exclusão",
+    "retentionText": "A versão atual não tem exclusão automática de conta pela interface nem um prazo automático de eliminação de ocorrências. Conteúdo ocultado pela moderação e registros de ações podem permanecer para preservar o histórico. A equipe analisa pedidos de exclusão caso a caso, conforme a finalidade do tratamento e as hipóteses legais de conservação, e informa a resposta à pessoa solicitante.",
+    "rightsTitle": "Seus direitos e pedidos",
+    "rightsText": "A LGPD garante, nas situações previstas em lei, direitos como confirmação do tratamento, acesso, correção, informação sobre compartilhamento e anonimização, bloqueio ou eliminação de dados desnecessários ou tratados em desconformidade. A eliminação de dados tratados com consentimento também pode ser solicitada, observadas as exceções legais.",
+    "requestsText": "Para exercer esses direitos, descreva seu pedido à equipe pelo WhatsApp abaixo. Podemos pedir informações necessárias para confirmar que os dados são seus antes de fornecê-los ou alterá-los. A solicitação será analisada e respondida conforme a LGPD.",
+    "requestButton": "Falar com a equipe sobre meus dados",
+    "securityTitle": "Segurança e responsabilidade",
+    "securityText": "O UrbanTalk usa senha protegida por hash, cookie de sessão com acesso restrito por perfil e regrava fotos para retirar metadados. Essas medidas reduzem riscos, mas não garantem segurança absoluta.",
+    "responsibilityText": "Quem publica deve evitar dados pessoais de terceiros e conteúdo que viole direitos de outras pessoas. A equipe pode moderar publicações conforme as regras da Comunidade. Este aviso não afasta direitos previstos em lei nem garante atendimento por órgãos públicos.",
+    "sourcesTitle": "Referências legais",
+    "sourcesText": "Este aviso considera os princípios e deveres de transparência da Lei Geral de Proteção de Dados (Lei nº 13.709/2018, especialmente arts. 6º e 9º) e os direitos e hipóteses de conservação dos arts. 16 e 18. Consulte os textos oficiais:",
+    "lgpdLink": "Lei Geral de Proteção de Dados — texto oficial",
+    "anpdLink": "ANPD — direitos dos titulares",
+    "limitsTitle": "Limites do serviço",
+    "limitsText": "O UrbanTalk organiza relatos enviados por moradores para acompanhamento e elaboração de relatórios. Ele não é canal de emergência nem substitui os canais oficiais do poder público. Os relatos podem aparecer antes de uma verificação da equipe; a plataforma não garante a exatidão de cada publicação, o encaminhamento de todos os casos ou a resolução por terceiros. A equipe pode corrigir ou moderar conteúdo, sem afastar os direitos e deveres previstos em lei."
+  }
+}

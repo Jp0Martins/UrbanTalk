@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@ngx-translate/core';
 import { ChangeDetectionStrategy, Component, computed, inject, input, output, signal } from '@angular/core';
 import { ApiService } from '../core/api.service';
 import { toApiError } from '../core/api-error';
@@ -12,65 +13,65 @@ type Files = { antes: File[]; depois: File[]; evid: File[] };
 // ferramentas de acompanhamento da equipe: pedir informação, registrar resolução e anexar evidências
 @Component({
   selector: 'ut-ferramentas-acompanhamento',
-  imports: [IconComponent, RelativePipe],
+  imports: [IconComponent, RelativePipe, TranslatePipe],
   template: `
     @let o = occ();
     <details class="sub-bloco" [open]="!!o.infoRequest">
-      <summary><h3>Pedir informação ao cidadão</h3></summary>
+      <summary><h3>{{ 'auto.m739b985b37' | translate }}</h3></summary>
       @if (o.infoRequest; as q) {
         <div class="pendente">
-          <p><strong>Aguardando resposta</strong> · enviado {{ q.createdAt | relativo }}</p>
+          <p><strong>{{ 'auto.mf6a6bae36f' | translate }}</strong> · enviado {{ q.createdAt | relativo }}</p>
           <p class="q">{{ q.question }}</p>
-          <button type="button" class="btn btn-texto btn-sm" (click)="cancel(q.id)">Cancelar pedido</button>
+          <button type="button" class="btn btn-texto btn-sm" (click)="cancel(q.id)">{{ 'auto.m62592a69e1' | translate }}</button>
         </div>
       } @else {
-        <textarea class="entrada" rows="2" maxlength="500" aria-label="Pergunta para quem registrou" placeholder="Ex.: qual é o número da casa mais próxima?" [value]="question()" (input)="question.set($any($event.target).value)"></textarea>
-        <p class="dica">Quem registrou recebe uma notificação. A pergunta não aparece para o público.</p>
-        <button type="button" class="btn btn-secundario btn-sm" [disabled]="question().trim().length < 10 || busy()" (click)="ask()">Enviar pergunta</button>
+        <textarea class="entrada" rows="2" maxlength="500" [aria-label]="'auto.me5070179d0' | translate" [placeholder]="'auto.ma1961b8b4b' | translate" [value]="question()" (input)="question.set($any($event.target).value)"></textarea>
+        <p class="dica">{{ 'auto.mfc277c34a8' | translate }}</p>
+        <button type="button" class="btn btn-secundario btn-sm" [disabled]="question().trim().length < 10 || busy()" (click)="ask()">{{ 'auto.mfaa4bc948e' | translate }}</button>
       }
     </details>
 
     <details class="sub-bloco">
-      <summary><h3>Registrar resolução</h3></summary>
+      <summary><h3>{{ 'auto.mb651f029ff' | translate }}</h3></summary>
       @if (resolvedStatuses().length === 0) {
-        <p class="dica">Nenhum status ativo está marcado como "conta como resolvido". Um administrador pode configurar isso em Status.</p>
+        <p class="dica">{{ 'auto.ma011c34e8b' | translate }}</p>
       } @else if (o.resolution) {
-        <p class="dica">Já existe uma resolução registrada. Para corrigir, reabra a reclamação mudando o status com uma justificativa. Você ainda pode anexar fotos abaixo.</p>
+        <p class="dica">{{ 'auto.mdc7c8a5532' | translate }}</p>
       } @else {
         <div class="campo">
-          <label for="res-st">Status</label>
+          <label for="res-st">{{ 'auto.mbae7d5be70' | translate }}</label>
           <select id="res-st" class="entrada" (change)="resStatus.set($any($event.target).value)">
             @for (s of resolvedStatuses(); track s.slug) { <option [value]="s.slug" [selected]="resStatus() === s.slug">{{ s.name }}</option> }
           </select>
         </div>
         <div class="campo">
-          <label for="res-desc">O que foi feito</label>
+          <label for="res-desc">{{ 'auto.m1134de91f7' | translate }}</label>
           <textarea id="res-desc" class="entrada" rows="3" maxlength="1000" placeholder="Ex.: a regional informou que a equipe de tapa-buraco esteve no local em 10/10." [value]="resDesc()" (input)="resDesc.set($any($event.target).value)"></textarea>
-          <span class="dica">Fica público. Diga quem fez e de onde veio a informação.</span>
+          <span class="dica">{{ 'auto.m925b5e5fc6' | translate }}</span>
         </div>
         <div class="fotos-par">
           <label class="btn btn-secundario btn-sm arquivo"><ut-icon name="camera" [size]="16" />Fotos de antes ({{ files().antes.length }}/3)<input type="file" class="sr-only" multiple accept="image/jpeg,image/png,image/webp" (change)="pick('antes', $any($event.target))" /></label>
           <label class="btn btn-secundario btn-sm arquivo"><ut-icon name="camera" [size]="16" />Fotos de depois ({{ files().depois.length }}/3)<input type="file" class="sr-only" multiple accept="image/jpeg,image/png,image/webp" (change)="pick('depois', $any($event.target))" /></label>
         </div>
-        <p class="dica">Fotos são opcionais. Com fotos, a reclamação aparece como "resolução com evidências", o que é diferente de uma verificação independente.</p>
-        <button type="button" class="btn btn-primario" [disabled]="busy() || resDesc().trim().length < 10" (click)="resolve()">{{ busy() ? 'Salvando…' : 'Registrar resolução' }}</button>
+        <p class="dica">{{ 'auto.m18f9d7b213' | translate }}</p>
+        <button type="button" class="btn btn-primario" [disabled]="busy() || resDesc().trim().length < 10" (click)="resolve()">{{ busy() ? ('auto.m87ef46e99f' | translate) : ('auto.mb651f029ff' | translate) }}</button>
       }
     </details>
 
     <details class="sub-bloco">
-      <summary><h3>Anexar evidência</h3></summary>
+      <summary><h3>{{ 'auto.ma3b4f69185' | translate }}</h3></summary>
       <div class="campo">
-        <label for="ev-tipo">Tipo</label>
+        <label for="ev-tipo">{{ 'auto.m6cc6198d9e' | translate }}</label>
         <select id="ev-tipo" class="entrada" (change)="evKind.set($any($event.target).value)">
-          <option value="acompanhamento" [selected]="evKind() === 'acompanhamento'">Acompanhamento (durante a análise)</option>
-          <option value="antes" [selected]="evKind() === 'antes'">Antes da intervenção</option>
-          <option value="depois" [selected]="evKind() === 'depois'">Depois da intervenção</option>
+          <option value="acompanhamento" [selected]="evKind() === 'acompanhamento'">{{ 'auto.m39f8caac52' | translate }}</option>
+          <option value="antes" [selected]="evKind() === 'antes'">{{ 'auto.m9058162d0c' | translate }}</option>
+          <option value="depois" [selected]="evKind() === 'depois'">{{ 'auto.m1880b13bd0' | translate }}</option>
         </select>
       </div>
-      <input class="entrada" maxlength="200" aria-label="Legenda da evidência" placeholder="Legenda (opcional)" [value]="evCaption()" (input)="evCaption.set($any($event.target).value)" />
+      <input class="entrada" maxlength="200" [aria-label]="'auto.m5e3a5cc6d4' | translate" [placeholder]="'auto.mfe16dd1d0e' | translate" [value]="evCaption()" (input)="evCaption.set($any($event.target).value)" />
       <label class="btn btn-secundario btn-sm arquivo"><ut-icon name="camera" [size]="16" />Escolher fotos ({{ files().evid.length }}/3)<input type="file" class="sr-only" multiple accept="image/jpeg,image/png,image/webp" (change)="pick('evid', $any($event.target))" /></label>
-      <p class="dica">Evidências ficam públicas no acompanhamento. Não fotografe pessoas nem placas de carro.</p>
-      <button type="button" class="btn btn-secundario btn-sm" [disabled]="busy() || files().evid.length === 0" (click)="evidence()">Anexar</button>
+      <p class="dica">{{ 'auto.med8618e8de' | translate }}</p>
+      <button type="button" class="btn btn-secundario btn-sm" [disabled]="busy() || files().evid.length === 0" (click)="evidence()">{{ 'auto.m189f04e8ef' | translate }}</button>
     </details>
     @if (error()) { <p class="erro" role="alert">{{ error() }}</p> }
   `,

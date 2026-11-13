@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@ngx-translate/core';
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ApiService, Sort } from '../core/api.service';
@@ -32,24 +33,24 @@ import { EmptyStateComponent, ErrorStateComponent } from '../shared/states';
     ErrorStateComponent,
     RelativePipe,
     StatusLegendComponent,
-  ],
+    TranslatePipe],
   template: `
     <div class="pagina">
-      <ut-cabecalho-pagina title="Mapa de ocorrências" description="Problemas registrados por cidadãos em Sorocaba. Selecione um ponto para ver os detalhes.">
-        <div class="alternar" role="group" aria-label="Forma de exibição">
+      <ut-cabecalho-pagina [title]="'auto.ma87dc97e16' | translate" [description]="'auto.mda1ead57dc' | translate">
+        <div class="alternar" role="group" [aria-label]="'auto.md25621e0a7' | translate">
           <button type="button" class="btn btn-sm" [class.btn-primario]="view() === 'mapa'" [class.btn-secundario]="view() !== 'mapa'" [attr.aria-pressed]="view() === 'mapa'" (click)="setView('mapa')">
-            <ut-icon name="map" [size]="16" />Mapa
+            <ut-icon name="map" [size]="16" />{{ 'auto.mb74e0f23cd' | translate }}
           </button>
           <button type="button" class="btn btn-sm" [class.btn-primario]="view() === 'lista'" [class.btn-secundario]="view() !== 'lista'" [attr.aria-pressed]="view() === 'lista'" (click)="setView('lista')">
-            <ut-icon name="list" [size]="16" />Lista
+            <ut-icon name="list" [size]="16" />{{ 'auto.me41a947762' | translate }}
           </button>
           <button type="button" class="btn btn-sm" [class.btn-primario]="view() === 'bairros'" [class.btn-secundario]="view() !== 'bairros'" [attr.aria-pressed]="view() === 'bairros'" (click)="setView('bairros')">
-            <ut-icon name="pin" [size]="16" />Por bairro
+            <ut-icon name="pin" [size]="16" />{{ 'auto.mcca8b7d5ec' | translate }}
           </button>
         </div>
       </ut-cabecalho-pagina>
 
-      <ut-filtros [value]="filters()" [showSearch]="view() === 'lista'" [showDates]="true" [showStreet]="true" (changed)="applyFilters($event)" label="Filtrar ocorrências" />
+      <ut-filtros [value]="filters()" [showSearch]="view() === 'lista'" [showDates]="true" [showStreet]="true" (changed)="applyFilters($event)" [label]="'auto.m217a2aa3ba' | translate" />
 
       @if (error(); as e) {
         <div class="espaco"><ut-erro [message]="e" (retry)="reload()" /></div>
@@ -58,10 +59,10 @@ import { EmptyStateComponent, ErrorStateComponent } from '../shared/states';
       @if (view() === 'mapa') {
         <div class="divisao">
           <div class="mapa-caixa">
-            <ut-mapa class="mapa" [markers]="markers()" [heat]="layer() === 'concentracao' ? heat() : null" [selectedId]="selectedId()" [fitToMarkers]="true" (markerSelect)="select($event)" label="Mapa interativo das ocorrências" />
-            <div class="camadas segmentado" role="group" aria-label="Camada do mapa">
-              <button type="button" [attr.aria-pressed]="layer() === 'marcadores'" (click)="setLayer('marcadores')"><ut-icon name="pin" [size]="16" />Marcadores</button>
-              <button type="button" [attr.aria-pressed]="layer() === 'concentracao'" (click)="setLayer('concentracao')"><ut-icon name="sparkle" [size]="16" />Concentração</button>
+            <ut-mapa class="mapa" [markers]="markers()" [heat]="layer() === 'concentracao' ? heat() : null" [selectedId]="selectedId()" [fitToMarkers]="true" (markerSelect)="select($event)" [label]="'auto.m50381d8f6e' | translate" />
+            <div class="camadas segmentado" role="group" [aria-label]="'auto.m2b0b3566c4' | translate">
+              <button type="button" [attr.aria-pressed]="layer() === 'marcadores'" (click)="setLayer('marcadores')"><ut-icon name="pin" [size]="16" />{{ 'auto.m8f4dd2f45c' | translate }}</button>
+              <button type="button" [attr.aria-pressed]="layer() === 'concentracao'" (click)="setLayer('concentracao')"><ut-icon name="sparkle" [size]="16" />{{ 'auto.mde9057b858' | translate }}</button>
             </div>
             @if (layer() === 'concentracao') {
               <div class="legenda calor">
@@ -74,14 +75,14 @@ import { EmptyStateComponent, ErrorStateComponent } from '../shared/states';
               <ut-legenda-status class="legenda" hint="O ícone indica a categoria" />
             }
             @if (loadingMarkers()) {
-              <div class="mapa-aviso" role="status">Carregando ocorrências…</div>
+              <div class="mapa-aviso" role="status">{{ 'auto.ma8d77a14f2' | translate }}</div>
             }
           </div>
 
-          <aside class="lado" aria-label="Ocorrências no mapa">
+          <aside class="lado" [aria-label]="'auto.me04e6dedc0' | translate">
             @if (selected(); as o) {
               <div class="previa">
-                <button type="button" class="btn btn-texto btn-sm voltar" (click)="selectedId.set(null)"><ut-icon name="arrow-left" [size]="16" />Voltar à lista</button>
+                <button type="button" class="btn btn-texto btn-sm voltar" (click)="selectedId.set(null)"><ut-icon name="arrow-left" [size]="16" />{{ 'auto.m65ad557d93' | translate }}</button>
                 @if (o.photoUrl) {
                   <img [src]="o.photoUrl" [alt]="'Foto enviada para a ocorrência ' + o.code" class="foto" />
                 }
@@ -95,18 +96,18 @@ import { EmptyStateComponent, ErrorStateComponent } from '../shared/states';
                   <span class="tabular">{{ o.code }}</span>
                   <span>{{ o.createdAt | relativo }}</span>
                 </div>
-                <p class="conf"><ut-icon name="hand" [size]="18" /><span class="tabular">{{ o.confirmations }}</span> {{ o.confirmations === 1 ? 'confirmação' : 'confirmações' }}</p>
-                <a [routerLink]="['/ocorrencias', o.id]" class="btn btn-primario">Ver detalhes e confirmar</a>
+                <p class="conf"><ut-icon name="hand" [size]="18" /><span class="tabular">{{ o.confirmations }}</span> {{ o.confirmations === 1 ? ('auto.m125375e18e' | translate) : ('auto.me11a7b2e09' | translate) }}</p>
+                <a [routerLink]="['/ocorrencias', o.id]" class="btn btn-primario">{{ 'auto.m992f12f23b' | translate }}</a>
               </div>
             } @else if (loadingDetail()) {
-              <p class="carregando">Abrindo ocorrência…</p>
+              <p class="carregando">{{ 'auto.m33310c10c0' | translate }}</p>
             } @else {
               @if (layer() === 'concentracao' && heat(); as h) {
                 <div class="aviso" [class.aviso-atencao]="!h.reliable" [class.aviso-info]="h.reliable" role="status">
                   <ut-icon name="info" [size]="18" />
                   <span>
                     @if (!h.reliable) {
-                      Só {{ h.total }} {{ h.total === 1 ? 'registro' : 'registros' }} com estes filtros (mínimo de {{ h.minSample }} para comparar áreas). A concentração é mostrada só como referência e nenhuma região deve ser vista como problemática por isso.
+                      Só {{ h.total }} {{ h.total === 1 ? ('auto.m0ac94d3165' | translate) : ('auto.m8d4b3cbe7d' | translate) }} com estes filtros (mínimo de {{ h.minSample }} para comparar áreas). A concentração é mostrada só como referência e nenhuma região deve ser vista como problemática por isso.
                     } @else {
                       {{ h.total }} registros reais, agrupados em quadrados de ~{{ h.cellMeters }} m. Mais registros pode significar mais participação dos moradores naquela área, não só mais problemas. Duplicatas confirmadas pela equipe não contam duas vezes.
                     }
@@ -114,28 +115,28 @@ import { EmptyStateComponent, ErrorStateComponent } from '../shared/states';
                 </div>
               }
               @if (hoodItem(); as hz) {
-                <section class="resumo-bairro" aria-label="Resumo do bairro selecionado">
+                <section class="resumo-bairro" [aria-label]="'auto.m1c27f0d090' | translate">
                   <h2>{{ hz.name }}</h2>
-                  <dl class="nums"><div><dt>Registradas</dt><dd>{{ hz.total }}</dd></div><div><dt>Em aberto</dt><dd>{{ hz.open }}</dd></div><div><dt>Resolvidas</dt><dd>{{ hz.resolved }}</dd></div></dl>
+                  <dl class="nums"><div><dt>{{ 'auto.m144e6627bf' | translate }}</dt><dd>{{ hz.total }}</dd></div><div><dt>{{ 'auto.mf6e9789267' | translate }}</dt><dd>{{ hz.open }}</dd></div><div><dt>{{ 'auto.m6d70e1959a' | translate }}</dt><dd>{{ hz.resolved }}</dd></div></dl>
                   @if (hz.recurring.length) {
                     <p class="dica">Categorias recorrentes (3 ou mais registros): @for (c of hz.recurring; track c.id; let l = $last) { <strong>{{ c.name }}</strong> ({{ c.count }}){{ l ? '' : ', ' }} }</p>
                   } @else {
-                    <p class="dica">Nenhuma categoria se repete 3 ou mais vezes com estes filtros.</p>
+                    <p class="dica">{{ 'auto.mac2b9fa00e' | translate }}</p>
                   }
-                  <a class="btn btn-texto btn-sm" routerLink="/comunidade/foruns" [queryParams]="{ bairro: hz.name }">Fóruns que citam o bairro</a>
+                  <a class="btn btn-texto btn-sm" routerLink="/comunidade/foruns" [queryParams]="{ bairro: hz.name }">{{ 'auto.m7e62cb8701' | translate }}</a>
                 </section>
               }
               <div class="lado-topo">
-                <p><strong class="tabular">{{ markers().length.toLocaleString('pt-BR') }}</strong> {{ markers().length === 1 ? 'ocorrência' : 'ocorrências' }} no mapa</p>
+                <p><strong class="tabular">{{ markers().length.toLocaleString('pt-BR') }}</strong> {{ markers().length === 1 ? ('auto.mf0c222df00' | translate) : ('auto.ma06ec91e02' | translate) }} no mapa</p>
                 @if (truncated()) {
-                  <p class="dica">Mostrando as 2.000 mais recentes. Use os filtros para refinar.</p>
+                  <p class="dica">{{ 'auto.mf70ad11772' | translate }}</p>
                 }
                 @if (withoutPoint() > 0) {
-                  <p class="dica">{{ withoutPoint() === 1 ? '1 reclamação da cidade toda não tem ponto' : withoutPoint() + ' reclamações da cidade toda não têm ponto' }} e aparece{{ withoutPoint() === 1 ? '' : 'm' }} só na <button type="button" class="link" (click)="setView('lista')">lista</button>.</p>
+                  <p class="dica">{{ withoutPoint() === 1 ? '1 reclamação da cidade toda não tem ponto' : withoutPoint() + ' reclamações da cidade toda não têm ponto' }} e aparece{{ withoutPoint() === 1 ? '' : ('auto.m6b0d31c0d5' | translate) }} só na <button type="button" class="link" (click)="setView('lista')">{{ 'auto.m22d01cec21' | translate }}</button>.</p>
                 }
               </div>
               @if (!loadingMarkers() && markers().length === 0 && !error()) {
-                <ut-vazio icon="pin" title="Nada encontrado" text="Nenhuma ocorrência corresponde aos filtros escolhidos." />
+                <ut-vazio icon="pin" [title]="'auto.m1ec4888562' | translate" [text]="'auto.m75351be2d2' | translate" />
               }
               <ul class="mini-lista">
                 @for (m of markers().slice(0, shown()); track m.id) {
@@ -144,7 +145,7 @@ import { EmptyStateComponent, ErrorStateComponent } from '../shared/states';
                       <span class="pino" [attr.data-color]="catalog.get(m.status).color"><ut-icon [name]="m.categoryIcon" [size]="14" /></span>
                       <span class="mini-texto">
                         <strong>{{ m.categoryName }}</strong>
-                        <span>{{ m.street ? m.street + ', ' : '' }}{{ m.neighborhoodName ?? 'Cidade toda' }} · {{ m.createdAt | relativo }}</span>
+                        <span>{{ m.street ? m.street + ', ' : '' }}{{ m.neighborhoodName ?? ('auto.mf42a4c41ae' | translate) }} · {{ m.createdAt | relativo }}</span>
                       </span>
                       <span class="sr-only">Status: {{ catalog.name(m.status) }}</span>
                     </button>
@@ -152,7 +153,7 @@ import { EmptyStateComponent, ErrorStateComponent } from '../shared/states';
                 }
               </ul>
               @if (markers().length > shown()) {
-                <button type="button" class="btn btn-texto btn-sm" (click)="shown.set(shown() + 30)">Mostrar mais</button>
+                <button type="button" class="btn btn-texto btn-sm" (click)="shown.set(shown() + 30)">{{ 'auto.md30954e0b4' | translate }}</button>
               }
             }
           </aside>
@@ -160,26 +161,26 @@ import { EmptyStateComponent, ErrorStateComponent } from '../shared/states';
       } @else if (view() === 'bairros') {
         @if (hoods(); as hs) {
           @if (hs.total === 0) {
-            <ut-vazio icon="pin" title="Nenhum registro com estes filtros" text="Remova algum filtro para ver os bairros." />
+            <ut-vazio icon="pin" [title]="'auto.m1e9636d70a' | translate" [text]="'auto.mb42c848748' | translate" />
           } @else {
             <div class="rankings">
               <section class="painel rank">
-                <h2>Mais pendências em aberto</h2>
-                @if (hs.rankings.mostOpen.length === 0) { <p class="dica">Nenhum bairro com amostra suficiente.</p> }
+                <h2>{{ 'auto.m73e5a70d87' | translate }}</h2>
+                @if (hs.rankings.mostOpen.length === 0) { <p class="dica">{{ 'auto.m3a38ebffce' | translate }}</p> }
                 <ol>@for (r of hs.rankings.mostOpen; track r.key) { <li><button type="button" class="link" (click)="pickHood(r.key)">{{ r.name }}</button><span class="tabular">{{ r.value }} de {{ r.total }}</span></li> }</ol>
               </section>
               <section class="painel rank">
-                <h2>Mais resolvidas</h2>
-                @if (hs.rankings.mostResolved.length === 0) { <p class="dica">Nenhum bairro com resoluções registradas nestes filtros.</p> }
+                <h2>{{ 'auto.m9c0a05909f' | translate }}</h2>
+                @if (hs.rankings.mostResolved.length === 0) { <p class="dica">{{ 'auto.m8bf50bd391' | translate }}</p> }
                 <ol>@for (r of hs.rankings.mostResolved; track r.key) { <li><button type="button" class="link" (click)="pickHood(r.key)">{{ r.name }}</button><span class="tabular">{{ r.value }} de {{ r.total }}</span></li> }</ol>
               </section>
               @if (hs.cityWide.total > 0) {
-                <p class="dica nota-rank">Além dos bairros, {{ hs.cityWide.total === 1 ? 'há 1 reclamação' : 'há ' + hs.cityWide.total + ' reclamações' }} que vale{{ hs.cityWide.total === 1 ? '' : 'm' }} para a cidade toda ({{ hs.cityWide.open }} em aberto).</p>
+                <p class="dica nota-rank">Além dos bairros, {{ hs.cityWide.total === 1 ? ('auto.m1885228eae' | translate) : 'há ' + hs.cityWide.total + ' reclamações' }} que vale{{ hs.cityWide.total === 1 ? '' : ('auto.m6b0d31c0d5' | translate) }} para a cidade toda ({{ hs.cityWide.open }} em aberto).</p>
               }
               <p class="dica nota-rank">Bairros com grafias diferentes (acentos, maiúsculas) são somados juntos. Rankings só consideram bairros com {{ hs.rankings.minSample }} ou mais registros. Os números refletem o que foi registrado no UrbanTalk; bairros com mais participação tendem a aparecer mais.</p>
             </div>
             <div class="bairros-grade">
-              <ul class="painel bairros-lista" aria-label="Bairros com registros">
+              <ul class="painel bairros-lista" [aria-label]="'auto.m3286167bd4' | translate">
                 @for (h of hs.items; track h.key) {
                   <li><button type="button" class="bairro-btn" [class.ativo]="pickedHood() === h.key" [attr.aria-pressed]="pickedHood() === h.key" (click)="pickHood(h.key)">
                     <span class="b-nome">{{ h.name }}</span>
@@ -192,47 +193,47 @@ import { EmptyStateComponent, ErrorStateComponent } from '../shared/states';
               @if (picked(); as h) {
                 <section class="painel bairro-det" aria-live="polite">
                   <h2>{{ h.name }}</h2>
-                  <dl class="nums"><div><dt>Registradas</dt><dd>{{ h.total }}</dd></div><div><dt>Em aberto</dt><dd>{{ h.open }}</dd></div><div><dt>Resolvidas</dt><dd>{{ h.resolved }}</dd></div></dl>
-                  <h3>Por categoria</h3>
+                  <dl class="nums"><div><dt>{{ 'auto.m144e6627bf' | translate }}</dt><dd>{{ h.total }}</dd></div><div><dt>{{ 'auto.mf6e9789267' | translate }}</dt><dd>{{ h.open }}</dd></div><div><dt>{{ 'auto.m6d70e1959a' | translate }}</dt><dd>{{ h.resolved }}</dd></div></dl>
+                  <h3>{{ 'auto.m8da7519ee2' | translate }}</h3>
                   <ul class="cats">
                     @for (c of h.categories; track c.id) {
-                      <li><ut-icon [name]="c.icon" [size]="16" /><span class="c-nome">{{ c.name }}</span><span class="c-barra"><i [style.width.%]="(c.count / h.categories[0].count) * 100"></i></span><span class="tabular">{{ c.count }}</span>@if (c.count >= 3) { <span class="selo-texto">recorrente</span> }</li>
+                      <li><ut-icon [name]="c.icon" [size]="16" /><span class="c-nome">{{ c.name }}</span><span class="c-barra"><i [style.width.%]="(c.count / h.categories[0].count) * 100"></i></span><span class="tabular">{{ c.count }}</span>@if (c.count >= 3) { <span class="selo-texto">{{ 'auto.mdea50411b9' | translate }}</span> }</li>
                     }
                   </ul>
                   <div class="acoes-b">
-                    <button type="button" class="btn btn-secundario btn-sm" (click)="showHoodOnMap(h.name)"><ut-icon name="map" [size]="16" />Ver no mapa</button>
-                    <a class="btn btn-texto btn-sm" routerLink="/comunidade/foruns" [queryParams]="{ bairro: h.name }">Fóruns que citam o bairro</a>
+                    <button type="button" class="btn btn-secundario btn-sm" (click)="showHoodOnMap(h.name)"><ut-icon name="map" [size]="16" />{{ 'auto.m45f3f64f78' | translate }}</button>
+                    <a class="btn btn-texto btn-sm" routerLink="/comunidade/foruns" [queryParams]="{ bairro: h.name }">{{ 'auto.m7e62cb8701' | translate }}</a>
                   </div>
                 </section>
               } @else {
-                <p class="painel bairro-det dica">Escolha um bairro para ver o resumo dos problemas registrados ali.</p>
+                <p class="painel bairro-det dica">{{ 'auto.m7fbb392594' | translate }}</p>
               }
             </div>
           }
         } @else {
-          <p class="carregando">Carregando bairros…</p>
+          <p class="carregando">{{ 'auto.m7961de49b0' | translate }}</p>
         }
       } @else {
         <div class="lista-topo">
           <p aria-live="polite">
             @if (page(); as p) {
-              <strong class="tabular">{{ p.total.toLocaleString('pt-BR') }}</strong> {{ p.total === 1 ? 'ocorrência encontrada' : 'ocorrências encontradas' }}
+              <strong class="tabular">{{ p.total.toLocaleString('pt-BR') }}</strong> {{ p.total === 1 ? ('auto.m4934149abf' | translate) : ('auto.medd3b4ce26' | translate) }}
             }
           </p>
           <div class="ordem campo">
-            <label for="ordem" class="sr-only">Ordenar por</label>
+            <label for="ordem" class="sr-only">{{ 'auto.m1f77dbb2bd' | translate }}</label>
             <select id="ordem" class="entrada" (change)="setSort($any($event.target).value)">
-              <option value="recent" [selected]="sort() === 'recent'">Mais recentes primeiro</option>
-              <option value="confirmations" [selected]="sort() === 'confirmations'">Mais confirmadas primeiro</option>
-              <option value="oldest" [selected]="sort() === 'oldest'">Mais antigas primeiro</option>
+              <option value="recent" [selected]="sort() === 'recent'">{{ 'auto.m544f071b0a' | translate }}</option>
+              <option value="confirmations" [selected]="sort() === 'confirmations'">{{ 'auto.m4b8b145785' | translate }}</option>
+              <option value="oldest" [selected]="sort() === 'oldest'">{{ 'auto.m424fcf5c8a' | translate }}</option>
             </select>
           </div>
         </div>
         @if (loadingList()) {
-          <p class="carregando">Carregando lista…</p>
+          <p class="carregando">{{ 'auto.m74403a934f' | translate }}</p>
         } @else if (page(); as p) {
           @if (p.items.length === 0) {
-            <ut-vazio icon="search" title="Nenhuma ocorrência encontrada" text="Tente remover algum filtro ou ampliar o período." />
+            <ut-vazio icon="search" [title]="'auto.m76c7490c08' | translate" [text]="'auto.m7d4d2cba26' | translate" />
           } @else {
             <div class="painel lista">
               @for (o of p.items; track o.id) {

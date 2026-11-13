@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@ngx-translate/core';
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { forkJoin } from 'rxjs';
@@ -30,56 +31,56 @@ import { EmptyStateComponent, ErrorStateComponent } from '../shared/states';
     EmptyStateComponent,
     ErrorStateComponent,
     DatePipe,
-  ],
+    TranslatePipe],
   template: `
     <div class="pagina">
-      <ut-cabecalho-pagina title="Indicadores" description="Visão consolidada das ocorrências para priorizar o que encaminhar. Todos os números vêm dos registros no banco.">
-        <a routerLink="/admin/relatorios" [queryParams]="reportParams()" class="btn btn-primario"><ut-icon name="file" />Gerar relatório PDF</a>
+      <ut-cabecalho-pagina [title]="'auto.m6160df968c' | translate" [description]="'auto.m0d652f4189' | translate">
+        <a routerLink="/admin/relatorios" [queryParams]="reportParams()" class="btn btn-primario"><ut-icon name="file" />{{ 'auto.m29c464aa05' | translate }}</a>
       </ut-cabecalho-pagina>
 
-      <div class="periodos" role="group" aria-label="Atalhos de período">
+      <div class="periodos" role="group" [aria-label]="'auto.me12a9d58d0' | translate">
         @for (p of presets; track p.days) {
           <button type="button" class="btn btn-sm" [class.btn-primario]="activePreset() === p.days" [class.btn-secundario]="activePreset() !== p.days" (click)="preset(p.days)" [attr.aria-pressed]="activePreset() === p.days">{{ p.label }}</button>
         }
       </div>
-      <ut-filtros [value]="filters()" [showDates]="true" [showStreet]="true" (changed)="apply($event)" label="Filtrar indicadores" />
+      <ut-filtros [value]="filters()" [showDates]="true" [showStreet]="true" (changed)="apply($event)" [label]="'auto.m29656b5c89' | translate" />
 
       @if (error(); as e) {
         <ut-erro [message]="e" (retry)="load()" />
       } @else if (!ind()) {
-        <p class="carregando">Calculando indicadores…</p>
+        <p class="carregando">{{ 'auto.m595444e74b' | translate }}</p>
       } @else {
         @let d = ind()!;
         <p class="periodo">Período: {{ fmt(d.period.from) }} a {{ fmt(d.period.to) }}</p>
 
         @if (d.total === 0) {
-          <ut-vazio icon="chart" title="Sem ocorrências neste período" text="Não há registros para os filtros escolhidos, então não há números a mostrar. Amplie o período ou remova filtros." />
+          <ut-vazio icon="chart" [title]="'auto.me4eb919779' | translate" [text]="'auto.me53473f978' | translate" />
         } @else {
-          <section class="numeros" aria-label="Números principais">
+          <section class="numeros" [aria-label]="'auto.mbb2a27deef' | translate">
             <div class="n-principal">
               <span class="valor tabular">{{ d.total.toLocaleString('pt-BR') }}</span>
-              <span class="rot">ocorrências no período</span>
+              <span class="rot">{{ 'auto.m4fc67142f4' | translate }}</span>
             </div>
             <div>
               <span class="valor tabular">{{ d.open.toLocaleString('pt-BR') }}</span>
-              <span class="rot">em aberto (status que não encerram)</span>
+              <span class="rot">{{ 'auto.m78c325d563' | translate }}</span>
             </div>
             <div>
               <span class="valor tabular">{{ resolvedPct() }}</span>
-              <span class="rot">encerradas ({{ d.closed }} de {{ d.total }}, sendo {{ d.resolved }} {{ d.resolved === 1 ? 'resolvida' : 'resolvidas' }})</span>
+              <span class="rot">encerradas ({{ d.closed }} de {{ d.total }}, sendo {{ d.resolved }} {{ d.resolved === 1 ? ('auto.m0b04e260be' | translate) : ('auto.ma0260dee3f' | translate) }})</span>
             </div>
             <div>
               <span class="valor tabular">{{ d.confirmations.toLocaleString('pt-BR') }}</span>
-              <span class="rot">confirmações de cidadãos</span>
+              <span class="rot">{{ 'auto.me9dbda2f04' | translate }}</span>
             </div>
           </section>
 
           @if (d.extra; as x) {
             <section class="painel bloco largo comp" aria-labelledby="comp-t">
-              <h2 id="comp-t">Comparação com o período anterior</h2>
+              <h2 id="comp-t">{{ 'auto.m913346af5f' | translate }}</h2>
               <p class="dica">Período anterior de mesmo tamanho: {{ fmt(x.comparison.previous.from) }} a {{ fmt(x.comparison.previous.to) }}, com os mesmos filtros. Mais registros pode indicar mais participação dos moradores, não necessariamente mais problemas na cidade.</p>
               <table class="tabela">
-                <thead><tr><th>Indicador</th><th class="num">Este período</th><th class="num">Anterior</th><th class="num">Diferença</th></tr></thead>
+                <thead><tr><th>{{ 'auto.m9635da2665' | translate }}</th><th class="num">{{ 'auto.mfa5ae78cf1' | translate }}</th><th class="num">{{ 'auto.md97f1097b8' | translate }}</th><th class="num">{{ 'auto.me4ee10f5f0' | translate }}</th></tr></thead>
                 <tbody>
                   @for (row of [{ l: 'Registradas', d: x.comparison.total }, { l: 'Resolvidas (status atual)', d: x.comparison.resolved }, { l: 'Em aberto (status atual)', d: x.comparison.open }]; track row.l) {
                     <tr><td>{{ row.l }}</td><td class="num">{{ row.d.current }}</td><td class="num">{{ row.d.previous }}</td><td class="num">{{ diff(row.d.diff) }} {{ row.d.pct === null ? '' : '(' + pct(row.d.pct) + ')' }}</td></tr>
@@ -88,21 +89,21 @@ import { EmptyStateComponent, ErrorStateComponent } from '../shared/states';
               </table>
               <div class="extras">
                 <div>
-                  <h3>Tempo entre registro e resolução</h3>
+                  <h3>{{ 'auto.mccc8e29b20' | translate }}</h3>
                   @if (x.resolutionTime.enough) {
                     <p><strong class="grande tabular">{{ num(x.resolutionTime.medianDays!) }}</strong> dias de mediana · média de {{ num(x.resolutionTime.meanDays!) }} dias</p>
                     <p class="dica">Amostra: {{ x.resolutionTime.sample }} reclamações com resolução informada, registradas no período.</p>
                   } @else {
-                    <p class="dica">Dados insuficientes: {{ x.resolutionTime.sample }} {{ x.resolutionTime.sample === 1 ? 'resolução' : 'resoluções' }} no recorte (mínimo de {{ x.resolutionTime.minSample }} para calcular média e mediana).</p>
+                    <p class="dica">Dados insuficientes: {{ x.resolutionTime.sample }} {{ x.resolutionTime.sample === 1 ? ('auto.m6ad30af2fe' | translate) : ('auto.m714616ef03' | translate) }} no recorte (mínimo de {{ x.resolutionTime.minSample }} para calcular média e mediana).</p>
                   }
                 </div>
                 <div>
-                  <h3>Reabertas e não resolvidas</h3>
-                  <p><strong class="grande tabular">{{ x.reopened }}</strong> reabertas · <strong class="tabular">{{ x.reportedUnresolved }}</strong> informadas por moradores como não resolvidas</p>
+                  <h3>{{ 'auto.maecc84fc9c' | translate }}</h3>
+                  <p><strong class="grande tabular">{{ x.reopened }}</strong> {{ 'auto.mc92a7936cb' | translate }} <strong class="tabular">{{ x.reportedUnresolved }}</strong> {{ 'auto.mca6e2fe5d2' | translate }}</p>
                 </div>
                 <div>
-                  <h3>Propostas com mais apoio</h3>
-                  @if (x.topProposals.length === 0) { <p class="dica">Nenhuma proposta com apoio nestes filtros.</p> }
+                  <h3>{{ 'auto.m709aa9d1f3' | translate }}</h3>
+                  @if (x.topProposals.length === 0) { <p class="dica">{{ 'auto.macc14e0778' | translate }}</p> }
                   <ol class="props">@for (p of x.topProposals; track p.id) { <li><a [routerLink]="['/propostas', p.id]">{{ p.title }}</a> <span class="dica">{{ p.votes }} apoios · {{ p.statusName }}</span></li> }</ol>
                 </div>
               </div>
@@ -112,7 +113,7 @@ import { EmptyStateComponent, ErrorStateComponent } from '../shared/states';
           <section class="painel bloco largo" aria-labelledby="evo-t">
             <div class="evo-topo">
               <h2 id="evo-t">Registros por {{ unit() }}</h2>
-              <div class="segmentado" role="group" aria-label="Agrupar por">
+              <div class="segmentado" role="group" [aria-label]="'auto.m30a165846c' | translate">
                 @for (g of grans; track g.id) { <button type="button" [attr.aria-pressed]="(gran() ?? '') === g.id" (click)="setGran(g.id)">{{ g.label }}</button> }
               </div>
             </div>
@@ -121,44 +122,44 @@ import { EmptyStateComponent, ErrorStateComponent } from '../shared/states';
 
           <div class="grade">
             <section class="painel bloco" aria-labelledby="st-t">
-              <h2 id="st-t">Por status</h2>
+              <h2 id="st-t">{{ 'auto.m8b402363fb' | translate }}</h2>
               <ut-barras [items]="statusItems()" [total]="d.total" caption="Ocorrências por status" />
             </section>
             <section class="painel bloco" aria-labelledby="cat-t">
-              <h2 id="cat-t">Por categoria</h2>
+              <h2 id="cat-t">{{ 'auto.m8da7519ee2' | translate }}</h2>
               <ut-barras [items]="categoryItems()" [total]="d.total" caption="Ocorrências por categoria" />
             </section>
             <section class="painel bloco" aria-labelledby="ba-t">
-              <h2 id="ba-t">Por bairro</h2>
+              <h2 id="ba-t">{{ 'auto.mcca8b7d5ec' | translate }}</h2>
               <ut-barras [items]="hoodItems()" [total]="d.total" [limit]="8" caption="Ocorrências por bairro" />
             </section>
           </div>
 
           <section class="painel registros" aria-labelledby="reg-t">
             <div class="reg-topo">
-              <h2 id="reg-t">Registros do recorte</h2>
+              <h2 id="reg-t">{{ 'auto.m351bf80aa6' | translate }}</h2>
               <div class="campo ordem">
-                <label for="ordem-adm" class="sr-only">Ordenar por</label>
+                <label for="ordem-adm" class="sr-only">{{ 'auto.m1f77dbb2bd' | translate }}</label>
                 <select id="ordem-adm" class="entrada" (change)="setSort($any($event.target).value)">
-                  <option value="confirmations">Mais confirmadas primeiro</option>
-                  <option value="recent">Mais recentes primeiro</option>
-                  <option value="oldest">Mais antigas primeiro</option>
+                  <option value="confirmations">{{ 'auto.m4b8b145785' | translate }}</option>
+                  <option value="recent">{{ 'auto.m544f071b0a' | translate }}</option>
+                  <option value="oldest">{{ 'auto.m424fcf5c8a' | translate }}</option>
                 </select>
               </div>
             </div>
             @if (rows(); as p) {
               <div class="tabela-caixa">
                 <table class="tabela">
-                  <caption class="sr-only">Ocorrências que compõem os indicadores</caption>
+                  <caption class="sr-only">{{ 'auto.mb85db6453a' | translate }}</caption>
                   <thead>
                     <tr>
-                      <th scope="col">Código</th>
-                      <th scope="col">Categoria</th>
-                      <th scope="col">Endereço</th>
-                      <th scope="col">Registro</th>
-                      <th scope="col">Status</th>
-                      <th scope="col" class="num">Confirmações</th>
-                      <th scope="col"><span class="sr-only">Ações</span></th>
+                      <th scope="col">{{ 'auto.mc355102341' | translate }}</th>
+                      <th scope="col">{{ 'auto.m5966b0ce8b' | translate }}</th>
+                      <th scope="col">{{ 'auto.mef764c1db7' | translate }}</th>
+                      <th scope="col">{{ 'auto.mb6965e9851' | translate }}</th>
+                      <th scope="col">{{ 'auto.mbae7d5be70' | translate }}</th>
+                      <th scope="col" class="num">{{ 'auto.m1cfc4da533' | translate }}</th>
+                      <th scope="col"><span class="sr-only">{{ 'auto.m66c341b3e9' | translate }}</span></th>
                     </tr>
                   </thead>
                   <tbody>
@@ -166,11 +167,11 @@ import { EmptyStateComponent, ErrorStateComponent } from '../shared/states';
                       <tr>
                         <td class="tabular cod">{{ o.code }}</td>
                         <td><ut-categoria [icon]="o.category.icon" [name]="o.category.name" [detail]="o.categoryDetail" /></td>
-                        <td><ut-placa>{{ o.street ? o.street + ', ' : '' }}{{ o.neighborhood?.name ?? 'Cidade toda' }}</ut-placa></td>
+                        <td><ut-placa>{{ o.street ? o.street + ', ' : '' }}{{ o.neighborhood?.name ?? ('auto.mf42a4c41ae' | translate) }}</ut-placa></td>
                         <td class="tabular">{{ o.createdAt | data }}</td>
                         <td><ut-status [status]="o.status" /></td>
                         <td class="num">{{ o.confirmations }}</td>
-                        <td class="acao"><a [routerLink]="['/ocorrencias', o.id]">Abrir<span class="sr-only"> {{ o.code }}</span></a></td>
+                        <td class="acao"><a [routerLink]="['/ocorrencias', o.id]">{{ 'auto.mbf763df731' | translate }}<span class="sr-only"> {{ o.code }}</span></a></td>
                       </tr>
                     }
                   </tbody>

@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { StatusCatalog } from '../core/status-catalog';
 import { IconComponent } from './icon.component';
+import { LanguageService } from '../core/i18n';
 
 // placa de rua azul, usada para bairros e endereços
 @Component({
@@ -26,8 +27,8 @@ export class PlacaComponent {
 @Component({
   selector: 'ut-status',
   imports: [IconComponent],
-  template: `<span class="status" [attr.data-status]="status()" [attr.data-color]="def().color" [title]="def().description">
-    <ut-icon [name]="icon()" [size]="16" />{{ def().name }}
+  template: `<span class="status" [attr.data-status]="status()" [attr.data-color]="def().color" [title]="language.statusDescription(def())">
+    <ut-icon [name]="icon()" [size]="16" />{{ language.statusName(def()) }}
   </span>`,
   styles: `
     .status {
@@ -42,6 +43,7 @@ export class PlacaComponent {
 })
 export class StatusBadgeComponent {
   private catalog = inject(StatusCatalog);
+  language = inject(LanguageService);
   status = input.required<string>();
   def = computed(() => this.catalog.get(this.status()));
   icon = computed(() => this.catalog.icon(this.status()));

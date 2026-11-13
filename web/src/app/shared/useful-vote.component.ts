@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@ngx-translate/core';
 import { ChangeDetectionStrategy, Component, inject, input, output, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { toApiError } from '../core/api-error';
@@ -9,12 +10,12 @@ import { IconComponent } from './icon.component';
 // voto de relevância ("útil") em discussão ou comentário; separado de confirmações e de apoio a propostas
 @Component({
   selector: 'ut-voto-util',
-  imports: [IconComponent],
+  imports: [TranslatePipe, IconComponent],
   template: `
     <button type="button" class="voto" [class.ativo]="voted()" [class.compacto]="compact()" [attr.aria-pressed]="voted()" [disabled]="busy() || (!!session.user() && !canVote() && !voted())" (click)="toggle()" [title]="title()">
       <ut-icon name="arrow-up" [size]="compact() ? 15 : 18" />
       <span class="n tabular">{{ votes() }}</span>
-      <span class="sr-only">{{ votes() === 1 ? 'voto' : 'votos' }} de útil. {{ title() }}</span>
+      <span class="sr-only">{{ votes() === 1 ? ('auto.ma2638b96da' | translate) : ('auto.m645e91a132' | translate) }} de útil. {{ title() }}</span>
     </button>
   `,
   styles: `

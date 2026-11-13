@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@ngx-translate/core';
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AdminApi } from '../core/admin.api';
@@ -28,11 +29,11 @@ const WEIGHTS: { key: keyof PrioritySettings; label: string; hint: string }[] = 
 
 @Component({
   selector: 'ut-configuracoes',
-  imports: [RouterLink, IconComponent, PageHeaderComponent, ErrorStateComponent],
+  imports: [RouterLink, IconComponent, PageHeaderComponent, ErrorStateComponent, TranslatePipe],
   template: `
     <div class="pagina">
-      <ut-cabecalho-pagina title="Configurações" description="Ajustes globais que só administradores podem fazer. Cada alteração fica registrada no histórico administrativo." />
-      <div class="segmentado abas" role="tablist" aria-label="Seções">
+      <ut-cabecalho-pagina [title]="'auto.m871f24c4cd' | translate" [description]="'auto.m0a0cddcd4e' | translate" />
+      <div class="segmentado abas" role="tablist" [aria-label]="'auto.mcec5a35096' | translate">
         @for (t of tabs; track t.id) { <button type="button" role="tab" [attr.aria-selected]="tab() === t.id" (click)="open(t.id)">{{ t.label }}</button> }
       </div>
       @if (error(); as e) { <ut-erro [message]="e" (retry)="open(tab())" /> }
@@ -41,7 +42,7 @@ const WEIGHTS: { key: keyof PrioritySettings; label: string; hint: string }[] = 
         @case ('priorizacao') {
           @if (prio(); as p) {
             <form class="painel bloco" (submit)="$event.preventDefault(); savePrio()">
-              <p class="muted">Estes pesos ordenam a <a routerLink="/admin/fila">Fila de Análise</a>. Cada reclamação mostra de onde veio cada ponto. Mantenha as confirmações com teto para que não sejam o único critério.</p>
+              <p class="muted">{{ 'auto.m8595a3ad30' | translate }} <a routerLink="/admin/fila">{{ 'auto.m6a1a148a2e' | translate }}</a>{{ 'auto.m3569675fca' | translate }}</p>
               <div class="pesos">
                 @for (w of weights; track w.key) {
                   <div class="campo">
@@ -52,57 +53,57 @@ const WEIGHTS: { key: keyof PrioritySettings; label: string; hint: string }[] = 
                 }
               </div>
               <div class="acoes">
-                <button type="button" class="btn btn-texto" (click)="prio.set({ ...defaults()! })">Voltar ao padrão</button>
-                <button type="submit" class="btn btn-primario" [disabled]="busy()">Salvar pesos</button>
+                <button type="button" class="btn btn-texto" (click)="prio.set({ ...defaults()! })">{{ 'auto.m418fbad4cb' | translate }}</button>
+                <button type="submit" class="btn btn-primario" [disabled]="busy()">{{ 'auto.md2d3426bb6' | translate }}</button>
               </div>
             </form>
-          } @else { <p class="carregando">Carregando…</p> }
+          } @else { <p class="carregando">{{ 'auto.mbca482b745' | translate }}</p> }
         }
         @case ('categorias') {
           <form class="painel bloco nova" (submit)="$event.preventDefault(); createCat()">
-            <h2>Nova categoria</h2>
+            <h2>{{ 'auto.m20e2b0ca91' | translate }}</h2>
             <div class="linha">
-              <div class="campo"><label for="c-nome">Nome</label><input id="c-nome" class="entrada" maxlength="80" [value]="cName()" (input)="cName.set($any($event.target).value)" /></div>
-              <div class="campo cresce"><label for="c-desc">Descrição</label><input id="c-desc" class="entrada" maxlength="200" [value]="cDesc()" (input)="cDesc.set($any($event.target).value)" /></div>
-              <div class="campo"><label for="c-ico">Ícone</label>
+              <div class="campo"><label for="c-nome">{{ 'auto.m13030dd962' | translate }}</label><input id="c-nome" class="entrada" maxlength="80" [value]="cName()" (input)="cName.set($any($event.target).value)" /></div>
+              <div class="campo cresce"><label for="c-desc">{{ 'auto.m469768598e' | translate }}</label><input id="c-desc" class="entrada" maxlength="200" [value]="cDesc()" (input)="cDesc.set($any($event.target).value)" /></div>
+              <div class="campo"><label for="c-ico">{{ 'auto.m5f019bb4f8' | translate }}</label>
                 <select id="c-ico" class="entrada" (change)="cIcon.set($any($event.target).value)">@for (i of icons(); track i) { <option [value]="i" [selected]="cIcon() === i">{{ i }}</option> }</select></div>
             </div>
-            <label class="check"><input type="checkbox" [checked]="cDetail()" (change)="cDetail.set($any($event.target).checked)" />Pede para a pessoa descrever o problema (como "Outros")</label>
-            <button type="submit" class="btn btn-primario btn-sm" [disabled]="busy() || cName().trim().length < 3">Criar categoria</button>
+            <label class="check"><input type="checkbox" [checked]="cDetail()" (change)="cDetail.set($any($event.target).checked)" />{{ 'auto.m2559b79f28' | translate }}</label>
+            <button type="submit" class="btn btn-primario btn-sm" [disabled]="busy() || cName().trim().length < 3">{{ 'auto.meac851fdea' | translate }}</button>
           </form>
           <ul class="lista">
             @for (c of cats(); track c.id) {
               <li class="painel item" [class.inativa]="!c.active">
                 <ut-icon [name]="c.icon" [size]="22" />
                 <div class="cresce">
-                  <p><strong>{{ c.name }}</strong> @if (!c.active) { <span class="selo-texto">Desativada</span> } @if (c.requiresDetail) { <span class="selo-texto">Pede descrição</span> }</p>
+                  <p><strong>{{ c.name }}</strong> @if (!c.active) { <span class="selo-texto">{{ 'auto.mb062fbd950' | translate }}</span> } @if (c.requiresDetail) { <span class="selo-texto">{{ 'auto.m6917cdee71' | translate }}</span> }</p>
                   <p class="dica">{{ c.description || 'Sem descrição' }} · {{ c.usage }} reclamações</p>
                 </div>
-                <button type="button" class="btn btn-texto btn-sm" (click)="renameCat(c)">Renomear</button>
-                <button type="button" class="btn btn-secundario btn-sm" (click)="toggleCat(c)">{{ c.active ? 'Desativar' : 'Reativar' }}</button>
+                <button type="button" class="btn btn-texto btn-sm" (click)="renameCat(c)">{{ 'auto.m5f9fc71a02' | translate }}</button>
+                <button type="button" class="btn btn-secundario btn-sm" (click)="toggleCat(c)">{{ c.active ? ('auto.m79db9fc450' | translate) : ('auto.m4384962e9a' | translate) }}</button>
               </li>
             }
           </ul>
-          <p class="dica">Categorias não são excluídas para não quebrar o histórico. Desativadas somem do formulário de registro e continuam nos relatórios.</p>
+          <p class="dica">{{ 'auto.m17c5559710' | translate }}</p>
         }
         @case ('foruns') {
           <section class="painel bloco">
-            <h2>Aprovação de fóruns criados por pessoas</h2>
-            <label class="check"><input type="checkbox" [checked]="approval()" [disabled]="busy()" (change)="setApproval($any($event.target).checked)" />Exigir aprovação da equipe antes de um fórum novo aparecer</label>
-            <p class="dica">{{ approval() ? 'Fóruns novos ficam visíveis só para quem criou até alguém da equipe aprovar em Moderação › Fóruns.' : 'Fóruns novos aparecem na hora. A equipe continua podendo moderar, ocultar e receber denúncias.' }} Cada pessoa cria no máximo 3 fóruns por dia.</p>
+            <h2>{{ 'auto.mec7ad5ad41' | translate }}</h2>
+            <label class="check"><input type="checkbox" [checked]="approval()" [disabled]="busy()" (change)="setApproval($any($event.target).checked)" />{{ 'auto.m79cb4014e4' | translate }}</label>
+            <p class="dica">{{ approval() ? ('auto.md1a49b6c78' | translate) : ('auto.m810c28f5ae' | translate) }} Cada pessoa cria no máximo 3 fóruns por dia.</p>
           </section>
           <form class="painel bloco nova" (submit)="$event.preventDefault(); createForum()">
-            <h2>Novo fórum oficial</h2>
+            <h2>{{ 'auto.md13b7018cb' | translate }}</h2>
             <div class="linha">
-              <div class="campo"><label for="f-nome">Nome</label><input id="f-nome" class="entrada" maxlength="60" [value]="fName()" (input)="fName.set($any($event.target).value)" /></div>
-              <div class="campo"><label for="f-tema">Tema</label>
+              <div class="campo"><label for="f-nome">{{ 'auto.m13030dd962' | translate }}</label><input id="f-nome" class="entrada" maxlength="60" [value]="fName()" (input)="fName.set($any($event.target).value)" /></div>
+              <div class="campo"><label for="f-tema">{{ 'auto.m6ae1bcaff6' | translate }}</label>
                 <select id="f-tema" class="entrada" (change)="fTheme.set($any($event.target).value)">
                   @for (t of themes; track t.id) { <option [value]="t.id" [selected]="fTheme() === t.id">{{ t.name }}</option> }
                 </select>
               </div>
-              <div class="campo cresce"><label for="f-desc">Descrição</label><input id="f-desc" class="entrada" maxlength="300" [value]="fDesc()" (input)="fDesc.set($any($event.target).value)" /></div>
+              <div class="campo cresce"><label for="f-desc">{{ 'auto.m469768598e' | translate }}</label><input id="f-desc" class="entrada" maxlength="300" [value]="fDesc()" (input)="fDesc.set($any($event.target).value)" /></div>
             </div>
-            <button type="submit" class="btn btn-primario btn-sm" [disabled]="busy() || fName().trim().length < 5">Criar fórum oficial</button>
+            <button type="submit" class="btn btn-primario btn-sm" [disabled]="busy() || fName().trim().length < 5">{{ 'auto.m288b2f618b' | translate }}</button>
           </form>
           <ul class="lista">
             @for (f of forums(); track f.id) {
@@ -111,53 +112,53 @@ const WEIGHTS: { key: keyof PrioritySettings; label: string; hint: string }[] = 
                   <ut-icon [name]="f.icon" [size]="22" />
                   <div class="cresce">
                     <p><strong>{{ f.name }}</strong>
-                      <span class="selo-texto" [class.equipe]="f.kind === 'oficial'">{{ f.kind === 'oficial' ? 'Oficial' : 'Comunidade' }}</span>
-                      @if (!f.active) { <span class="selo-texto">Desativado</span> }
-                      @if (f.status !== 'ativo') { <span class="selo-texto interna">{{ f.status === 'pendente' ? 'Aguardando aprovação' : 'Recusado' }}</span> }
-                      @if (f.hidden) { <span class="selo-texto">Oculto pela moderação</span> }
+                      <span class="selo-texto" [class.equipe]="f.kind === 'oficial'">{{ f.kind === 'oficial' ? ('auto.m45ce87990a' | translate) : ('auto.m3cc52f916c' | translate) }}</span>
+                      @if (!f.active) { <span class="selo-texto">{{ 'auto.m8809a6227c' | translate }}</span> }
+                      @if (f.status !== 'ativo') { <span class="selo-texto interna">{{ f.status === 'pendente' ? ('auto.mfb02485822' | translate) : ('auto.m1ffbc631fb' | translate) }}</span> }
+                      @if (f.hidden) { <span class="selo-texto">{{ 'auto.mdd180eb7b5' | translate }}</span> }
                     </p>
                     <p class="dica">{{ f.theme.name }}{{ f.neighborhoodName ? ' · ' + f.neighborhoodName : '' }} · {{ f.topics }} discussões · {{ f.participants }} participantes{{ f.creatorFullName ? ' · criado por ' + f.creatorFullName : '' }}</p>
                   </div>
-                  <a class="btn btn-texto btn-sm" [routerLink]="['/comunidade/f', f.slug]">Abrir</a>
+                  <a class="btn btn-texto btn-sm" [routerLink]="['/comunidade/f', f.slug]">{{ 'auto.mbf763df731' | translate }}</a>
                   @if (f.kind === 'oficial') {
-                    <button type="button" class="btn btn-texto btn-sm" (click)="instFor.set(instFor() === f.slug ? null : f.slug)">Tópico de apoio</button>
+                    <button type="button" class="btn btn-texto btn-sm" (click)="instFor.set(instFor() === f.slug ? null : f.slug)">{{ 'auto.m28f881e2ec' | translate }}</button>
                   }
-                  <button type="button" class="btn btn-secundario btn-sm" (click)="toggleForum(f)">{{ f.active ? 'Desativar' : 'Reativar' }}</button>
+                  <button type="button" class="btn btn-secundario btn-sm" (click)="toggleForum(f)">{{ f.active ? ('auto.m79db9fc450' | translate) : ('auto.m4384962e9a' | translate) }}</button>
                 </div>
                 @if (instFor() === f.slug) {
                   <form class="inst" (submit)="$event.preventDefault(); createInst(f)">
-                    <p class="dica">Publicado em nome do UrbanTalk, com o selo "Conteúdo do UrbanTalk". Nunca aparece como publicação de morador.</p>
-                    <input class="entrada" maxlength="140" aria-label="Título" placeholder="Título" [value]="iTitle()" (input)="iTitle.set($any($event.target).value)" />
-                    <textarea class="entrada" rows="3" maxlength="3000" aria-label="Texto" placeholder="Texto de apoio ou pergunta para iniciar a conversa" [value]="iBody()" (input)="iBody.set($any($event.target).value)"></textarea>
-                    <button type="submit" class="btn btn-primario btn-sm" [disabled]="busy()">Publicar tópico de apoio</button>
+                    <p class="dica">{{ 'auto.ma8d37e3e65' | translate }}</p>
+                    <input class="entrada" maxlength="140" [aria-label]="'auto.m98a5efa60b' | translate" [placeholder]="'auto.m98a5efa60b' | translate" [value]="iTitle()" (input)="iTitle.set($any($event.target).value)" />
+                    <textarea class="entrada" rows="3" maxlength="3000" [aria-label]="'auto.m6eeba656c0' | translate" [placeholder]="'auto.mdeed0333d1' | translate" [value]="iBody()" (input)="iBody.set($any($event.target).value)"></textarea>
+                    <button type="submit" class="btn btn-primario btn-sm" [disabled]="busy()">{{ 'auto.m60d772089c' | translate }}</button>
                   </form>
                 }
               </li>
             }
           </ul>
-          <p class="dica">Não existem grupos automáticos por bairro: os fóruns de bairro são criados pelas próprias pessoas, com o nome que usam no dia a dia.</p>
+          <p class="dica">{{ 'auto.mafe46a3be5' | translate }}</p>
         }
         @case ('fases') {
           <form class="painel bloco nova" (submit)="$event.preventDefault(); createPhase()">
-            <h2>Nova fase de proposta</h2>
+            <h2>{{ 'auto.m511f764a1c' | translate }}</h2>
             <div class="linha">
-              <div class="campo"><label for="p-nome">Nome</label><input id="p-nome" class="entrada" maxlength="40" [value]="pName()" (input)="pName.set($any($event.target).value)" /></div>
-              <div class="campo cresce"><label for="p-desc">Descrição</label><input id="p-desc" class="entrada" maxlength="240" [value]="pDesc()" (input)="pDesc.set($any($event.target).value)" /></div>
-              <div class="campo"><label for="p-cor">Cor</label><select id="p-cor" class="entrada" (change)="pColor.set($any($event.target).value)">@for (c of colors; track c) { <option [value]="c" [selected]="pColor() === c">{{ colorNames[c] }}</option> }</select></div>
+              <div class="campo"><label for="p-nome">{{ 'auto.m13030dd962' | translate }}</label><input id="p-nome" class="entrada" maxlength="40" [value]="pName()" (input)="pName.set($any($event.target).value)" /></div>
+              <div class="campo cresce"><label for="p-desc">{{ 'auto.m469768598e' | translate }}</label><input id="p-desc" class="entrada" maxlength="240" [value]="pDesc()" (input)="pDesc.set($any($event.target).value)" /></div>
+              <div class="campo"><label for="p-cor">{{ 'auto.m62037d4390' | translate }}</label><select id="p-cor" class="entrada" (change)="pColor.set($any($event.target).value)">@for (c of colors; track c) { <option [value]="c" [selected]="pColor() === c">{{ colorNames[c] }}</option> }</select></div>
             </div>
-            <label class="check"><input type="checkbox" [checked]="pFinal()" (change)="pFinal.set($any($event.target).checked)" />Fase final (encerra a votação e exige explicação da fonte)</label>
-            <button type="submit" class="btn btn-primario btn-sm" [disabled]="busy() || pName().trim().length < 3">Criar fase</button>
+            <label class="check"><input type="checkbox" [checked]="pFinal()" (change)="pFinal.set($any($event.target).checked)" />{{ 'auto.mb13f477cc9' | translate }}</label>
+            <button type="submit" class="btn btn-primario btn-sm" [disabled]="busy() || pName().trim().length < 3">{{ 'auto.m8ab1e069ec' | translate }}</button>
           </form>
           <ul class="lista">
             @for (s of phases(); track s.id) {
               <li class="painel item" [class.inativa]="!s.active">
                 <span class="cor" [attr.data-color]="s.color" aria-hidden="true"></span>
                 <div class="cresce">
-                  <p><strong>{{ s.name }}</strong> @if (s.isInitial) { <span class="selo-texto">Inicial</span> } @if (s.isFinal) { <span class="selo-texto">Final</span> } @if (!s.active) { <span class="selo-texto">Desativada</span> }</p>
+                  <p><strong>{{ s.name }}</strong> @if (s.isInitial) { <span class="selo-texto">{{ 'auto.m1708faf0b7' | translate }}</span> } @if (s.isFinal) { <span class="selo-texto">{{ 'auto.m672b22cc51' | translate }}</span> } @if (!s.active) { <span class="selo-texto">{{ 'auto.mb062fbd950' | translate }}</span> }</p>
                   <p class="dica">{{ s.description }}</p>
                 </div>
-                @if (!s.isInitial && !s.isFinal && s.active) { <button type="button" class="btn btn-texto btn-sm" (click)="phase(s, { isInitial: true })">Tornar inicial</button> }
-                @if (!s.isInitial) { <button type="button" class="btn btn-secundario btn-sm" (click)="phase(s, { active: !s.active })">{{ s.active ? 'Desativar' : 'Reativar' }}</button> }
+                @if (!s.isInitial && !s.isFinal && s.active) { <button type="button" class="btn btn-texto btn-sm" (click)="phase(s, { isInitial: true })">{{ 'auto.m79160fc71a' | translate }}</button> }
+                @if (!s.isInitial) { <button type="button" class="btn btn-secundario btn-sm" (click)="phase(s, { active: !s.active })">{{ s.active ? ('auto.m79db9fc450' | translate) : ('auto.m4384962e9a' | translate) }}</button> }
               </li>
             }
           </ul>

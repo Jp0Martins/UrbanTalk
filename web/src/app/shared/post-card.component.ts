@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@ngx-translate/core';
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject, input, output, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ApiService } from '../core/api.service';
@@ -14,7 +15,7 @@ import { ReportButtonComponent } from './report-button.component';
 // uma publicação do feed, com curtida, comentários e exclusão
 @Component({
   selector: 'ut-publicacao',
-  imports: [RouterLink, AvatarComponent, IconComponent, StatusBadgeComponent, RelativePipe, DatePipe, ReportButtonComponent],
+  imports: [RouterLink, AvatarComponent, IconComponent, StatusBadgeComponent, RelativePipe, DatePipe, ReportButtonComponent, TranslatePipe],
   template: `
     @let p = post();
     <article class="post" [attr.aria-labelledby]="'autor-' + p.id">
@@ -23,7 +24,7 @@ import { ReportButtonComponent } from './report-button.component';
         <header class="topo">
           <span class="nome" [id]="'autor-' + p.id">{{ p.author.isMe ? p.author.name + ' (você)' : p.author.name }}</span>
           @if (p.author.isStaff) {
-            <span class="selo-texto equipe">Equipe UrbanTalk</span>
+            <span class="selo-texto equipe">{{ 'auto.mb1c87ee007' | translate }}</span>
           }
           <time class="quando" [attr.datetime]="p.createdAt" [title]="p.createdAt | data: true">{{ p.createdAt | relativo }}</time>
         </header>
@@ -40,7 +41,7 @@ import { ReportButtonComponent } from './report-button.component';
           </a>
         } @else if (p.author.isMe && session.isCitizen()) {
           <a class="transformar" routerLink="/registrar" [queryParams]="{ descricao: p.body }">
-            <ut-icon name="plus" [size]="16" />É um problema na rua? Transforme em reclamação para a equipe acompanhar
+            <ut-icon name="plus" [size]="16" />{{ 'auto.me7e32377b0' | translate }}
           </a>
         }
 
@@ -48,13 +49,13 @@ import { ReportButtonComponent } from './report-button.component';
           <button type="button" class="acao" [class.ativo]="p.likedByMe" [attr.aria-pressed]="p.likedByMe" [disabled]="liking()" (click)="toggleLike()">
             <ut-icon [name]="p.likedByMe ? 'heart-fill' : 'heart'" [size]="18" />
             <span class="tabular">{{ p.likes }}</span>
-            <span class="sr-only">{{ p.likedByMe ? 'Remover apoio' : 'Apoiar' }}</span>
-            <span class="rot" aria-hidden="true">{{ p.likedByMe ? 'Apoiado' : 'Apoiar' }}</span>
+            <span class="sr-only">{{ p.likedByMe ? ('auto.m6e9773b5d4' | translate) : ('auto.mf1c30fb6ef' | translate) }}</span>
+            <span class="rot" aria-hidden="true">{{ p.likedByMe ? ('auto.md1b87d3df3' | translate) : ('auto.mf1c30fb6ef' | translate) }}</span>
           </button>
           <button type="button" class="acao" [attr.aria-expanded]="open()" [attr.aria-controls]="'coment-' + p.id" (click)="toggleComments()">
             <ut-icon name="chat" [size]="18" />
             <span class="tabular">{{ p.comments }}</span>
-            <span class="rot">{{ p.comments === 1 ? 'comentário' : 'comentários' }}</span>
+            <span class="rot">{{ p.comments === 1 ? ('auto.m8001800f20' | translate) : ('auto.m7f6320ba17' | translate) }}</span>
           </button>
           @if (p.canReport) {
             <ut-denunciar type="post" [targetId]="p.id" />
@@ -62,27 +63,27 @@ import { ReportButtonComponent } from './report-button.component';
           @if (p.canDelete) {
             @if (!confirmDelete()) {
               <button type="button" class="acao apagar" (click)="confirmDelete.set(true)">
-                <ut-icon name="delete" [size]="18" /><span class="rot">{{ p.author.isMe ? 'Apagar' : 'Remover' }}</span>
+                <ut-icon name="delete" [size]="18" /><span class="rot">{{ p.author.isMe ? ('auto.m5733a8c200' | translate) : ('auto.m4bd4ea8342' | translate) }}</span>
               </button>
             } @else {
-              <span class="confirma" role="group" aria-label="Confirmar exclusão">
-                <span>{{ p.author.isMe ? 'Apagar sua publicação?' : 'Remover por moderação?' }}</span>
-                <button type="button" class="btn btn-texto btn-sm" (click)="confirmDelete.set(false)">Não</button>
-                <button type="button" class="btn btn-perigo btn-sm" (click)="remove()">Sim, apagar</button>
+              <span class="confirma" role="group" [aria-label]="'auto.mcc6f16b283' | translate">
+                <span>{{ p.author.isMe ? ('auto.m3ab49b9539' | translate) : ('auto.m68dfad4c1f' | translate) }}</span>
+                <button type="button" class="btn btn-texto btn-sm" (click)="confirmDelete.set(false)">{{ 'auto.m72534bbb0c' | translate }}</button>
+                <button type="button" class="btn btn-perigo btn-sm" (click)="remove()">{{ 'auto.md3d79c25a7' | translate }}</button>
               </span>
             }
           }
         </div>
 
         @if (open()) {
-          <section class="comentarios" [id]="'coment-' + p.id" aria-label="Comentários">
+          <section class="comentarios" [id]="'coment-' + p.id" [aria-label]="'auto.m6fe3053fa0' | translate">
             @if (loadingComments()) {
-              <p class="carregando">Carregando comentários…</p>
+              <p class="carregando">{{ 'auto.m43cd1dca36' | translate }}</p>
             } @else if (commentsError(); as e) {
-              <p class="erro">{{ e }} <button type="button" class="btn btn-texto btn-sm" (click)="loadComments()">Tentar de novo</button></p>
+              <p class="erro">{{ e }} <button type="button" class="btn btn-texto btn-sm" (click)="loadComments()">{{ 'auto.m4842fe591c' | translate }}</button></p>
             } @else {
               @if (comments().length === 0) {
-                <p class="vazio">Ainda sem comentários. Seja a primeira pessoa a responder.</p>
+                <p class="vazio">{{ 'auto.mfd5c2eae0d' | translate }}</p>
               }
               <ol>
                 @for (c of comments(); track c.id) {
@@ -91,13 +92,13 @@ import { ReportButtonComponent } from './report-button.component';
                     <div class="balao">
                       <p class="c-topo">
                         <strong>{{ c.author.name }}</strong>
-                        @if (c.author.isStaff) { <span class="selo-texto equipe">Equipe</span> }
+                        @if (c.author.isStaff) { <span class="selo-texto equipe">{{ 'auto.me03e3996dc' | translate }}</span> }
                         <span class="quando">{{ c.createdAt | relativo }}</span>
                         @if (c.canReport) {
                           <ut-denunciar class="c-apagar" type="post_comment" [targetId]="c.id" />
                         }
                         @if (c.canDelete) {
-                          <button type="button" class="btn btn-texto btn-sm c-apagar" (click)="removeComment(c)">Apagar<span class="sr-only"> comentário</span></button>
+                          <button type="button" class="btn btn-texto btn-sm c-apagar" (click)="removeComment(c)">{{ 'auto.m5733a8c200' | translate }}<span class="sr-only"> {{ 'auto.m8001800f20' | translate }}</span></button>
                         }
                       </p>
                       <p class="c-texto">{{ c.body }}</p>
@@ -106,14 +107,14 @@ import { ReportButtonComponent } from './report-button.component';
                 }
               </ol>
               @if (nextAfter()) {
-                <button type="button" class="btn btn-texto btn-sm" (click)="loadComments(true)">Ver mais comentários</button>
+                <button type="button" class="btn btn-texto btn-sm" (click)="loadComments(true)">{{ 'auto.me753bd4621' | translate }}</button>
               }
             }
             <form class="responder" (submit)="$event.preventDefault(); sendComment()">
-              <label class="sr-only" [for]="'novo-c-' + p.id">Escreva um comentário</label>
-              <input class="entrada" [id]="'novo-c-' + p.id" maxlength="300" placeholder="Escreva um comentário…" [value]="draft()" (input)="draft.set($any($event.target).value)" />
+              <label class="sr-only" [for]="'novo-c-' + p.id">{{ 'auto.m1177ec9668' | translate }}</label>
+              <input class="entrada" [id]="'novo-c-' + p.id" maxlength="300" [placeholder]="'auto.m67f9818e4c' | translate" [value]="draft()" (input)="draft.set($any($event.target).value)" />
               <button type="submit" class="btn btn-primario btn-sm" [disabled]="draft().trim().length === 0 || sending()">
-                <ut-icon name="send" [size]="16" />{{ sending() ? 'Enviando…' : 'Comentar' }}
+                <ut-icon name="send" [size]="16" />{{ sending() ? ('auto.m5e91dcdc57' | translate) : ('auto.mf5da88859d' | translate) }}
               </button>
             </form>
             @if (commentError()) {

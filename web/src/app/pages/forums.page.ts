@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@ngx-translate/core';
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { forkJoin } from 'rxjs';
@@ -26,53 +27,53 @@ const EMPTY: ForumFilters = { q: '', theme: '', neighborhood: '', kind: '', foll
 // aba Fóruns: oficiais e criados pelas pessoas, com busca por nome, tema, tag e bairro
 @Component({
   selector: 'ut-foruns',
-  imports: [RouterLink, IconComponent, ForumCardComponent, NeighborhoodInputComponent, PaginationComponent, EmptyStateComponent, ErrorStateComponent],
+  imports: [RouterLink, IconComponent, ForumCardComponent, NeighborhoodInputComponent, PaginationComponent, EmptyStateComponent, ErrorStateComponent, TranslatePipe],
   template: `
-    <form class="filtros" role="search" aria-label="Procurar fóruns" (submit)="$event.preventDefault(); apply({ q: draftQ().trim() })">
+    <form class="filtros" role="search" [aria-label]="'auto.m5fce3b521b' | translate" (submit)="$event.preventDefault(); apply({ q: draftQ().trim() })">
       <div class="campo busca">
-        <label for="fq">Procurar fórum</label>
+        <label for="fq">{{ 'auto.m571f1dabe4' | translate }}</label>
         <div class="busca-wrap">
           <ut-icon name="search" [size]="18" />
-          <input id="fq" class="entrada" type="search" maxlength="80" placeholder="Nome, tema, tag ou bairro" [value]="f().q" (input)="draftQ.set($any($event.target).value)" (search)="apply({ q: draftQ().trim() })" />
+          <input id="fq" class="entrada" type="search" maxlength="80" [placeholder]="'auto.me971ef15b6' | translate" [value]="f().q" (input)="draftQ.set($any($event.target).value)" (search)="apply({ q: draftQ().trim() })" />
         </div>
       </div>
       <div class="campo">
-        <label for="ftema">Tema</label>
+        <label for="ftema">{{ 'auto.m6ae1bcaff6' | translate }}</label>
         <select id="ftema" class="entrada" (change)="apply({ theme: $any($event.target).value })">
-          <option value="" [selected]="!f().theme">Todos</option>
+          <option value="" [selected]="!f().theme">{{ 'auto.ma4114a83f4' | translate }}</option>
           @for (t of themes(); track t.id) { <option [value]="t.id" [selected]="f().theme === t.id">{{ t.name }}</option> }
         </select>
       </div>
       <div class="campo">
-        <label for="fbairro">Bairro citado</label>
-        <ut-bairro inputId="fbairro" placeholder="Qualquer bairro" [value]="f().neighborhood" (committed)="apply({ neighborhood: $event.trim() })" />
+        <label for="fbairro">{{ 'auto.m1e79028c2f' | translate }}</label>
+        <ut-bairro inputId="fbairro" [placeholder]="'auto.m035fe17a1c' | translate" [value]="f().neighborhood" (committed)="apply({ neighborhood: $event.trim() })" />
       </div>
       <div class="campo">
-        <label for="ftipo">Tipo</label>
+        <label for="ftipo">{{ 'auto.m6cc6198d9e' | translate }}</label>
         <select id="ftipo" class="entrada" (change)="apply({ kind: $any($event.target).value })">
-          <option value="" [selected]="!f().kind">Todos</option>
-          <option value="oficial" [selected]="f().kind === 'oficial'">Oficiais</option>
-          <option value="comunidade" [selected]="f().kind === 'comunidade'">Criados por pessoas</option>
+          <option value="" [selected]="!f().kind">{{ 'auto.ma4114a83f4' | translate }}</option>
+          <option value="oficial" [selected]="f().kind === 'oficial'">{{ 'auto.m9956185537' | translate }}</option>
+          <option value="comunidade" [selected]="f().kind === 'comunidade'">{{ 'auto.m105b7078a0' | translate }}</option>
         </select>
       </div>
       <div class="campo">
-        <label for="fordem">Ordenar</label>
+        <label for="fordem">{{ 'auto.mb18b39fed2' | translate }}</label>
         <select id="fordem" class="entrada" (change)="apply({ sort: $any($event.target).value })">
-          <option value="atividade" [selected]="f().sort === 'atividade'">Atividade recente</option>
-          <option value="populares" [selected]="f().sort === 'populares'">Mais participantes</option>
-          <option value="novos" [selected]="f().sort === 'novos'">Mais novos</option>
-          <option value="nome" [selected]="f().sort === 'nome'">Nome (A–Z)</option>
+          <option value="atividade" [selected]="f().sort === 'atividade'">{{ 'auto.m0b7b175b2a' | translate }}</option>
+          <option value="populares" [selected]="f().sort === 'populares'">{{ 'auto.m2226cb9aea' | translate }}</option>
+          <option value="novos" [selected]="f().sort === 'novos'">{{ 'auto.mccfcc76768' | translate }}</option>
+          <option value="nome" [selected]="f().sort === 'nome'">{{ 'auto.me5e0e8ff7b' | translate }}</option>
         </select>
       </div>
       @if (session.user()) {
-        <label class="check"><input type="checkbox" [checked]="f().following" (change)="apply({ following: $any($event.target).checked })" />Só os que sigo</label>
+        <label class="check"><input type="checkbox" [checked]="f().following" (change)="apply({ following: $any($event.target).checked })" />{{ 'auto.me40b03125b' | translate }}</label>
       }
-      @if (hasFilters()) { <button type="button" class="btn btn-texto" (click)="clear()">Limpar</button> }
+      @if (hasFilters()) { <button type="button" class="btn btn-texto" (click)="clear()">{{ 'auto.m765fbe39a2' | translate }}</button> }
     </form>
 
     @if (mine().length && !hasFilters()) {
       <section class="meus" aria-labelledby="meus-t">
-        <h2 id="meus-t" class="secao">Nos seus bairros de interesse</h2>
+        <h2 id="meus-t" class="secao">{{ 'auto.mf18d9763ea' | translate }}</h2>
         <ul class="grade">@for (x of mine(); track x.id) { <li><ut-forum-card [forum]="x" /></li> }</ul>
       </section>
     }
@@ -81,23 +82,23 @@ const EMPTY: ForumFilters = { q: '', theme: '', neighborhood: '', kind: '', foll
       <ut-erro [message]="e" (retry)="load()" />
     } @else if (data(); as d) {
       <div class="topo-lista">
-        <h2 class="secao">{{ hasFilters() ? 'Resultado' : 'Todos os fóruns' }} <span class="muted tabular">({{ total(d) }})</span></h2>
-        @if (!session.user()) { <p class="dica"><a routerLink="/entrar" [queryParams]="{ volta: '/comunidade/foruns' }">Entre</a> para seguir fóruns, abrir discussões ou criar um fórum.</p> }
+        <h2 class="secao">{{ hasFilters() ? ('auto.mc7589dbf29' | translate) : ('auto.m3f616b5157' | translate) }} <span class="muted tabular">({{ total(d) }})</span></h2>
+        @if (!session.user()) { <p class="dica"><a routerLink="/entrar" [queryParams]="{ volta: '/comunidade/foruns' }">{{ 'auto.m4ea354d383' | translate }}</a> {{ 'auto.m75fddf1a84' | translate }}</p> }
       </div>
       @if (d.items.length === 0) {
         <ut-vazio icon="users" [title]="hasFilters() ? 'Nenhum fórum com esses filtros' : 'Ainda não há fóruns'" [text]="hasFilters() ? 'Tente outra palavra ou tire algum filtro. Se o assunto ainda não tem espaço, você pode criar um fórum para ele.' : 'Comece um espaço para o assunto que importa para você.'">
-          @if (session.user()) { <a routerLink="/comunidade/foruns/novo" class="btn btn-primario"><ut-icon name="plus" [size]="18" />Criar fórum</a> }
-          @if (hasFilters()) { <button type="button" class="btn btn-secundario" (click)="clear()">Limpar filtros</button> }
+          @if (session.user()) { <a routerLink="/comunidade/foruns/novo" class="btn btn-primario"><ut-icon name="plus" [size]="18" />{{ 'auto.ma97e989a61' | translate }}</a> }
+          @if (hasFilters()) { <button type="button" class="btn btn-secundario" (click)="clear()">{{ 'auto.md22f68306a' | translate }}</button> }
         </ut-vazio>
       } @else {
         <ul class="grade">@for (x of d.items; track x.id) { <li><ut-forum-card [forum]="x" /></li> }</ul>
         <ut-paginacao [page]="d.page" [totalPages]="d.totalPages" (go)="load($event)" />
       }
       @if (session.user() && d.items.length > 0) {
-        <p class="convite">Não achou o assunto? <a routerLink="/comunidade/foruns/novo">Crie um fórum</a> e convide quem se importa com ele.</p>
+        <p class="convite">{{ 'auto.m53fb91678b' | translate }} <a routerLink="/comunidade/foruns/novo">{{ 'auto.mdfd6e9ba4d' | translate }}</a> {{ 'auto.m401b44c96c' | translate }}</p>
       }
     } @else {
-      <p class="carregando">Carregando fóruns…</p>
+      <p class="carregando">{{ 'auto.m59fc589096' | translate }}</p>
     }
   `,
   styles: `

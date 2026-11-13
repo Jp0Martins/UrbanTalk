@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@ngx-translate/core';
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { forkJoin } from 'rxjs';
@@ -12,7 +13,7 @@ import { EmptyStateComponent, ErrorStateComponent } from '../shared/states';
 
 @Component({
   selector: 'ut-painel',
-  imports: [RouterLink, IconComponent, MapComponent, OccurrenceItemComponent, EmptyStateComponent, ErrorStateComponent],
+  imports: [RouterLink, IconComponent, MapComponent, OccurrenceItemComponent, EmptyStateComponent, ErrorStateComponent, TranslatePipe],
   template: `
     <div class="pagina">
       <header class="cab">
@@ -20,61 +21,61 @@ import { EmptyStateComponent, ErrorStateComponent } from '../shared/states';
           <h1>Olá, {{ session.firstName() }}</h1>
           <p class="muted">{{ subtitle() }}</p>
         </div>
-        <a routerLink="/registrar" class="btn btn-primario"><ut-icon name="plus" />Registrar reclamação</a>
+        <a routerLink="/registrar" class="btn btn-primario"><ut-icon name="plus" />{{ 'auto.med85825e56' | translate }}</a>
       </header>
 
       @if (error(); as e) {
         <ut-erro [message]="e" (retry)="load()" />
       } @else if (!summary()) {
-        <p class="carregando">Carregando seu painel…</p>
+        <p class="carregando">{{ 'auto.ma21c58b456' | translate }}</p>
       } @else {
         @let s = summary()!;
-        <section class="faixa" aria-label="Resumo das suas ocorrências">
+        <section class="faixa" [aria-label]="'auto.mffb5ed1ef5' | translate">
           <div class="total">
             <span class="num tabular">{{ s.total }}</span>
-            <span class="rot">{{ s.total === 1 ? 'reclamação registrada por você' : 'reclamações registradas por você' }}</span>
+            <span class="rot">{{ s.total === 1 ? ('auto.mcfe1a30ba7' | translate) : ('auto.ma4e7eb60db' | translate) }}</span>
           </div>
           <ul class="por-status">
             <li data-color="azul">
               <a routerLink="/minhas-ocorrencias" [queryParams]="{ situacao: 'abertas' }">
                 <ut-icon name="status-encaminhada" [size]="20" />
                 <span class="num tabular">{{ s.open }}</span>
-                <span class="rot">em andamento</span>
+                <span class="rot">{{ 'auto.m83fcaec2d3' | translate }}</span>
               </a>
             </li>
             <li data-color="verde">
               <a routerLink="/minhas-ocorrencias" [queryParams]="{ status: 'resolvida' }">
                 <ut-icon name="status-resolvida" [size]="20" />
                 <span class="num tabular">{{ s.resolved }}</span>
-                <span class="rot">{{ s.resolved === 1 ? 'resolvida' : 'resolvidas' }}</span>
+                <span class="rot">{{ s.resolved === 1 ? ('auto.m0b04e260be' | translate) : ('auto.ma0260dee3f' | translate) }}</span>
               </a>
             </li>
             <li data-color="cinza">
               <a routerLink="/minhas-ocorrencias" [queryParams]="{ situacao: 'encerradas' }">
                 <ut-icon name="status-encerrada" [size]="20" />
                 <span class="num tabular">{{ s.closed - s.resolved }}</span>
-                <span class="rot">encerradas de outra forma</span>
+                <span class="rot">{{ 'auto.mb38e7dd99f' | translate }}</span>
               </a>
             </li>
           </ul>
           <div class="conf">
             <span class="num tabular">{{ s.confirmationsReceived }}</span>
-            <span class="rot">{{ s.confirmationsReceived === 1 ? 'confirmação recebida' : 'confirmações recebidas' }} de outras pessoas</span>
+            <span class="rot">{{ s.confirmationsReceived === 1 ? ('auto.m44953f7ff5' | translate) : ('auto.m3b66b34b38' | translate) }} de outras pessoas</span>
           </div>
         </section>
 
         <div class="colunas">
           <section class="painel bloco" aria-labelledby="rec-t">
             <div class="bloco-topo">
-              <h2 id="rec-t">Suas reclamações recentes</h2>
+              <h2 id="rec-t">{{ 'auto.m48b16773a7' | translate }}</h2>
               @if (s.total > 0) {
-                <a routerLink="/minhas-ocorrencias">Ver histórico completo</a>
+                <a routerLink="/minhas-ocorrencias">{{ 'auto.m62512b678b' | translate }}</a>
               }
             </div>
             @if (mine().length === 0) {
               <div class="vazio-pad">
-                <ut-vazio icon="pin" title="Você ainda não registrou nenhuma reclamação" text="Viu um buraco, um poste apagado ou lixo acumulado? Registre com foto e local, leva menos de dois minutos.">
-                  <a routerLink="/registrar" class="btn btn-primario btn-sm">Registrar o primeiro</a>
+                <ut-vazio icon="pin" [title]="'auto.m0339f958a2' | translate" [text]="'auto.m0e3ff88b9c' | translate">
+                  <a routerLink="/registrar" class="btn btn-primario btn-sm">{{ 'auto.maec09dfa73' | translate }}</a>
                 </ut-vazio>
               </div>
             } @else {
@@ -86,17 +87,17 @@ import { EmptyStateComponent, ErrorStateComponent } from '../shared/states';
 
           <section class="painel bloco" aria-labelledby="cid-t">
             <div class="bloco-topo">
-              <h2 id="cid-t">Na cidade</h2>
-              <a routerLink="/mapa">Abrir o mapa</a>
+              <h2 id="cid-t">{{ 'auto.m653231db85' | translate }}</h2>
+              <a routerLink="/mapa">{{ 'auto.m9a4863d29f' | translate }}</a>
             </div>
             <div class="mapa-caixa">
-              <ut-mapa class="mapa" [markers]="cityMarkers()" [fitToMarkers]="true" (markerSelect)="open($event)" label="Mapa com as ocorrências mais recentes da cidade" />
+              <ut-mapa class="mapa" [markers]="cityMarkers()" [fitToMarkers]="true" (markerSelect)="open($event)" [label]="'auto.md1bc235b39' | translate" />
             </div>
             <p class="dica">{{ cityText() }}</p>
           </section>
         </div>
 
-        <p class="convite"><a routerLink="/comunidade">Ir para a Comunidade</a> para conversar sobre o bairro.</p>
+        <p class="convite"><a routerLink="/comunidade">{{ 'auto.m01287da416' | translate }}</a> {{ 'auto.mc300036a12' | translate }}</p>
       }
     </div>
   `,

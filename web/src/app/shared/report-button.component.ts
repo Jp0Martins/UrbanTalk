@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@ngx-translate/core';
 import { ChangeDetectionStrategy, Component, ElementRef, inject, input, signal, viewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
@@ -20,31 +21,31 @@ export const REPORT_REASONS: { id: string; label: string }[] = [
 // botão "Denunciar" com diálogo de motivos padronizados
 @Component({
   selector: 'ut-denunciar',
-  imports: [IconComponent],
+  imports: [IconComponent, TranslatePipe],
   template: `
     <button type="button" class="btn btn-texto btn-sm denunciar" [disabled]="done()" (click)="open()">
-      <ut-icon name="alert" [size]="15" />{{ done() ? 'Denunciado' : 'Denunciar' }}
+      <ut-icon name="alert" [size]="15" />{{ done() ? ('auto.md441f3355e' | translate) : ('auto.m419316bf86' | translate) }}
     </button>
     <dialog #dlg class="dialogo" (close)="error.set(null)" aria-labelledby="den-t">
       <form method="dialog" (submit)="$event.preventDefault(); send()">
-        <h2 id="den-t">Denunciar conteúdo</h2>
-        <p>A equipe revisa cada denúncia. Quem publicou não fica sabendo quem denunciou.</p>
+        <h2 id="den-t">{{ 'auto.m6186e64eb6' | translate }}</h2>
+        <p>{{ 'auto.m7a1eeb7ecf' | translate }}</p>
         <fieldset class="motivos">
-          <legend class="rotulo">Motivo</legend>
+          <legend class="rotulo">{{ 'auto.mcbeec536b2' | translate }}</legend>
           @for (r of reasons; track r.id) {
             <label class="opcao"><input type="radio" name="motivo" [value]="r.id" [checked]="reason() === r.id" (change)="reason.set(r.id)" />{{ r.label }}</label>
           }
         </fieldset>
         <div class="campo">
-          <label [for]="'den-det-' + uid">Detalhes {{ reason() === 'outro' ? '(obrigatório)' : '(opcional)' }}</label>
+          <label [for]="'den-det-' + uid">Detalhes {{ reason() === 'outro' ? ('auto.m5d54e46c65' | translate) : ('auto.m813486d257' | translate) }}</label>
           <textarea class="entrada" rows="2" maxlength="300" [id]="'den-det-' + uid" [value]="details()" (input)="details.set($any($event.target).value)"></textarea>
         </div>
         @if (error()) {
           <p class="erro" role="alert">{{ error() }}</p>
         }
         <div class="dlg-acoes">
-          <button type="button" class="btn btn-secundario" (click)="dlg.close()">Cancelar</button>
-          <button type="submit" class="btn btn-primario" [disabled]="!reason() || sending()">{{ sending() ? 'Enviando…' : 'Enviar denúncia' }}</button>
+          <button type="button" class="btn btn-secundario" (click)="dlg.close()">{{ 'auto.mc111e0ab9d' | translate }}</button>
+          <button type="submit" class="btn btn-primario" [disabled]="!reason() || sending()">{{ sending() ? ('auto.m5e91dcdc57' | translate) : ('auto.mf7c770ca2c' | translate) }}</button>
         </div>
       </form>
     </dialog>

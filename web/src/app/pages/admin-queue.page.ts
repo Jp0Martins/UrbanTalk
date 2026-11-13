@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@ngx-translate/core';
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AdminApi } from '../core/admin.api';
@@ -17,44 +18,44 @@ type Flag = NonNullable<QueueFilters['flag']>;
 
 @Component({
   selector: 'ut-fila',
-  imports: [RouterLink, IconComponent, PageHeaderComponent, PaginationComponent, StatusBadgeComponent, FilterBarComponent, EmptyStateComponent, ErrorStateComponent, RelativePipe],
+  imports: [RouterLink, IconComponent, PageHeaderComponent, PaginationComponent, StatusBadgeComponent, FilterBarComponent, EmptyStateComponent, ErrorStateComponent, RelativePipe, TranslatePipe],
   template: `
     <div class="pagina">
-      <ut-cabecalho-pagina title="Fila de Análise" description="Reclamações abertas organizadas por critérios transparentes. A pontuação ajuda a ordenar o trabalho; ela não diz que um problema é perigoso ou urgente." />
+      <ut-cabecalho-pagina [title]="'auto.m6a1a148a2e' | translate" [description]="'auto.m28e29f4d90' | translate" />
 
       <div class="topo">
-        <div class="segmentado" role="tablist" aria-label="Visão da fila">
-          <button type="button" role="tab" [attr.aria-selected]="f().view === 'todas'" (click)="patch({ view: 'todas' })">Todas <span class="n">{{ data()?.summary?.total ?? '' }}</span></button>
-          <button type="button" role="tab" [attr.aria-selected]="f().view === 'minhas'" (click)="patch({ view: 'minhas' })">Minhas tarefas</button>
-          <button type="button" role="tab" [attr.aria-selected]="f().view === 'sem-responsavel'" (click)="patch({ view: 'sem-responsavel' })">Sem responsável</button>
+        <div class="segmentado" role="tablist" [aria-label]="'auto.m57556aefb9' | translate">
+          <button type="button" role="tab" [attr.aria-selected]="f().view === 'todas'" (click)="patch({ view: 'todas' })">{{ 'auto.m8a3c344036' | translate }} <span class="n">{{ data()?.summary?.total ?? '' }}</span></button>
+          <button type="button" role="tab" [attr.aria-selected]="f().view === 'minhas'" (click)="patch({ view: 'minhas' })">{{ 'auto.mf553e30b11' | translate }}</button>
+          <button type="button" role="tab" [attr.aria-selected]="f().view === 'sem-responsavel'" (click)="patch({ view: 'sem-responsavel' })">{{ 'auto.m3fc2bd35c3' | translate }}</button>
         </div>
         <div class="campo ordem">
-          <label for="ordem">Ordenar por</label>
+          <label for="ordem">{{ 'auto.m1f77dbb2bd' | translate }}</label>
           <select id="ordem" class="entrada" (change)="patch({ sort: $any($event.target).value })">
             @for (o of sorts; track o.id) { <option [value]="o.id" [selected]="f().sort === o.id">{{ o.label }}</option> }
           </select>
         </div>
       </div>
 
-      <div class="atalhos" role="group" aria-label="Filtros rápidos">
+      <div class="atalhos" role="group" [aria-label]="'auto.m7eb7b15155' | translate">
         @for (fl of flags; track fl.id) {
           <button type="button" class="chip" [attr.aria-pressed]="f().flag === fl.id" (click)="patch({ flag: f().flag === fl.id ? null : fl.id })">
             <ut-icon [name]="fl.icon" [size]="15" />{{ fl.label }}
           </button>
         }
         <div class="campo prioridade">
-          <label for="prio" class="sr-only">Prioridade</label>
+          <label for="prio" class="sr-only">{{ 'auto.mc8c122c31c' | translate }}</label>
           <select id="prio" class="entrada" (change)="patch({ priority: $any($event.target).value || null })">
-            <option value="" [selected]="!f().priority">Qualquer prioridade</option>
-            <option value="alta" [selected]="f().priority === 'alta'">Prioridade alta</option>
-            <option value="media" [selected]="f().priority === 'media'">Prioridade média</option>
-            <option value="baixa" [selected]="f().priority === 'baixa'">Prioridade baixa</option>
-            <option value="nenhuma" [selected]="f().priority === 'nenhuma'">Ainda não avaliada</option>
+            <option value="" [selected]="!f().priority">{{ 'auto.me553169152' | translate }}</option>
+            <option value="alta" [selected]="f().priority === 'alta'">{{ 'auto.mb02e6ca4a9' | translate }}</option>
+            <option value="media" [selected]="f().priority === 'media'">{{ 'auto.mc7157faee2' | translate }}</option>
+            <option value="baixa" [selected]="f().priority === 'baixa'">{{ 'auto.ma06f35092a' | translate }}</option>
+            <option value="nenhuma" [selected]="f().priority === 'nenhuma'">{{ 'auto.me005d5748a' | translate }}</option>
           </select>
         </div>
       </div>
 
-      <ut-filtros label="Filtrar a fila" [value]="baseFilters()" [showStreet]="true" [showSearch]="true" (changed)="patchFilters($event)" />
+      <ut-filtros [label]="'auto.md6221df18d' | translate" [value]="baseFilters()" [showStreet]="true" [showSearch]="true" (changed)="patchFilters($event)" />
 
       @if (data(); as d) {
         <p class="resumo" aria-live="polite">
@@ -63,12 +64,12 @@ type Flag = NonNullable<QueueFilters['flag']>;
       }
 
       @if (loading() && !data()) {
-        <p class="carregando">Carregando a fila…</p>
+        <p class="carregando">{{ 'auto.m72094e6cc5' | translate }}</p>
       } @else if (error(); as e) {
         <ut-erro [message]="e" (retry)="load()" />
       } @else if (data(); as d) {
         @if (d.items.length === 0) {
-          <ut-vazio icon="check" [title]="f().view === 'minhas' ? 'Nenhuma tarefa atribuída a você' : 'Nada na fila com esses filtros'" text="Mude os filtros ou volte mais tarde. Reclamações novas aparecem aqui automaticamente." />
+          <ut-vazio icon="check" [title]="f().view === 'minhas' ? 'Nenhuma tarefa atribuída a você' : 'Nada na fila com esses filtros'" [text]="'auto.mc2d0cfe9fc' | translate" />
         } @else {
           <ol class="fila" [attr.start]="(d.page - 1) * d.pageSize + 1">
             @for (it of d.items; track it.id; let i = $index) {
@@ -76,7 +77,7 @@ type Flag = NonNullable<QueueFilters['flag']>;
                 <div class="pont" [attr.aria-label]="'Pontuação ' + it.score">
                   <span class="pos tabular">{{ (d.page - 1) * d.pageSize + i + 1 }}º</span>
                   <span class="pts tabular">{{ it.score }}</span>
-                  <span class="pts-rot">pontos</span>
+                  <span class="pts-rot">{{ 'auto.m76fba5152f' | translate }}</span>
                 </div>
                 <div class="corpo">
                   <p class="linha1">
@@ -85,22 +86,22 @@ type Flag = NonNullable<QueueFilters['flag']>;
                     <ut-status [status]="it.status" />
                     @if (it.priority) { <span class="selo-texto prio" [attr.data-p]="it.priority" [title]="it.priorityReason ?? ''">Prioridade {{ prioName(it.priority) }}</span> }
                   </p>
-                  <p class="end"><ut-icon name="pin" [size]="14" />{{ it.street ? it.street + ', ' : '' }}{{ it.neighborhood?.name ?? 'Cidade toda' }}</p>
+                  <p class="end"><ut-icon name="pin" [size]="14" />{{ it.street ? it.street + ', ' : '' }}{{ it.neighborhood?.name ?? ('auto.mf42a4c41ae' | translate) }}</p>
                   <p class="desc">{{ it.description }}</p>
                   <p class="meta">
-                    <span>{{ it.confirmations }} {{ it.confirmations === 1 ? 'confirmação' : 'confirmações' }}</span>
+                    <span>{{ it.confirmations }} {{ it.confirmations === 1 ? ('auto.m125375e18e' | translate) : ('auto.me11a7b2e09' | translate) }}</span>
                     <span [class.alerta]="it.overdue">aberta há {{ plural(it.daysOpen, 'dia', 'dias') }}</span>
                     <span [class.alerta]="it.stale">última movimentação {{ it.updatedAt | relativo }}</span>
-                    <span>{{ it.assignee ? 'Responsável: ' + it.assignee.name : 'Sem responsável' }}</span>
+                    <span>{{ it.assignee ? 'Responsável: ' + it.assignee.name : ('auto.m3fc2bd35c3' | translate) }}</span>
                   </p>
                   <p class="sinais">
-                    @if (it.reviewRequested) { <span class="selo-texto alerta-s"><ut-icon name="alert" [size]="12" />Morador disse que continua</span> }
-                    @if (it.pendingInfo) { <span class="selo-texto">Aguardando resposta do cidadão</span> }
-                    @if (it.similar > 0) { <span class="selo-texto">{{ it.similar }} {{ it.similar === 1 ? 'possível duplicata' : 'possíveis duplicatas' }} por perto</span> }
+                    @if (it.reviewRequested) { <span class="selo-texto alerta-s"><ut-icon name="alert" [size]="12" />{{ 'auto.mb0e20d4533' | translate }}</span> }
+                    @if (it.pendingInfo) { <span class="selo-texto">{{ 'auto.m68556ff4f1' | translate }}</span> }
+                    @if (it.similar > 0) { <span class="selo-texto">{{ it.similar }} {{ it.similar === 1 ? ('auto.m9582a29a24' | translate) : ('auto.ma2490d9d9d' | translate) }} por perto</span> }
                     @if (it.duplicateOf) { <span class="selo-texto">Marcada como duplicata de UT-{{ pad(it.duplicateOf) }}</span> }
                   </p>
                   <details class="porque">
-                    <summary>Por que esta posição?</summary>
+                    <summary>{{ 'auto.m32fb9d32ea' | translate }}</summary>
                     <ul>
                       @for (p of it.scoreParts; track p.label) { <li><span class="tabular">+{{ p.points }}</span> {{ p.label }}</li> }
                     </ul>
@@ -113,7 +114,7 @@ type Flag = NonNullable<QueueFilters['flag']>;
         }
 
         <details class="painel explica">
-          <summary><ut-icon name="info" [size]="18" />Como a pontuação é calculada</summary>
+          <summary><ut-icon name="info" [size]="18" />{{ 'auto.m9b6575f5e4' | translate }}</summary>
           <ul>
             <li>Prioridade definida pela equipe (sempre com justificativa): alta +{{ d.settings.priorityAlta }}, média +{{ d.settings.priorityMedia }}, baixa +{{ d.settings.priorityBaixa }}, ainda não avaliada +{{ d.settings.priorityNone }}.</li>
             <li>Confirmações de moradores: +{{ d.settings.perConfirmation }} cada, contando no máximo {{ d.settings.maxConfirmations }}. Ajudam, mas não decidem sozinhas.</li>
@@ -121,7 +122,7 @@ type Flag = NonNullable<QueueFilters['flag']>;
             <li>Sem movimentação há {{ d.settings.staleDays }} dias ou mais: +{{ d.settings.staleBonus }}.</li>
             <li>Morador informou que o problema continua depois da resolução: +{{ d.settings.reviewBonus }}.</li>
           </ul>
-          @if (session.isManager()) { <a routerLink="/admin/configuracoes">Ajustar os pesos em Configurações</a> } @else { <p class="muted">Os pesos são definidos pela administração.</p> }
+          @if (session.isManager()) { <a routerLink="/admin/configuracoes">{{ 'auto.m3a1923ee37' | translate }}</a> } @else { <p class="muted">{{ 'auto.m1d393f7407' | translate }}</p> }
         </details>
       }
     </div>
@@ -162,7 +163,7 @@ type Flag = NonNullable<QueueFilters['flag']>;
     .explica { margin-top: var(--s-5); padding: var(--s-4); font-size: var(--t-sm); }
     .explica summary { display: flex; gap: 6px; align-items: center; cursor: pointer; font-weight: 600; }
     .explica ul { margin: var(--s-2) 0; padding-left: 1.2em; display: flex; flex-direction: column; gap: 4px; }
-    @media (max-width: 640px) { .item { flex-direction: column; gap: var(--s-2); } .pont { flex-direction: row; width: auto; gap: 6px; align-items: baseline; } }
+    @media (max-width: 640px) { .topo .segmentado { flex-wrap: wrap; max-width: 100%; } .item { flex-direction: column; gap: var(--s-2); } .pont { flex-direction: row; width: auto; gap: 6px; align-items: baseline; } }
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

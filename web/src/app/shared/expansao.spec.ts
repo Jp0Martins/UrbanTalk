@@ -2,9 +2,16 @@ import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
+import { provideTranslateService, TranslateService } from '@ngx-translate/core';
+import autoPt from '../core/translations/auto-pt.json';
 import { OccurrenceDetail, TimelineItem, parseOccurrenceCode } from '../core/models';
 import { OccurrenceTimelineComponent } from './occurrence-timeline.component';
 import { ResolutionPanelComponent } from './resolution-panel.component';
+
+beforeEach(() => {
+  TestBed.configureTestingModule({ providers: [provideTranslateService({ lang: 'pt', fallbackLang: 'pt' }), provideHttpClient(), provideHttpClientTesting(), provideRouter([])] });
+  TestBed.inject(TranslateService).setTranslation('pt', { auto: autoPt });
+});
 
 const item = (p: Partial<TimelineItem>): TimelineItem => ({
   key: 'x', kind: 'status', at: '2026-10-10T12:00:00.000Z', actor: 'equipe', actorName: null, visibility: 'publica', title: 'Título', body: null, data: null, ...p,
@@ -38,8 +45,6 @@ describe('OccurrenceTimelineComponent', () => {
 });
 
 describe('ResolutionPanelComponent', () => {
-  beforeEach(() => TestBed.configureTestingModule({ providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])] }));
-
   it('mostra os três níveis separados, sem tratar foto como verificação', async () => {
     const occ = {
       id: 1, reviewRequested: false, previousResolutions: 0,

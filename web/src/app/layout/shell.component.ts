@@ -8,59 +8,61 @@ import { NotificationsService } from '../core/notifications.service';
 import { IconComponent } from '../shared/icon.component';
 import { LogoComponent } from './logo.component';
 import { PublicHeaderComponent } from './public-header.component';
+import { TranslatePipe } from '@ngx-translate/core';
+import { LanguageService } from '../core/i18n';
 
 // moldura das páginas internas: barra lateral para quem está logado, cabeçalho simples para visitantes
 @Component({
   selector: 'ut-shell',
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, IconComponent, LogoComponent, PublicHeaderComponent],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, IconComponent, LogoComponent, PublicHeaderComponent, TranslatePipe],
   template: `
-    <a class="pular" href="#conteudo">Pular para o conteúdo</a>
+    <a class="pular" href="#conteudo">{{ 'auto.m8f33fd93c5' | translate }}</a>
     @if (session.user(); as user) {
       <div class="app">
-        <aside class="lateral" [class.aberta]="menuOpen()" aria-label="Navegação">
+        <aside class="lateral" [class.aberta]="menuOpen()" [aria-label]="'auto.ma4aebca99f' | translate">
           <div class="lateral-topo">
             <ut-logo [link]="session.homePath()" [onDark]="true" />
             <button type="button" class="menu-btn" (click)="menuOpen.set(!menuOpen())" [attr.aria-expanded]="menuOpen()" aria-controls="menu-principal">
               <ut-icon [name]="menuOpen() ? 'x' : 'menu'" />
-              <span class="sr-only">{{ menuOpen() ? 'Fechar menu' : 'Abrir menu' }}</span>
+              <span class="sr-only">{{ (menuOpen() ? 'shell.closeMenu' : 'shell.openMenu') | translate }}</span>
             </button>
           </div>
           <nav id="menu-principal" class="menu">
             @if (session.isStaff()) {
-              <p class="perfil-atual"><ut-icon name="shield" [size]="16" />Área da equipe</p>
-              <a routerLink="/admin" routerLinkActive="ativo" [routerLinkActiveOptions]="{ exact: true }" ariaCurrentWhenActive="page"><ut-icon name="home" />Painel administrativo</a>
+              <p class="perfil-atual"><ut-icon name="shield" [size]="16" />{{ 'auto.mb3333404e9' | translate }}</p>
+              <a routerLink="/admin" routerLinkActive="ativo" [routerLinkActiveOptions]="{ exact: true }" ariaCurrentWhenActive="page"><ut-icon name="home" />{{ 'auto.md27fc9c16b' | translate }}</a>
               <a routerLink="/admin/fila" routerLinkActive="ativo" ariaCurrentWhenActive="page">
                 <ut-icon name="list" />Fila de Análise
                 @if (waiting() > 0) {
                   <span class="contador" [attr.aria-label]="waiting() + ' aguardando análise'">{{ waiting() > 99 ? '99+' : waiting() }}</span>
                 }
               </a>
-              <a routerLink="/admin/reclamacoes" routerLinkActive="ativo" ariaCurrentWhenActive="page"><ut-icon name="inbox" />Todas as reclamações</a>
-              <a routerLink="/admin/moderacao" routerLinkActive="ativo" ariaCurrentWhenActive="page"><ut-icon name="shield" />Moderação</a>
-              <a routerLink="/admin/relatorios" routerLinkActive="ativo" ariaCurrentWhenActive="page"><ut-icon name="file" />Relatórios</a>
-              <a routerLink="/admin/indicadores" routerLinkActive="ativo" ariaCurrentWhenActive="page"><ut-icon name="chart" />Indicadores</a>
-              <p class="grupo">{{ session.isManager() ? 'Administração' : 'Consulta' }}</p>
-              <a routerLink="/admin/status" routerLinkActive="ativo" ariaCurrentWhenActive="page"><ut-icon name="sliders" />Status</a>
+              <a routerLink="/admin/reclamacoes" routerLinkActive="ativo" ariaCurrentWhenActive="page"><ut-icon name="inbox" />{{ 'auto.m387000feed' | translate }}</a>
+              <a routerLink="/admin/moderacao" routerLinkActive="ativo" ariaCurrentWhenActive="page"><ut-icon name="shield" />{{ 'auto.mcc2696fc53' | translate }}</a>
+              <a routerLink="/admin/relatorios" routerLinkActive="ativo" ariaCurrentWhenActive="page"><ut-icon name="file" />{{ 'auto.ma7a1ebe81f' | translate }}</a>
+              <a routerLink="/admin/indicadores" routerLinkActive="ativo" ariaCurrentWhenActive="page"><ut-icon name="chart" />{{ 'auto.m6160df968c' | translate }}</a>
+              <p class="grupo">{{ (session.isManager() ? 'shell.admin' : 'shell.view') | translate }}</p>
+              <a routerLink="/admin/status" routerLinkActive="ativo" ariaCurrentWhenActive="page"><ut-icon name="sliders" />{{ 'auto.mbae7d5be70' | translate }}</a>
               @if (session.isManager()) {
-                <a routerLink="/admin/equipe" routerLinkActive="ativo" ariaCurrentWhenActive="page"><ut-icon name="users" />Equipe</a>
-                <a routerLink="/admin/configuracoes" routerLinkActive="ativo" ariaCurrentWhenActive="page"><ut-icon name="edit" />Configurações</a>
-                <a routerLink="/admin/auditoria" routerLinkActive="ativo" ariaCurrentWhenActive="page"><ut-icon name="history" />Histórico administrativo</a>
+                <a routerLink="/admin/equipe" routerLinkActive="ativo" ariaCurrentWhenActive="page"><ut-icon name="users" />{{ 'auto.me03e3996dc' | translate }}</a>
+                <a routerLink="/admin/configuracoes" routerLinkActive="ativo" ariaCurrentWhenActive="page"><ut-icon name="edit" />{{ 'auto.m871f24c4cd' | translate }}</a>
+                <a routerLink="/admin/auditoria" routerLinkActive="ativo" ariaCurrentWhenActive="page"><ut-icon name="history" />{{ 'auto.md50ee1cb4d' | translate }}</a>
               }
-              <p class="grupo">Cidade</p>
-              <a routerLink="/explorar" routerLinkActive="ativo" ariaCurrentWhenActive="page"><ut-icon name="search" />Explorar</a>
-              <a routerLink="/mapa" routerLinkActive="ativo" ariaCurrentWhenActive="page"><ut-icon name="map" />Mapa de ocorrências</a>
-              <a routerLink="/comunidade" routerLinkActive="ativo" ariaCurrentWhenActive="page"><ut-icon name="chat" />Comunidade</a>
-              <a routerLink="/propostas" routerLinkActive="ativo" ariaCurrentWhenActive="page"><ut-icon name="sparkle" />Ideias e propostas</a>
+              <p class="grupo">{{ 'auto.m1a32850473' | translate }}</p>
+              <a routerLink="/explorar" routerLinkActive="ativo" ariaCurrentWhenActive="page"><ut-icon name="search" />{{ 'nav.explore' | translate }}</a>
+              <a routerLink="/mapa" routerLinkActive="ativo" ariaCurrentWhenActive="page"><ut-icon name="map" />{{ 'nav.map' | translate }}</a>
+              <a routerLink="/comunidade" routerLinkActive="ativo" ariaCurrentWhenActive="page"><ut-icon name="chat" />{{ 'nav.community' | translate }}</a>
+              <a routerLink="/propostas" routerLinkActive="ativo" ariaCurrentWhenActive="page"><ut-icon name="sparkle" />{{ 'auto.mcf7e4554c3' | translate }}</a>
             } @else {
               <a routerLink="/registrar" class="registrar">
-                <ut-icon name="plus" />Registrar reclamação
+                <ut-icon name="plus" />{{ 'auto.med85825e56' | translate }}
               </a>
-              <a routerLink="/painel" routerLinkActive="ativo" ariaCurrentWhenActive="page"><ut-icon name="home" />Início</a>
-              <a routerLink="/explorar" routerLinkActive="ativo" ariaCurrentWhenActive="page"><ut-icon name="search" />Explorar</a>
-              <a routerLink="/mapa" routerLinkActive="ativo" ariaCurrentWhenActive="page"><ut-icon name="map" />Mapa de ocorrências</a>
-              <a routerLink="/minhas-ocorrencias" routerLinkActive="ativo" ariaCurrentWhenActive="page"><ut-icon name="history" />Minhas reclamações</a>
-              <a routerLink="/comunidade" routerLinkActive="ativo" ariaCurrentWhenActive="page"><ut-icon name="chat" />Comunidade</a>
-              <a routerLink="/propostas" routerLinkActive="ativo" ariaCurrentWhenActive="page"><ut-icon name="sparkle" />Ideias e propostas</a>
+              <a routerLink="/painel" routerLinkActive="ativo" ariaCurrentWhenActive="page"><ut-icon name="home" />{{ 'auto.mfc2c74003c' | translate }}</a>
+              <a routerLink="/explorar" routerLinkActive="ativo" ariaCurrentWhenActive="page"><ut-icon name="search" />{{ 'nav.explore' | translate }}</a>
+              <a routerLink="/mapa" routerLinkActive="ativo" ariaCurrentWhenActive="page"><ut-icon name="map" />{{ 'nav.map' | translate }}</a>
+              <a routerLink="/minhas-ocorrencias" routerLinkActive="ativo" ariaCurrentWhenActive="page"><ut-icon name="history" />{{ 'auto.m9a2967a461' | translate }}</a>
+              <a routerLink="/comunidade" routerLinkActive="ativo" ariaCurrentWhenActive="page"><ut-icon name="chat" />{{ 'nav.community' | translate }}</a>
+              <a routerLink="/propostas" routerLinkActive="ativo" ariaCurrentWhenActive="page"><ut-icon name="sparkle" />{{ 'auto.mcf7e4554c3' | translate }}</a>
             }
             <a routerLink="/notificacoes" routerLinkActive="ativo" ariaCurrentWhenActive="page">
               <ut-icon name="inbox" />Notificações
@@ -68,7 +70,8 @@ import { PublicHeaderComponent } from './public-header.component';
                 <span class="contador alerta" [attr.aria-label]="notes.unread() + ' não lidas'">{{ notes.unread() > 99 ? '99+' : notes.unread() }}</span>
               }
             </a>
-            <a routerLink="/perfil" routerLinkActive="ativo" ariaCurrentWhenActive="page"><ut-icon name="user" />Meu perfil</a>
+            <a routerLink="/perfil" routerLinkActive="ativo" ariaCurrentWhenActive="page"><ut-icon name="user" />{{ 'auto.m742e3d06ca' | translate }}</a>
+            <label class="idioma"><span>{{ 'auto.md896e16f8f' | translate }}</span><select [value]="language.language()" (change)="language.set($any($event.target).value)" aria-label="Idioma / Language"><option value="pt">{{ 'auto.m053aa1d851' | translate }}</option><option value="en">{{ 'auto.m649df08a44' | translate }}</option></select></label>
             <div class="conta">
               <div class="quem">
                 <span class="avatar" [class.equipe]="session.isStaff()" aria-hidden="true">{{ initials() }}</span>
@@ -77,7 +80,7 @@ import { PublicHeaderComponent } from './public-header.component';
                   <span class="email">{{ roleLabel() }}</span>
                 </span>
               </div>
-              <button type="button" class="sair" (click)="logout()"><ut-icon name="logout" [size]="18" />Sair</button>
+              <button type="button" class="sair" (click)="logout()"><ut-icon name="logout" [size]="18" />{{ 'auto.m3ffa2a9e9b' | translate }}</button>
             </div>
           </nav>
         </aside>
@@ -122,6 +125,8 @@ import { PublicHeaderComponent } from './public-header.component';
     .menu .registrar:hover { background: var(--placa-escura); color: #fff; }
     .grupo { margin: var(--s-5) 0 var(--s-1); padding: 0 var(--s-3); font-size: var(--t-xs); color: var(--texto-inverso-2); font-weight: 600; }
     .conta { margin-top: auto; padding-top: var(--s-4); border-top: 1px solid var(--asfalto-3); display: flex; flex-direction: column; gap: var(--s-3); }
+    .idioma { display: flex; gap: var(--s-2); align-items: center; justify-content: space-between; margin-top: var(--s-4); font-size: var(--t-sm); }
+    .idioma select { padding: 6px; background: var(--asfalto-2); color: #fff; border: 1px solid var(--asfalto-3); }
     .quem { display: flex; align-items: center; gap: var(--s-3); padding: 0 var(--s-2); min-width: 0; }
     .avatar { width: 38px; height: 38px; background: var(--asfalto-3); color: #fff; box-shadow: none; }
     .perfil-atual {
@@ -160,6 +165,7 @@ import { PublicHeaderComponent } from './public-header.component';
 })
 export class ShellComponent {
   session = inject(SessionStore);
+  language = inject(LanguageService);
   private router = inject(Router);
   private toast = inject(ToastService);
   private api = inject(ApiService);

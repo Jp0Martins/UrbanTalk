@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@ngx-translate/core';
 import { ChangeDetectionStrategy, Component, ElementRef, computed, effect, inject, input, signal, viewChild } from '@angular/core';
 import { Location } from '@angular/common';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -24,21 +25,21 @@ import { StaffTriageComponent } from '../shared/staff-triage.component';
 
 @Component({
   selector: 'ut-detalhe',
-  imports: [RouterLink, IconComponent, StatusBadgeComponent, MapComponent, ErrorStateComponent, EmptyStateComponent, AvatarComponent, DatePipe, RelativePipe, OccurrenceTimelineComponent, ResolutionPanelComponent, InfoRequestBoxComponent, StaffTrackingToolsComponent, StaffTriageComponent, NeighborhoodInputComponent],
+  imports: [RouterLink, IconComponent, StatusBadgeComponent, MapComponent, ErrorStateComponent, EmptyStateComponent, AvatarComponent, DatePipe, RelativePipe, OccurrenceTimelineComponent, ResolutionPanelComponent, InfoRequestBoxComponent, StaffTrackingToolsComponent, StaffTriageComponent, NeighborhoodInputComponent, TranslatePipe],
   template: `
     <div class="pagina">
-      <button type="button" class="btn btn-texto btn-sm voltar" (click)="back()"><ut-icon name="arrow-left" [size]="16" />Voltar</button>
+      <button type="button" class="btn btn-texto btn-sm voltar" (click)="back()"><ut-icon name="arrow-left" [size]="16" />{{ 'auto.m6da1db5a66' | translate }}</button>
 
       @if (error(); as e) {
         @if (notFound()) {
-          <ut-vazio icon="search" title="Reclamação não encontrada" text="O endereço pode estar incorreto ou a reclamação foi removida.">
-            <a routerLink="/mapa" class="btn btn-secundario btn-sm">Ir para o mapa</a>
+          <ut-vazio icon="search" [title]="'auto.mbda2ab4417' | translate" [text]="'auto.mb83f0af84f' | translate">
+            <a routerLink="/mapa" class="btn btn-secundario btn-sm">{{ 'auto.m6d5a67cfe2' | translate }}</a>
           </ut-vazio>
         } @else {
           <ut-erro [message]="e" (retry)="load()" />
         }
       } @else if (!occ()) {
-        <p class="carregando">Carregando reclamação…</p>
+        <p class="carregando">{{ 'auto.m8afe8f7b16' | translate }}</p>
       } @else {
         @let o = occ()!;
         <div class="grade">
@@ -47,18 +48,18 @@ import { StaffTriageComponent } from '../shared/staff-triage.component';
               <div class="linha-meta">
                 <span class="codigo tabular">{{ o.code }}</span>
                 @if (o.isMine) {
-                  <span class="selo-texto">Você registrou</span>
+                  <span class="selo-texto">{{ 'auto.m2ae8696ae9' | translate }}</span>
                 }
               </div>
               <h1>{{ o.category.name }}@if (o.categoryDetail) {<span class="detalhe">: {{ o.categoryDetail }}</span>}</h1>
-              <p class="endereco"><ut-icon name="pin" [size]="18" /><span>{{ address(o) }}</span><span class="selo-texto">{{ o.scope === 'cidade' ? 'Vale para a cidade toda' : 'Bairro' }}</span></p>
+              <p class="endereco"><ut-icon name="pin" [size]="18" /><span>{{ address(o) }}</span><span class="selo-texto">{{ o.scope === 'cidade' ? ('auto.m671d3ea38d' | translate) : ('auto.m49f7179a65' | translate) }}</span></p>
               <div class="linha-status">
                 <ut-status [status]="o.status" />
                 <span class="muted">Registrada em {{ o.createdAt | data: true }}</span>
                 @if (o.reopenedCount > 0) { <span class="selo-texto">Reaberta {{ o.reopenedCount === 1 ? '1 vez' : o.reopenedCount + ' vezes' }}</span> }
               </div>
               @if (staff()?.reviewRequestedAt) {
-                <p class="aviso aviso-atencao"><ut-icon name="alert" [size]="18" />Um morador informou que o problema continua depois da resolução. Reavalie e, se for o caso, reabra com uma justificativa.</p>
+                <p class="aviso aviso-atencao"><ut-icon name="alert" [size]="18" />{{ 'auto.mc7f6584db3' | translate }}</p>
               }
             </header>
 
@@ -67,7 +68,7 @@ import { StaffTriageComponent } from '../shared/staff-triage.component';
             }
 
             <section class="bloco" aria-labelledby="desc-t">
-              <h2 id="desc-t" class="sr-only">Descrição</h2>
+              <h2 id="desc-t" class="sr-only">{{ 'auto.m469768598e' | translate }}</h2>
               <p class="descricao">{{ o.description }}</p>
               @if (o.reference) {
                 <p class="ref"><ut-icon name="info" [size]="18" />Referência: {{ o.reference }}</p>
@@ -77,27 +78,27 @@ import { StaffTriageComponent } from '../shared/staff-triage.component';
             @if (o.photoUrl) {
               <figure class="foto">
                 <img [src]="o.photoUrl" [alt]="'Foto do problema: ' + o.category.name + ' em ' + (o.neighborhood?.name ?? 'Sorocaba')" />
-                <figcaption>Foto enviada por quem registrou.</figcaption>
+                <figcaption>{{ 'auto.m56744ee688' | translate }}</figcaption>
               </figure>
             }
 
             <ut-resolucao [occ]="o" (updated)="apply($event)" />
 
             <section class="bloco" aria-labelledby="acomp-t">
-              <h2 id="acomp-t">Acompanhamento</h2>
+              <h2 id="acomp-t">{{ 'auto.m9eadfdabbd' | translate }}</h2>
               <ut-linha-tempo [items]="o.timeline" [staffView]="!!staff()" />
-              <p class="dica">Quem muda o status é a equipe do UrbanTalk. Não há integração automática com a Prefeitura e nenhum aviso é enviado por e-mail: as novidades aparecem aqui.</p>
+              <p class="dica">{{ 'auto.ma9d793e647' | translate }}</p>
             </section>
 
             <section class="bloco" aria-labelledby="local-t">
-              <h2 id="local-t">Local</h2>
+              <h2 id="local-t">{{ 'auto.mdc99d54d99' | translate }}</h2>
               @if (o.latitude !== null && o.longitude !== null) {
                 <div class="mapa-caixa">
                   <ut-mapa class="mapa" [markers]="marker()" [selectedId]="o.id" [fitToMarkers]="true" [label]="'Local da reclamação ' + o.code" />
                 </div>
-                <p class="coords tabular">{{ o.scope === 'cidade' ? 'Ponto de exemplo marcado no mapa' : 'Ponto marcado no mapa' }}: {{ o.latitude.toFixed(5) }}, {{ o.longitude.toFixed(5) }}</p>
+                <p class="coords tabular">{{ o.scope === 'cidade' ? ('auto.m137d367737' | translate) : ('auto.m79c8dd937e' | translate) }}: {{ o.latitude.toFixed(5) }}, {{ o.longitude.toFixed(5) }}</p>
               } @else {
-                <p class="sem-ponto"><ut-icon name="info" [size]="18" />Esta reclamação vale para a cidade toda, por isso não tem um ponto no mapa nem bairro.</p>
+                <p class="sem-ponto"><ut-icon name="info" [size]="18" />{{ 'auto.m1af3d7962b' | translate }}</p>
               }
             </section>
           </article>
@@ -105,22 +106,22 @@ import { StaffTriageComponent } from '../shared/staff-triage.component';
           <aside class="lateral">
             @if (staff(); as s) {
               <section class="caixa gestao" aria-labelledby="gest-t">
-                <h2 id="gest-t"><ut-icon name="shield" [size]="20" />Gestão da equipe</h2>
+                <h2 id="gest-t"><ut-icon name="shield" [size]="20" />{{ 'auto.m937d251ec5' | translate }}</h2>
                 <div class="quem-registrou">
-                  <span class="rotulo">Registrada por</span>
+                  <span class="rotulo">{{ 'auto.mf2a6d2e8e2' | translate }}</span>
                   <span>{{ s.reporter.name }}</span>
                   <a [href]="'mailto:' + s.reporter.email" class="email">{{ s.reporter.email }}</a>
-                  <span class="dica">Visível só para funcionários.</span>
+                  <span class="dica">{{ 'auto.m196e8a6e66' | translate }}</span>
                 </div>
 
                 <ut-triagem [occ]="s" (updated)="apply($event)" />
 
                 <div class="sub-bloco">
-                  <h3>Mudar o status</h3>
+                  <h3>{{ 'auto.m5f64bfdacd' | translate }}</h3>
                   <div class="campo">
-                    <label for="novo-status">Novo status</label>
+                    <label for="novo-status">{{ 'auto.m87fc0c3b88' | translate }}</label>
                     <select id="novo-status" class="entrada" (change)="newStatus.set($any($event.target).value)">
-                      <option value="" [selected]="!newStatus()">Escolha…</option>
+                      <option value="" [selected]="!newStatus()">{{ 'auto.m4bdddd2bf6' | translate }}</option>
                       @for (st of catalog.active(); track st.slug) {
                         <option [value]="st.slug" [selected]="newStatus() === st.slug" [disabled]="st.slug === o.status">{{ st.name }}{{ st.slug === o.status ? ' (atual)' : '' }}</option>
                       }
@@ -130,124 +131,124 @@ import { StaffTriageComponent } from '../shared/staff-triage.component';
                     }
                   </div>
                   <div class="campo">
-                    <label for="nota-status">Mensagem para o cidadão <span class="muted">{{ reopening() ? '(obrigatória ao reabrir)' : '(opcional)' }}</span></label>
-                    <textarea id="nota-status" class="entrada" maxlength="500" rows="2" [value]="statusNote()" (input)="statusNote.set($any($event.target).value)" placeholder="Ex.: incluída no relatório de outubro"></textarea>
-                    <span class="dica">{{ reopening() ? 'A reclamação está encerrada: explique por que ela volta para análise. A resolução anterior fica no histórico.' : 'Aparece no acompanhamento público junto com a mudança.' }}</span>
+                    <label for="nota-status">{{ 'auto.m27de54b313' | translate }} <span class="muted">{{ reopening() ? ('auto.m6278bd98f0' | translate) : ('auto.m813486d257' | translate) }}</span></label>
+                    <textarea id="nota-status" class="entrada" maxlength="500" rows="2" [value]="statusNote()" (input)="statusNote.set($any($event.target).value)" [placeholder]="'auto.mf2560d54dc' | translate"></textarea>
+                    <span class="dica">{{ reopening() ? ('auto.ma3264c1e91' | translate) : ('auto.mef3a9033d5' | translate) }}</span>
                   </div>
                   @if (statusError()) {
                     <p class="erro" role="alert">{{ statusError() }}</p>
                   }
-                  <button type="button" class="btn btn-primario" [disabled]="!newStatus() || newStatus() === o.status || savingStatus()" (click)="askStatus()">{{ savingStatus() ? 'Salvando…' : 'Salvar status' }}</button>
+                  <button type="button" class="btn btn-primario" [disabled]="!newStatus() || newStatus() === o.status || savingStatus()" (click)="askStatus()">{{ savingStatus() ? ('auto.m87ef46e99f' | translate) : ('auto.m08583ceec7' | translate) }}</button>
                 </div>
 
                 <div class="sub-bloco">
-                  <h3>Anotações</h3>
+                  <h3>{{ 'auto.maf939350fa' | translate }}</h3>
                   <fieldset class="tipo-nota">
-                    <legend class="sr-only">Tipo de anotação</legend>
+                    <legend class="sr-only">{{ 'auto.md525397b3c' | translate }}</legend>
                     <label [class.marcado]="noteType() === 'interna'">
                       <input type="radio" name="tipo-nota" [checked]="noteType() === 'interna'" (change)="noteType.set('interna')" />
-                      <ut-icon name="lock" [size]="16" />Interna
+                      <ut-icon name="lock" [size]="16" />{{ 'auto.mbe316706dc' | translate }}
                     </label>
                     <label [class.marcado]="noteType() === 'publica'">
                       <input type="radio" name="tipo-nota" [checked]="noteType() === 'publica'" (change)="noteType.set('publica')" />
-                      <ut-icon name="megaphone" [size]="16" />Visível ao cidadão
+                      <ut-icon name="megaphone" [size]="16" />{{ 'auto.m882075e986' | translate }}
                     </label>
                   </fieldset>
                   <p class="dica">
                     @if (noteType() === 'interna') { Só a equipe vê. Use para organizar a análise. } @else { Aparece no acompanhamento da reclamação para quem registrou e para quem consulta. }
                   </p>
-                  <textarea class="entrada" maxlength="1000" rows="3" aria-label="Texto da anotação" [value]="noteBody()" (input)="noteBody.set($any($event.target).value)" [placeholder]="noteType() === 'interna' ? 'Ex.: ligar para a regional na segunda' : 'Ex.: a Prefeitura informou que a equipe passa esta semana'"></textarea>
+                  <textarea class="entrada" maxlength="1000" rows="3" [aria-label]="'auto.m03a115396d' | translate" [value]="noteBody()" (input)="noteBody.set($any($event.target).value)" [placeholder]="noteType() === 'interna' ? 'Ex.: ligar para a regional na segunda' : 'Ex.: a Prefeitura informou que a equipe passa esta semana'"></textarea>
                   @if (noteError()) {
                     <p class="erro" role="alert">{{ noteError() }}</p>
                   }
                   <button type="button" class="btn btn-secundario" [disabled]="noteBody().trim().length < 3 || savingNote()" (click)="saveNote()">
-                    {{ savingNote() ? 'Salvando…' : noteType() === 'interna' ? 'Salvar anotação interna' : 'Publicar atualização' }}
+                    {{ savingNote() ? ('auto.m87ef46e99f' | translate) : noteType() === 'interna' ? ('auto.m52f5a8e02f' | translate) : ('auto.mc6cd994ef5' | translate) }}
                   </button>
 
-                  <p class="dica">As anotações aparecem no acompanhamento ao lado, com o selo "Interna" quando forem só da equipe.</p>
+                  <p class="dica">{{ 'auto.m85eb7c06b9' | translate }}</p>
                 </div>
 
                 <ut-ferramentas-acompanhamento [occ]="s" (updated)="apply($event)" />
 
                 <div class="sub-bloco">
-                  <h3>Endereço</h3>
+                  <h3>{{ 'auto.mef764c1db7' | translate }}</h3>
                   @if (!editingAddress()) {
                     <p>{{ address(o) }}@if (o.reference) {<br /><span class="muted">{{ o.reference }}</span>}</p>
-                    <button type="button" class="btn btn-texto btn-sm" (click)="startAddress()"><ut-icon name="edit" [size]="16" />Corrigir endereço</button>
+                    <button type="button" class="btn btn-texto btn-sm" (click)="startAddress()"><ut-icon name="edit" [size]="16" />{{ 'auto.mcb84f08609' | translate }}</button>
                   } @else {
                     <div class="campo">
-                      <label for="ed-onde">Onde se aplica</label>
+                      <label for="ed-onde">{{ 'auto.m769815f878' | translate }}</label>
                       <select id="ed-onde" class="entrada" (change)="addrScope.set($any($event.target).value)">
-                        <option value="cidade" [selected]="addrScope() === 'cidade'">Cidade toda</option>
+                        <option value="cidade" [selected]="addrScope() === 'cidade'">{{ 'auto.mf42a4c41ae' | translate }}</option>
                         <option value="bairro" [selected]="addrScope() === 'bairro'" [disabled]="o.latitude === null">Bairro{{ o.latitude === null ? ' (precisa de ponto no mapa)' : '' }}</option>
                       </select>
                     </div>
                     @if (addrScope() === 'bairro') {
                       <div class="campo">
-                        <label for="ed-bairro">Nome do bairro</label>
+                        <label for="ed-bairro">{{ 'auto.m962e12cc72' | translate }}</label>
                         <ut-bairro inputId="ed-bairro" [value]="addrHood()" (valueChange)="addrHood.set($event)" />
                       </div>
                       <div class="campo">
-                        <label for="ed-rua">Rua ou via</label>
+                        <label for="ed-rua">{{ 'auto.mfc9738a160' | translate }}</label>
                         <input id="ed-rua" class="entrada" maxlength="160" [value]="addrStreet()" (input)="addrStreet.set($any($event.target).value)" />
                       </div>
                       <div class="campo">
-                        <label for="ed-ref">Ponto de referência</label>
+                        <label for="ed-ref">{{ 'auto.m941b3e497b' | translate }}</label>
                         <input id="ed-ref" class="entrada" maxlength="120" [value]="addrRef()" (input)="addrRef.set($any($event.target).value)" />
                       </div>
                     } @else {
-                      <p class="dica">Ao salvar como cidade toda, o bairro, a rua e a referência atuais são apagados.</p>
+                      <p class="dica">{{ 'auto.m6b77e02859' | translate }}</p>
                     }
                     @if (addrError()) {
                       <p class="erro" role="alert">{{ addrError() }}</p>
                     }
                     <div class="linha-botoes">
-                      <button type="button" class="btn btn-secundario btn-sm" (click)="editingAddress.set(false)">Cancelar</button>
-                      <button type="button" class="btn btn-primario btn-sm" (click)="saveAddress()">Salvar endereço</button>
+                      <button type="button" class="btn btn-secundario btn-sm" (click)="editingAddress.set(false)">{{ 'auto.mc111e0ab9d' | translate }}</button>
+                      <button type="button" class="btn btn-primario btn-sm" (click)="saveAddress()">{{ 'auto.m4674465323' | translate }}</button>
                     </div>
                   }
                 </div>
 
                 @if (session.isManager()) {
                   <div class="sub-bloco excluir">
-                    <h3>Excluir reclamação</h3>
-                    <p class="dica">Apaga de vez a reclamação, o histórico, as anotações e as fotos. Ela some do mapa, das listas e dos relatórios. Publicações que a citavam continuam, sem a ligação.</p>
-                    <button type="button" class="btn btn-perigo" [disabled]="deleting()" (click)="removeOccurrence()"><ut-icon name="delete" [size]="18" />{{ deleting() ? 'Excluindo…' : 'Excluir reclamação' }}</button>
+                    <h3>{{ 'auto.md32f00131b' | translate }}</h3>
+                    <p class="dica">{{ 'auto.m2c0d23470b' | translate }}</p>
+                    <button type="button" class="btn btn-perigo" [disabled]="deleting()" (click)="removeOccurrence()"><ut-icon name="delete" [size]="18" />{{ deleting() ? ('auto.m9e3daa0fc3' | translate) : ('auto.md32f00131b' | translate) }}</button>
                   </div>
                 }
               </section>
             }
 
             <section class="caixa" aria-labelledby="conf-t">
-              <h2 id="conf-t">Confirmações</h2>
+              <h2 id="conf-t">{{ 'auto.m1cfc4da533' | translate }}</h2>
               <p class="contagem tabular">{{ o.confirmations }}</p>
-              <p class="muted pequeno">{{ o.confirmations === 1 ? 'pessoa confirmou que também viu' : 'pessoas confirmaram que também viram' }} este problema.</p>
+              <p class="muted pequeno">{{ o.confirmations === 1 ? ('auto.mef2da1082e' | translate) : ('auto.m1aa2c1d4cf' | translate) }} este problema.</p>
               @if (!session.user()) {
-                <a routerLink="/entrar" [queryParams]="{ volta: '/ocorrencias/' + o.id }" class="btn btn-secundario">Entre para confirmar</a>
+                <a routerLink="/entrar" [queryParams]="{ volta: '/ocorrencias/' + o.id }" class="btn btn-secundario">{{ 'auto.m125b4dc3ea' | translate }}</a>
               } @else if (session.isStaff()) {
-                <p class="estado">Confirmações vêm dos cidadãos e ajudam a priorizar.</p>
+                <p class="estado">{{ 'auto.m6121bdf6db' | translate }}</p>
               } @else if (o.isMine) {
-                <p class="estado"><ut-icon name="user" [size]="18" />Você registrou esta reclamação.</p>
+                <p class="estado"><ut-icon name="user" [size]="18" />{{ 'auto.mce7bd55818' | translate }}</p>
               } @else if (o.confirmedByMe) {
-                <p class="estado ok"><ut-icon name="check" [size]="18" />Você confirmou esta reclamação.</p>
+                <p class="estado ok"><ut-icon name="check" [size]="18" />{{ 'auto.me3ba4acd54' | translate }}</p>
               } @else if (o.isClosed) {
-                <p class="estado">Reclamação encerrada: não recebe novas confirmações.</p>
+                <p class="estado">{{ 'auto.mff780cab65' | translate }}</p>
               } @else {
                 <button type="button" class="btn btn-primario" [disabled]="confirming()" (click)="confirm()">
-                  <ut-icon name="hand" [size]="18" />{{ confirming() ? 'Confirmando…' : 'Também vi este problema' }}
+                  <ut-icon name="hand" [size]="18" />{{ confirming() ? ('auto.m2a3701e89c' | translate) : ('auto.m4fe4f29184' | translate) }}
                 </button>
-                <p class="dica">Cada pessoa confirma uma vez. A confirmação não pode ser desfeita.</p>
+                <p class="dica">{{ 'auto.m64a0aace77' | translate }}</p>
               }
             </section>
 
             <section class="caixa" aria-labelledby="disc-t">
-              <h2 id="disc-t">Conversas na comunidade</h2>
+              <h2 id="disc-t">{{ 'auto.m3dd9f8a5f4' | translate }}</h2>
               @if (!session.user()) {
-                <p class="muted pequeno">Entre na sua conta para ver e participar das conversas sobre esta reclamação.</p>
+                <p class="muted pequeno">{{ 'auto.mc341db8703' | translate }}</p>
               } @else if (posts() === null) {
-                <p class="carregando">Carregando conversas…</p>
+                <p class="carregando">{{ 'auto.mcb1a50e065' | translate }}</p>
               } @else if (posts()!.length === 0) {
-                <p class="muted pequeno">Ninguém comentou sobre esta reclamação ainda. Que tal começar?</p>
+                <p class="muted pequeno">{{ 'auto.mb072790852' | translate }}</p>
               } @else {
                 <ul class="conversas">
                   @for (p of posts()!.slice(0, 3); track p.id) {
@@ -262,7 +263,7 @@ import { StaffTriageComponent } from '../shared/staff-triage.component';
                 </ul>
               }
               @if (session.user()) {
-                <a routerLink="/comunidade" [queryParams]="{ ocorrencia: o.id }" class="btn btn-secundario"><ut-icon name="chat" [size]="18" />{{ posts()?.length ? 'Ver conversa e participar' : 'Começar uma conversa' }}</a>
+                <a routerLink="/comunidade" [queryParams]="{ ocorrencia: o.id }" class="btn btn-secundario"><ut-icon name="chat" [size]="18" />{{ posts()?.length ? ('auto.mc694aff4ad' | translate) : ('auto.mdec9b40ec0' | translate) }}</a>
               }
             </section>
           </aside>
@@ -272,8 +273,8 @@ import { StaffTriageComponent } from '../shared/staff-triage.component';
           <h2 id="dlg-t">Mudar para "{{ catalog.name(newStatus()) }}"?</h2>
           <p>A mudança fica no histórico público de {{ o.code }}, com data e hora, e o cidadão passa a ver o novo status. Nada é enviado à Prefeitura.</p>
           <div class="dlg-acoes">
-            <button type="button" class="btn btn-secundario" (click)="dlg.close('cancel')">Cancelar</button>
-            <button type="button" class="btn btn-primario" (click)="dlg.close('ok')">Mudar status</button>
+            <button type="button" class="btn btn-secundario" (click)="dlg.close('cancel')">{{ 'auto.mc111e0ab9d' | translate }}</button>
+            <button type="button" class="btn btn-primario" (click)="dlg.close('ok')">{{ 'auto.m9f47d3d249' | translate }}</button>
           </div>
         </dialog>
       }

@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@ngx-translate/core';
 import { ChangeDetectionStrategy, Component, effect, inject, input, signal, untracked } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { toApiError } from '../core/api-error';
@@ -19,10 +20,10 @@ import { VoteExplainerComponent } from '../shared/vote-explainer.component';
 
 @Component({
   selector: 'ut-proposta',
-  imports: [RouterLink, AvatarComponent, IconComponent, StatusBadgeComponent, PhaseBadgeComponent, DiscussionComponent, ReportButtonComponent, ErrorStateComponent, VoteButtonComponent, VoteExplainerComponent, DatePipe],
+  imports: [RouterLink, AvatarComponent, IconComponent, StatusBadgeComponent, PhaseBadgeComponent, DiscussionComponent, ReportButtonComponent, ErrorStateComponent, VoteButtonComponent, VoteExplainerComponent, DatePipe, TranslatePipe],
   template: `
     <div class="pagina">
-      <nav class="trilha" aria-label="Você está em"><a routerLink="/propostas">Ideias e propostas</a><span aria-hidden="true" class="sep"> › </span>Proposta</nav>
+      <nav class="trilha" [aria-label]="'auto.m8fb521bd83' | translate"><a routerLink="/propostas">{{ 'auto.mcf7e4554c3' | translate }}</a><span aria-hidden="true" class="sep"> › </span>{{ 'auto.m654e1e95ab' | translate }}</nav>
       @if (error(); as e) {
         <ut-erro [message]="e" (retry)="load()" />
       } @else if (p(); as p) {
@@ -31,56 +32,56 @@ import { VoteExplainerComponent } from '../shared/vote-explainer.component';
             <header class="cab">
               <div class="selos">
                 <ut-fase [status]="p.status" />
-                @if (p.neighborhood) { <span class="selo-texto"><ut-icon name="pin" [size]="12" />{{ p.neighborhood.name }}</span> } @else { <span class="selo-texto">Cidade toda</span> }
+                @if (p.neighborhood) { <span class="selo-texto"><ut-icon name="pin" [size]="12" />{{ p.neighborhood.name }}</span> } @else { <span class="selo-texto">{{ 'auto.mf42a4c41ae' | translate }}</span> }
                 @if (p.category) { <span class="selo-texto">{{ p.category.name }}</span> }
               </div>
               <h1>{{ p.title }}</h1>
               <p class="autor">
                 <ut-avatar [name]="p.author.name" [initials]="p.author.initials" [size]="30" />
-                <span>Proposta de <strong>{{ p.author.isMe ? p.author.name + ' (você)' : p.author.name }}</strong> · {{ p.createdAt | data }}</span>
+                <span>{{ 'auto.m7870a3b80f' | translate }} <strong>{{ p.author.isMe ? p.author.name + ' (você)' : p.author.name }}</strong> · {{ p.createdAt | data }}</span>
               </p>
             </header>
 
             <p class="corpo">{{ p.body }}</p>
 
             @if (p.images.length) {
-              <ul class="galeria" aria-label="Imagens da proposta">
+              <ul class="galeria" [aria-label]="'auto.m25ec018eb8' | translate">
                 @for (img of p.images; track img; let i = $index) {
                   <li><a [href]="img" target="_blank" rel="noopener"><img [src]="img" [alt]="'Imagem ' + (i + 1) + ' enviada com a proposta'" loading="lazy" /></a></li>
                 }
               </ul>
             }
             @if (p.referenceUrl) {
-              <p class="ref"><ut-icon name="file" [size]="16" />Referência: <a [href]="p.referenceUrl" target="_blank" rel="noopener noreferrer nofollow">{{ p.referenceUrl }}</a> <span class="muted">(site externo)</span></p>
+              <p class="ref"><ut-icon name="file" [size]="16" />{{ 'auto.mc82e947f2f' | translate }} <a [href]="p.referenceUrl" target="_blank" rel="noopener noreferrer nofollow">{{ p.referenceUrl }}</a> <span class="muted">{{ 'auto.m3ad6be24c8' | translate }}</span></p>
             }
 
             <section class="bloco" aria-labelledby="rel-t">
-              <h2 id="rel-t">Reclamações relacionadas</h2>
+              <h2 id="rel-t">{{ 'auto.m65c8c720ae' | translate }}</h2>
               @if (p.occurrences.length === 0) {
-                <p class="muted">Nenhuma reclamação do mapa foi relacionada a esta proposta.</p>
+                <p class="muted">{{ 'auto.me4c42ae0f0' | translate }}</p>
               } @else {
                 <ul class="rel">
                   @for (o of p.occurrences; track o.id) {
                     <li>
                       <a [routerLink]="['/ocorrencias', o.id]"><ut-icon [name]="o.icon" [size]="18" />{{ o.category }} · {{ o.street ? o.street + ', ' : '' }}{{ o.neighborhood }} <span class="muted tabular">{{ o.code }}</span></a>
                       <ut-status [status]="o.status" />
-                      @if (p.canLink) { <button type="button" class="btn btn-texto btn-sm" (click)="unlink(o.id)">Remover<span class="sr-only"> {{ o.code }}</span></button> }
+                      @if (p.canLink) { <button type="button" class="btn btn-texto btn-sm" (click)="unlink(o.id)">{{ 'auto.m4bd4ea8342' | translate }}<span class="sr-only"> {{ o.code }}</span></button> }
                     </li>
                   }
                 </ul>
               }
               @if (p.canLink) {
                 <form class="ligar" (submit)="$event.preventDefault(); link()">
-                  <label for="lig-cod" class="sr-only">Código da reclamação</label>
-                  <input id="lig-cod" class="entrada" placeholder="UT-00012" maxlength="12" [value]="code()" (input)="code.set($any($event.target).value)" />
-                  <button type="submit" class="btn btn-secundario btn-sm">Relacionar</button>
+                  <label for="lig-cod" class="sr-only">{{ 'auto.m0a2a33fd36' | translate }}</label>
+                  <input id="lig-cod" class="entrada" [placeholder]="'auto.m6fc1518c3a' | translate" maxlength="12" [value]="code()" (input)="code.set($any($event.target).value)" />
+                  <button type="submit" class="btn btn-secundario btn-sm">{{ 'auto.m76a1d02677' | translate }}</button>
                 </form>
                 @if (linkError()) { <p class="erro">{{ linkError() }}</p> }
               }
             </section>
 
             <section class="bloco" aria-labelledby="hist-t">
-              <h2 id="hist-t">Histórico de fases</h2>
+              <h2 id="hist-t">{{ 'auto.m3e3e45b16c' | translate }}</h2>
               <ol class="linha-tempo">
                 @for (h of p.history; track h.id) {
                   <li>
@@ -92,7 +93,7 @@ import { VoteExplainerComponent } from '../shared/vote-explainer.component';
               </ol>
             </section>
 
-            <ut-discussao target="proposals" [targetId]="p.id" [initialTotal]="p.comments" heading="Comentários e debate" emptyText="Ninguém comentou ainda. Que tal sugerir uma melhoria na ideia?" />
+            <ut-discussao target="proposals" [targetId]="p.id" [initialTotal]="p.comments" heading="Comentários e debate" [emptyText]="'auto.m1fc4190ae6' | translate" />
           </article>
 
           <aside class="lado">
@@ -109,44 +110,44 @@ import { VoteExplainerComponent } from '../shared/vote-explainer.component';
               </div>
             </section>
             <div class="painel acoes-box">
-              <button type="button" class="btn btn-secundario" (click)="share()"><ut-icon name="send" [size]="18" />Compartilhar</button>
+              <button type="button" class="btn btn-secundario" (click)="share()"><ut-icon name="send" [size]="18" />{{ 'auto.mdfb5114283' | translate }}</button>
               @if (session.user()) {
-                <button type="button" class="btn btn-secundario" [attr.aria-pressed]="p.following" (click)="toggleFollow()"><ut-icon [name]="p.following ? 'check' : 'plus'" [size]="18" />{{ p.following ? 'Acompanhando' : 'Acompanhar' }}</button>
+                <button type="button" class="btn btn-secundario" [attr.aria-pressed]="p.following" (click)="toggleFollow()"><ut-icon [name]="p.following ? 'check' : 'plus'" [size]="18" />{{ p.following ? ('auto.m037c9cb05d' | translate) : ('auto.m3088ed39a2' | translate) }}</button>
               }
               @if (session.isCitizen()) {
-                <a class="btn btn-texto" routerLink="/comunidade/f/ideias-propostas">Debater no fórum de ideias</a>
+                <a class="btn btn-texto" routerLink="/comunidade/f/ideias-propostas">{{ 'auto.m3459c9b3da' | translate }}</a>
               }
               @if (p.canReport) { <ut-denunciar type="proposal" [targetId]="p.id" /> }
-              @if (p.canDelete) { <button type="button" class="btn btn-texto apagar" (click)="remove()">{{ p.isMine ? 'Remover minha proposta' : 'Remover proposta (administração)' }}</button> }
+              @if (p.canDelete) { <button type="button" class="btn btn-texto apagar" (click)="remove()">{{ p.isMine ? ('auto.meef07d76a1' | translate) : ('auto.m54d66e6ea9' | translate) }}</button> }
             </div>
 
             @if (p.canChangeStatus) {
               <form class="painel equipe" (submit)="$event.preventDefault(); changePhase()">
-                <h2><ut-icon name="shield" [size]="18" />Fase da proposta</h2>
+                <h2><ut-icon name="shield" [size]="18" />{{ 'auto.m95ed71c64b' | translate }}</h2>
                 <div class="campo">
-                  <label for="fase-n">Nova fase</label>
+                  <label for="fase-n">{{ 'auto.m64fd79ad09' | translate }}</label>
                   <select id="fase-n" class="entrada" (change)="phase.set($any($event.target).value)">
-                    <option value="">Escolha…</option>
+                    <option value="">{{ 'auto.m4bdddd2bf6' | translate }}</option>
                     @for (s of catalog.active(); track s.id) {
                       @if (s.slug !== p.status) { <option [value]="s.slug">{{ s.name }}{{ s.isFinal ? ' (final)' : '' }}</option> }
                     }
                   </select>
                 </div>
                 <div class="campo">
-                  <label for="fase-nota">Explicação pública</label>
+                  <label for="fase-nota">{{ 'auto.m509d0f68d6' | translate }}</label>
                   <textarea id="fase-nota" class="entrada" rows="3" maxlength="500" [value]="phaseNote()" (input)="phaseNote.set($any($event.target).value)" [attr.aria-invalid]="!!phaseFields()['note']"></textarea>
-                  <span class="dica">Obrigatória nas fases finais: diga qual órgão respondeu e quando.</span>
+                  <span class="dica">{{ 'auto.m74ca7bd27a' | translate }}</span>
                   @if (phaseFields()['note']) { <span class="erro">{{ phaseFields()['note'] }}</span> }
                 </div>
                 @if (phaseError()) { <p class="erro" role="alert">{{ phaseError() }}</p> }
-                <button type="submit" class="btn btn-primario" [disabled]="!phase() || savingPhase()">{{ savingPhase() ? 'Salvando…' : 'Mudar fase' }}</button>
+                <button type="submit" class="btn btn-primario" [disabled]="!phase() || savingPhase()">{{ savingPhase() ? ('auto.m87ef46e99f' | translate) : ('auto.mb8d5798201' | translate) }}</button>
               </form>
             }
             <ut-explica-voto />
           </aside>
         </div>
       } @else {
-        <p class="carregando">Carregando proposta…</p>
+        <p class="carregando">{{ 'auto.mddb27b73c5' | translate }}</p>
       }
     </div>
   `,

@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@ngx-translate/core';
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { forkJoin } from 'rxjs';
@@ -14,75 +15,75 @@ import { saudacao } from './dashboard.page';
 
 @Component({
   selector: 'ut-admin-painel',
-  imports: [RouterLink, IconComponent, OccurrenceItemComponent, EmptyStateComponent, ErrorStateComponent],
+  imports: [RouterLink, IconComponent, OccurrenceItemComponent, EmptyStateComponent, ErrorStateComponent, TranslatePipe],
   template: `
     <div class="pagina">
       <header class="cab">
         <div>
-          <span class="sobretitulo">Área da equipe</span>
+          <span class="sobretitulo">{{ 'auto.mb3333404e9' | translate }}</span>
           <h1>{{ greeting }}, {{ session.firstName() }}</h1>
           <p class="muted">{{ subtitle() }}</p>
         </div>
-        <a routerLink="/admin/reclamacoes" class="btn btn-primario"><ut-icon name="inbox" />Ver todas as reclamações</a>
+        <a routerLink="/admin/reclamacoes" class="btn btn-primario"><ut-icon name="inbox" />{{ 'auto.m956d6876ae' | translate }}</a>
       </header>
 
       @if (error(); as e) {
         <ut-erro [message]="e" (retry)="load()" />
       } @else if (!ov()) {
-        <p class="carregando">Carregando o painel…</p>
+        <p class="carregando">{{ 'auto.m7ef3bfb00f' | translate }}</p>
       } @else {
         @let o = ov()!;
-        <section class="cartoes" aria-label="Resumo">
+        <section class="cartoes" [aria-label]="'auto.mef8d51ef99' | translate">
           <a class="cartao destaque" routerLink="/admin/reclamacoes" [queryParams]="{ status: o.initialStatus }">
             <span class="ico"><ut-icon name="sparkle" [size]="22" /></span>
             <span class="num tabular">{{ o.waiting }}</span>
-            <span class="rot">aguardando análise <span class="muted">({{ catalog.name(o.initialStatus) }})</span></span>
+            <span class="rot">{{ 'auto.m89e8f0b8d0' | translate }} <span class="muted">({{ catalog.name(o.initialStatus) }})</span></span>
           </a>
           <a class="cartao" routerLink="/admin/reclamacoes" [queryParams]="{ situacao: 'abertas' }">
             <span class="ico"><ut-icon name="status-encaminhada" [size]="22" /></span>
             <span class="num tabular">{{ o.open }}</span>
-            <span class="rot">em aberto no total</span>
+            <span class="rot">{{ 'auto.mf3851f67e5' | translate }}</span>
           </a>
           <a class="cartao" routerLink="/admin/reclamacoes" [queryParams]="{ situacao: 'abertas' }">
             <span class="ico"><ut-icon name="clock" [size]="22" /></span>
             <span class="num tabular">{{ o.stale }}</span>
-            <span class="rot">abertas sem movimento há mais de 7 dias</span>
+            <span class="rot">{{ 'auto.ma8bf3a4602' | translate }}</span>
           </a>
           <div class="cartao">
             <span class="ico"><ut-icon name="plus" [size]="22" /></span>
             <span class="num tabular">{{ o.lastDay }}</span>
-            <span class="rot">registradas nas últimas 24 horas</span>
+            <span class="rot">{{ 'auto.m4d34c2a449' | translate }}</span>
           </div>
         </section>
 
         <div class="colunas">
           <section class="painel bloco" aria-labelledby="novas-t">
             <div class="bloco-topo">
-              <h2 id="novas-t">Chegaram por último</h2>
-              <a routerLink="/admin/reclamacoes">Ver lista completa</a>
+              <h2 id="novas-t">{{ 'auto.mea80cb7ff2' | translate }}</h2>
+              <a routerLink="/admin/reclamacoes">{{ 'auto.m383cc5d1cd' | translate }}</a>
             </div>
             @if (recent().length === 0) {
               <div class="pad">
-                <ut-vazio icon="inbox" title="Nenhuma reclamação ainda" text="Quando um cidadão registrar algo, aparece aqui na hora em que for salvo." />
+                <ut-vazio icon="inbox" [title]="'auto.m2771afab52' | translate" [text]="'auto.m9a8996ed18' | translate" />
               </div>
             } @else {
               @for (r of recent(); track r.id) {
                 <ut-ocorrencia-item [item]="r" [compact]="true" [highlight]="r.status === o.initialStatus" />
               }
             }
-            <p class="dica">Esta página se atualiza sozinha a cada 30 segundos.</p>
+            <p class="dica">{{ 'auto.m3e3317c29c' | translate }}</p>
           </section>
 
           <section class="painel bloco atalhos" aria-labelledby="atalhos-t">
-            <h2 id="atalhos-t">Atalhos</h2>
-            <a routerLink="/admin/reclamacoes" [queryParams]="{ status: o.initialStatus }"><ut-icon name="inbox" />Triar as que aguardam análise</a>
-            <a routerLink="/admin/relatorios"><ut-icon name="file" />Gerar relatório em PDF</a>
-            <a routerLink="/admin/indicadores"><ut-icon name="chart" />Ver indicadores</a>
-            <a routerLink="/admin/status"><ut-icon name="sliders" />{{ session.isManager() ? 'Configurar status' : 'Consultar status disponíveis' }}</a>
+            <h2 id="atalhos-t">{{ 'auto.mc7f81ce863' | translate }}</h2>
+            <a routerLink="/admin/reclamacoes" [queryParams]="{ status: o.initialStatus }"><ut-icon name="inbox" />{{ 'auto.m0b269635b4' | translate }}</a>
+            <a routerLink="/admin/relatorios"><ut-icon name="file" />{{ 'auto.mc48a42764d' | translate }}</a>
+            <a routerLink="/admin/indicadores"><ut-icon name="chart" />{{ 'auto.ma563826686' | translate }}</a>
+            <a routerLink="/admin/status"><ut-icon name="sliders" />{{ session.isManager() ? ('auto.m9e1403a311' | translate) : ('auto.m42f3bce997' | translate) }}</a>
             @if (session.isManager()) {
-              <a routerLink="/admin/equipe"><ut-icon name="users" />Gerenciar equipe</a>
+              <a routerLink="/admin/equipe"><ut-icon name="users" />{{ 'auto.mc067eb3d4b' | translate }}</a>
             }
-            <a routerLink="/comunidade"><ut-icon name="chat" />Acompanhar a comunidade</a>
+            <a routerLink="/comunidade"><ut-icon name="chat" />{{ 'auto.m79bb74ce3a' | translate }}</a>
           </section>
         </div>
       }

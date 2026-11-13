@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@ngx-translate/core';
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ApiService, Sort } from '../core/api.service';
@@ -30,44 +31,44 @@ type Quick = 'todas' | 'aguardando' | 'abertas' | 'encerradas';
     ErrorStateComponent,
     DatePipe,
     RelativePipe,
-  ],
+    TranslatePipe],
   template: `
     <div class="pagina">
-      <ut-cabecalho-pagina title="Todas as reclamações" description="Tudo o que os cidadãos registraram, no mesmo registro que eles acompanham. Abra uma reclamação para mudar o status, anotar ou corrigir o endereço.">
-        <a routerLink="/admin/relatorios" class="btn btn-secundario"><ut-icon name="file" />Relatório PDF</a>
+      <ut-cabecalho-pagina [title]="'auto.m387000feed' | translate" [description]="'auto.m5203e65054' | translate">
+        <a routerLink="/admin/relatorios" class="btn btn-secundario"><ut-icon name="file" />{{ 'auto.md73e9b81ab' | translate }}</a>
       </ut-cabecalho-pagina>
 
-      <div class="segmentado rapidos" role="group" aria-label="Atalhos">
+      <div class="segmentado rapidos" role="group" [aria-label]="'auto.mc7f81ce863' | translate">
         @for (q of quicks; track q.id) {
           <button type="button" [attr.aria-pressed]="quick() === q.id" (click)="setQuick(q.id)">{{ q.label }}</button>
         }
       </div>
 
-      <ut-filtros [value]="filters()" [showSearch]="true" [showDates]="true" [showStreet]="true" (changed)="apply($event)" label="Filtrar reclamações" />
+      <ut-filtros [value]="filters()" [showSearch]="true" [showDates]="true" [showStreet]="true" (changed)="apply($event)" [label]="'auto.m30c91b04e8' | translate" />
 
       @if (newCount() > 0) {
         <div class="aviso aviso-info novas" role="status">
           <ut-icon name="sparkle" />
-          <span>{{ newCount() === 1 ? 'Chegou 1 reclamação nova' : 'Chegaram ' + newCount() + ' reclamações novas' }} desde que você abriu a lista.</span>
-          <button type="button" class="btn btn-secundario btn-sm" (click)="showNew()">Mostrar</button>
+          <span>{{ newCount() === 1 ? ('auto.m8b453f4302' | translate) : 'Chegaram ' + newCount() + ' reclamações novas' }} desde que você abriu a lista.</span>
+          <button type="button" class="btn btn-secundario btn-sm" (click)="showNew()">{{ 'auto.m906dc61756' | translate }}</button>
         </div>
       }
 
       <div class="topo">
         <p aria-live="polite">
           @if (page(); as p) {
-            <strong class="tabular">{{ p.total.toLocaleString('pt-BR') }}</strong> {{ p.total === 1 ? 'reclamação' : 'reclamações' }}
+            <strong class="tabular">{{ p.total.toLocaleString('pt-BR') }}</strong> {{ p.total === 1 ? ('auto.md6797a1558' | translate) : ('auto.m061122c8a3' | translate) }}
           }
           @if (updatedAt(); as t) {
             <span class="atualizado">· atualizado {{ t | relativo }}, a lista se atualiza sozinha</span>
           }
         </p>
         <div class="campo ordem">
-          <label for="ordem" class="sr-only">Ordenar por</label>
+          <label for="ordem" class="sr-only">{{ 'auto.m1f77dbb2bd' | translate }}</label>
           <select id="ordem" class="entrada" (change)="setSort($any($event.target).value)">
-            <option value="recent" [selected]="sort() === 'recent'">Mais recentes primeiro</option>
-            <option value="oldest" [selected]="sort() === 'oldest'">Mais antigas primeiro</option>
-            <option value="confirmations" [selected]="sort() === 'confirmations'">Mais confirmadas primeiro</option>
+            <option value="recent" [selected]="sort() === 'recent'">{{ 'auto.m544f071b0a' | translate }}</option>
+            <option value="oldest" [selected]="sort() === 'oldest'">{{ 'auto.m424fcf5c8a' | translate }}</option>
+            <option value="confirmations" [selected]="sort() === 'confirmations'">{{ 'auto.m4b8b145785' | translate }}</option>
           </select>
         </div>
       </div>
@@ -75,23 +76,23 @@ type Quick = 'todas' | 'aguardando' | 'abertas' | 'encerradas';
       @if (error(); as e) {
         <ut-erro [message]="e" (retry)="load(currentPage())" />
       } @else if (!page()) {
-        <p class="carregando">Carregando reclamações…</p>
+        <p class="carregando">{{ 'auto.m2420d2b404' | translate }}</p>
       } @else if (page()!.items.length === 0) {
-        <ut-vazio icon="inbox" title="Nenhuma reclamação aqui" [text]="hasFilters() ? 'Nada corresponde aos filtros escolhidos. Tente remover algum.' : 'Quando um cidadão registrar uma reclamação, ela aparece nesta lista automaticamente.'" />
+        <ut-vazio icon="inbox" [title]="'auto.m2ae66bc539' | translate" [text]="hasFilters() ? 'Nada corresponde aos filtros escolhidos. Tente remover algum.' : 'Quando um cidadão registrar uma reclamação, ela aparece nesta lista automaticamente.'" />
       } @else {
         @let p = page()!;
         <div class="painel tabela-caixa">
           <table class="tabela">
-            <caption class="sr-only">Reclamações registradas pelos cidadãos</caption>
+            <caption class="sr-only">{{ 'auto.m58fbc4c865' | translate }}</caption>
             <thead>
               <tr>
-                <th scope="col">Código</th>
-                <th scope="col">Reclamação</th>
-                <th scope="col">Endereço</th>
-                <th scope="col">Status</th>
-                <th scope="col" class="num">Conf.</th>
-                <th scope="col">Registro</th>
-                <th scope="col"><span class="sr-only">Ações</span></th>
+                <th scope="col">{{ 'auto.mc355102341' | translate }}</th>
+                <th scope="col">{{ 'auto.mb8f7177def' | translate }}</th>
+                <th scope="col">{{ 'auto.mef764c1db7' | translate }}</th>
+                <th scope="col">{{ 'auto.mbae7d5be70' | translate }}</th>
+                <th scope="col" class="num">{{ 'auto.mb10b885452' | translate }}</th>
+                <th scope="col">{{ 'auto.mb6965e9851' | translate }}</th>
+                <th scope="col"><span class="sr-only">{{ 'auto.m66c341b3e9' | translate }}</span></th>
               </tr>
             </thead>
             <tbody>
@@ -100,7 +101,7 @@ type Quick = 'todas' | 'aguardando' | 'abertas' | 'encerradas';
                   <td class="tabular codigo">
                     {{ o.code }}
                     @if (isNew(o)) {
-                      <span class="selo-texto nova">Nova</span>
+                      <span class="selo-texto nova">{{ 'auto.m419e400947' | translate }}</span>
                     }
                   </td>
                   <td class="desc-col">
@@ -111,14 +112,14 @@ type Quick = 'todas' | 'aguardando' | 'abertas' | 'encerradas';
                     @if (o.street) {
                       <span class="rua">{{ o.street }}</span>
                     } @else {
-                      <span class="sem-rua">Rua não informada</span>
+                      <span class="sem-rua">{{ 'auto.m988f1ea0c3' | translate }}</span>
                     }
-                    <ut-placa>{{ o.neighborhood?.name ?? 'Cidade toda' }}</ut-placa>
+                    <ut-placa>{{ o.neighborhood?.name ?? ('auto.mf42a4c41ae' | translate) }}</ut-placa>
                   </td>
                   <td><ut-status [status]="o.status" /></td>
                   <td class="num">{{ o.confirmations }}</td>
                   <td class="tabular quando" [title]="o.createdAt | data: true">{{ o.createdAt | relativo }}</td>
-                  <td class="acao"><a [routerLink]="['/ocorrencias', o.id]" class="btn btn-secundario btn-sm">Abrir<span class="sr-only"> {{ o.code }}</span></a></td>
+                  <td class="acao"><a [routerLink]="['/ocorrencias', o.id]" class="btn btn-secundario btn-sm">{{ 'auto.mbf763df731' | translate }}<span class="sr-only"> {{ o.code }}</span></a></td>
                 </tr>
               }
             </tbody>
@@ -129,10 +130,10 @@ type Quick = 'todas' | 'aguardando' | 'abertas' | 'encerradas';
             <li>
               <a [routerLink]="['/ocorrencias', o.id]" class="cartao" [class.recente]="isNew(o)">
                 <div class="c-topo"><ut-categoria [icon]="o.category.icon" [name]="o.category.name" [detail]="o.categoryDetail" /><ut-status [status]="o.status" /></div>
-                <p class="c-end">{{ o.street ? o.street + ', ' : '' }}{{ o.neighborhood?.name ?? 'Cidade toda' }}</p>
+                <p class="c-end">{{ o.street ? o.street + ', ' : '' }}{{ o.neighborhood?.name ?? ('auto.mf42a4c41ae' | translate) }}</p>
                 <div class="c-meta">
                   <span class="tabular">{{ o.code }}</span><span>{{ o.createdAt | relativo }}</span><span>{{ o.confirmations }} conf.</span>
-                  @if (isNew(o)) { <span class="selo-texto nova">Nova</span> }
+                  @if (isNew(o)) { <span class="selo-texto nova">{{ 'auto.m419e400947' | translate }}</span> }
                 </div>
               </a>
             </li>

@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@ngx-translate/core';
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { ApiService } from '../core/api.service';
 import { toApiError } from '../core/api-error';
@@ -11,18 +12,18 @@ import { ErrorStateComponent } from '../shared/states';
 
 @Component({
   selector: 'ut-admin-equipe',
-  imports: [PageHeaderComponent, AvatarComponent, IconComponent, ErrorStateComponent],
+  imports: [PageHeaderComponent, AvatarComponent, IconComponent, ErrorStateComponent, TranslatePipe],
   template: `
     <div class="pagina">
-      <ut-cabecalho-pagina title="Equipe" description="Quem tem acesso de funcionário. Não existe cadastro aberto para a equipe: a pessoa cria uma conta de cliente e um administrador libera o acesso aqui." />
+      <ut-cabecalho-pagina [title]="'auto.me03e3996dc' | translate" [description]="'auto.me21434e6bb' | translate" />
 
       <div class="grade">
         <section class="painel lista" aria-labelledby="membros-t">
-          <h2 id="membros-t">Pessoas com acesso</h2>
+          <h2 id="membros-t">{{ 'auto.m5a2b3496fa' | translate }}</h2>
           @if (error(); as e) {
             <ut-erro [message]="e" (retry)="load()" />
           } @else if (!members()) {
-            <p class="carregando">Carregando equipe…</p>
+            <p class="carregando">{{ 'auto.m2a925457ba' | translate }}</p>
           } @else {
             <ul>
               @for (m of members()!; track m.id) {
@@ -33,14 +34,14 @@ import { ErrorStateComponent } from '../shared/states';
                     <span class="email">{{ m.email }}</span>
                   </div>
                   @if (m.id === session.user()?.id) {
-                    <span class="selo-texto">{{ m.role === 'admin' ? 'Administrador' : 'Funcionário' }}</span>
+                    <span class="selo-texto">{{ m.role === 'admin' ? ('auto.md5aa170e87' | translate) : ('auto.m43270d7695' | translate) }}</span>
                   } @else {
                     <div class="campo papel">
                       <label class="sr-only" [for]="'papel-' + m.id">Acesso de {{ m.name }}</label>
                       <select class="entrada" [id]="'papel-' + m.id" (change)="changeRole(m, $any($event.target).value)">
-                        <option value="staff" [selected]="m.role === 'staff'">Funcionário</option>
-                        <option value="admin" [selected]="m.role === 'admin'">Administrador</option>
-                        <option value="user">Remover acesso (vira cliente)</option>
+                        <option value="staff" [selected]="m.role === 'staff'">{{ 'auto.m43270d7695' | translate }}</option>
+                        <option value="admin" [selected]="m.role === 'admin'">{{ 'auto.md5aa170e87' | translate }}</option>
+                        <option value="user">{{ 'auto.mdd1ed713f8' | translate }}</option>
                       </select>
                     </div>
                   }
@@ -51,22 +52,22 @@ import { ErrorStateComponent } from '../shared/states';
         </section>
 
         <form class="painel form" (submit)="$event.preventDefault(); grant()" novalidate aria-labelledby="dar-t">
-          <h2 id="dar-t">Liberar acesso</h2>
-          <p class="muted pequeno">A pessoa precisa ter criado uma conta no site antes. Depois de liberar, ela entra escolhendo "Funcionário" na tela de login.</p>
+          <h2 id="dar-t">{{ 'auto.m04b73ec5a2' | translate }}</h2>
+          <p class="muted pequeno">{{ 'auto.md17ca7d522' | translate }}</p>
           <div class="campo">
-            <label for="email">E-mail da conta</label>
+            <label for="email">{{ 'auto.mb2e075748b' | translate }}</label>
             <input id="email" class="entrada" type="email" autocomplete="off" [value]="email()" (input)="email.set($any($event.target).value)" [attr.aria-invalid]="!!fields()['email']" />
             @if (fields()['email']) { <span class="erro">{{ fields()['email'] }}</span> }
           </div>
           <fieldset class="tipo">
-            <legend class="rotulo">Tipo de acesso</legend>
-            <label><input type="radio" name="tipo" [checked]="role() === 'staff'" (change)="role.set('staff')" /> <span><strong>Funcionário</strong><br /><span class="muted">Vê todas as reclamações, muda status, anota e gera relatórios.</span></span></label>
-            <label><input type="radio" name="tipo" [checked]="role() === 'admin'" (change)="role.set('admin')" /> <span><strong>Administrador</strong><br /><span class="muted">Tudo do funcionário, mais configurar status e gerenciar a equipe.</span></span></label>
+            <legend class="rotulo">{{ 'auto.m6d37da49c3' | translate }}</legend>
+            <label><input type="radio" name="tipo" [checked]="role() === 'staff'" (change)="role.set('staff')" /> <span><strong>{{ 'auto.m43270d7695' | translate }}</strong><br /><span class="muted">{{ 'auto.mee88ec03ca' | translate }}</span></span></label>
+            <label><input type="radio" name="tipo" [checked]="role() === 'admin'" (change)="role.set('admin')" /> <span><strong>{{ 'auto.md5aa170e87' | translate }}</strong><br /><span class="muted">{{ 'auto.m50fa93a4ca' | translate }}</span></span></label>
           </fieldset>
           @if (formError()) {
             <div class="aviso aviso-erro" role="alert"><ut-icon name="alert" />{{ formError() }}</div>
           }
-          <button type="submit" class="btn btn-primario" [disabled]="busy() || !email().trim()">Liberar acesso</button>
+          <button type="submit" class="btn btn-primario" [disabled]="busy() || !email().trim()">{{ 'auto.m04b73ec5a2' | translate }}</button>
         </form>
       </div>
     </div>

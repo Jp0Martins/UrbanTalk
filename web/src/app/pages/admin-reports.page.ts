@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@ngx-translate/core';
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -14,24 +15,24 @@ import { NeighborhoodInputComponent } from '../shared/neighborhood-input.compone
 
 @Component({
   selector: 'ut-admin-relatorios',
-  imports: [PageHeaderComponent, IconComponent, NeighborhoodInputComponent],
+  imports: [PageHeaderComponent, IconComponent, NeighborhoodInputComponent, TranslatePipe],
   template: `
     <div class="pagina">
-      <ut-cabecalho-pagina title="Relatório para encaminhamento" description="Gere um PDF consolidado para enviar manualmente aos órgãos responsáveis. O UrbanTalk não envia nada automaticamente." />
+      <ut-cabecalho-pagina [title]="'auto.md084946253' | translate" [description]="'auto.m4b33e19396' | translate" />
 
       <div class="grade">
         <form class="painel form" (submit)="$event.preventDefault(); generate()" novalidate>
-          <h2>Critérios</h2>
+          <h2>{{ 'auto.me992860b56' | translate }}</h2>
           <div class="linha">
             <div class="campo">
-              <label for="de">Data inicial</label>
+              <label for="de">{{ 'auto.m2c38c11abd' | translate }}</label>
               <input id="de" class="entrada" type="date" [value]="f().from ?? ''" [max]="f().to ?? today" (change)="set('from', $any($event.target).value)" [attr.aria-invalid]="!!fields()['from']" />
               @if (fields()['from']) {
                 <span class="erro">{{ fields()['from'] }}</span>
               }
             </div>
             <div class="campo">
-              <label for="ate">Data final</label>
+              <label for="ate">{{ 'auto.ma293c7ef42' | translate }}</label>
               <input id="ate" class="entrada" type="date" [value]="f().to ?? ''" [min]="f().from ?? ''" [max]="today" (change)="set('to', $any($event.target).value)" [attr.aria-invalid]="!!fields()['to']" />
               @if (fields()['to']) {
                 <span class="erro">{{ fields()['to'] }}</span>
@@ -39,75 +40,75 @@ import { NeighborhoodInputComponent } from '../shared/neighborhood-input.compone
             </div>
           </div>
           <div class="campo">
-            <label for="onde">Onde se aplica</label>
+            <label for="onde">{{ 'auto.m769815f878' | translate }}</label>
             <select id="onde" class="entrada" (change)="setScope($any($event.target).value)">
-              <option value="" [selected]="!f().scope">Cidade toda e bairros</option>
-              <option value="cidade" [selected]="f().scope === 'cidade'">Só reclamações da cidade toda</option>
-              <option value="bairro" [selected]="f().scope === 'bairro'">Só reclamações de bairro</option>
+              <option value="" [selected]="!f().scope">{{ 'auto.mb1f27213ce' | translate }}</option>
+              <option value="cidade" [selected]="f().scope === 'cidade'">{{ 'auto.m25bf01cfcb' | translate }}</option>
+              <option value="bairro" [selected]="f().scope === 'bairro'">{{ 'auto.m79562fd313' | translate }}</option>
             </select>
           </div>
           @if (f().scope !== 'cidade') {
             <div class="campo">
-              <label for="bairro">Bairro</label>
-              <ut-bairro inputId="bairro" placeholder="Todos os bairros" describedBy="bairro-dica" [value]="f().neighborhood ?? ''" (committed)="set('neighborhood', $event.trim())" />
-              <span class="dica" id="bairro-dica">Digite o nome; maiúsculas e acentos não fazem diferença.</span>
+              <label for="bairro">{{ 'auto.m49f7179a65' | translate }}</label>
+              <ut-bairro inputId="bairro" [placeholder]="'auto.m197b18b57f' | translate" describedBy="bairro-dica" [value]="f().neighborhood ?? ''" (committed)="set('neighborhood', $event.trim())" />
+              <span class="dica" id="bairro-dica">{{ 'auto.m259dc2343c' | translate }}</span>
             </div>
           }
           <div class="campo">
-            <label for="cat">Categoria</label>
+            <label for="cat">{{ 'auto.m5966b0ce8b' | translate }}</label>
             <select id="cat" class="entrada" (change)="set('category', $any($event.target).value)">
-              <option value="" [selected]="!f().category">Todas as categorias</option>
+              <option value="" [selected]="!f().category">{{ 'auto.m1459742683' | translate }}</option>
               @for (c of categories(); track c.id) {
                 <option [value]="c.id" [selected]="f().category === c.id">{{ c.name }}</option>
               }
             </select>
           </div>
           <div class="campo">
-            <label for="st">Status</label>
+            <label for="st">{{ 'auto.mbae7d5be70' | translate }}</label>
             <select id="st" class="entrada" (change)="set('status', $any($event.target).value)">
-              <option value="" [selected]="!f().status">Todos os status</option>
+              <option value="" [selected]="!f().status">{{ 'auto.ma1beb7aea5' | translate }}</option>
               @for (s of catalog.all(); track s.slug) {
                 <option [value]="s.slug" [selected]="f().status === s.slug">{{ s.name }}{{ s.active ? '' : ' (desativado)' }}</option>
               }
             </select>
           </div>
           <div class="campo">
-            <label for="rua">Rua contém <span class="muted">(opcional)</span></label>
-            <input id="rua" class="entrada" maxlength="100" [value]="f().street ?? ''" (change)="set('street', $any($event.target).value.trim())" placeholder="Ex.: XV de Novembro" />
+            <label for="rua">{{ 'auto.ma89b964320' | translate }} <span class="muted">{{ 'auto.m813486d257' | translate }}</span></label>
+            <input id="rua" class="entrada" maxlength="100" [value]="f().street ?? ''" (change)="set('street', $any($event.target).value.trim())" [placeholder]="'auto.m7454b35252' | translate" />
           </div>
           @if (error()) {
             <div class="aviso aviso-erro" role="alert"><ut-icon name="alert" />{{ error() }}</div>
           }
           <div class="botoes-rel">
             <button type="submit" class="btn btn-primario" [disabled]="busy()">
-              <ut-icon name="download" />{{ busy() ? 'Gerando…' : 'Gerar e baixar PDF' }}
+              <ut-icon name="download" />{{ busy() ? ('auto.m4d9c6dae0c' | translate) : ('auto.m264d08ec77' | translate) }}
             </button>
             <button type="button" class="btn btn-secundario" [disabled]="busy()" (click)="generate('csv')">
-              <ut-icon name="file" />Baixar planilha (CSV)
+              <ut-icon name="file" />{{ 'auto.m4a1ffe14a7' | translate }}
             </button>
           </div>
-          <p class="dica-csv">O CSV traz uma linha por reclamação (sem descrição nem dados de quem registrou) e abre no Excel ou no Google Planilhas.</p>
+          <p class="dica-csv">{{ 'auto.mb885d1a70c' | translate }}</p>
         </form>
 
         <aside class="painel previa" aria-live="polite" aria-labelledby="prev-t">
-          <h2 id="prev-t">O que vai no relatório</h2>
+          <h2 id="prev-t">{{ 'auto.m9774128981' | translate }}</h2>
           @if (loadingPreview()) {
-            <p class="carregando">Contando registros…</p>
+            <p class="carregando">{{ 'auto.mf347763e11' | translate }}</p>
           } @else if (preview(); as p) {
-            <p class="total"><span class="tabular">{{ p.total }}</span> {{ p.total === 1 ? 'ocorrência' : 'ocorrências' }} entre {{ fmt(p.period.from) }} e {{ fmt(p.period.to) }}</p>
+            <p class="total"><span class="tabular">{{ p.total }}</span> {{ p.total === 1 ? ('auto.mf0c222df00' | translate) : ('auto.ma06ec91e02' | translate) }} entre {{ fmt(p.period.from) }} e {{ fmt(p.period.to) }}</p>
             @if (p.total === 0) {
-              <p class="muted">O PDF será gerado informando que não há registros para estes critérios. Nenhum número é estimado.</p>
+              <p class="muted">{{ 'auto.mac566cbde2' | translate }}</p>
             } @else {
               <ul class="itens">
                 <li>Totais por status: {{ statusLine() }}</li>
                 <li>{{ p.byCategory.filter(nonZero).length }} categorias e {{ p.byNeighborhood.length }} bairros com registros</li>
-                <li>O que foi escrito em "Outros", agrupado</li>
-                <li>Gráfico da evolução no período</li>
-                <li>Reclamações em aberto com mais confirmações, com rua e bairro, para priorizar</li>
+                <li>{{ 'auto.m43bc2470a2' | translate }}</li>
+                <li>{{ 'auto.mbc03f1a52e' | translate }}</li>
+                <li>{{ 'auto.m473bd9494d' | translate }}</li>
               </ul>
             }
           }
-          <p class="nota">Depois de enviar o relatório ao órgão responsável, atualize o status das reclamações na página de cada uma, e deixe uma atualização visível ao cidadão se quiser explicar o próximo passo.</p>
+          <p class="nota">{{ 'auto.m4c5d4eb886' | translate }}</p>
         </aside>
       </div>
     </div>

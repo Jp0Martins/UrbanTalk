@@ -1,7 +1,14 @@
 import { TestBed } from '@angular/core/testing';
+import { provideTranslateService, TranslateService } from '@ngx-translate/core';
+import autoPt from '../core/translations/auto-pt.json';
 import { StatusCatalog } from '../core/status-catalog';
 import { StatusBadgeComponent } from './badges';
 import { BarListComponent } from './charts';
+
+beforeEach(() => {
+  TestBed.configureTestingModule({ providers: [provideTranslateService({ lang: 'pt', fallbackLang: 'pt' })] });
+  TestBed.inject(TranslateService).setTranslation('pt', { auto: autoPt });
+});
 
 describe('StatusBadgeComponent', () => {
   it('mostra o nome configurado em texto, com a cor do status', async () => {

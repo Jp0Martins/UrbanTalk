@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@ngx-translate/core';
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { AdminApi, SpamReport } from '../core/admin.api';
@@ -14,11 +15,11 @@ type Tab = 'denuncias' | 'foruns' | 'ocultos' | 'spam' | 'atividade';
 
 @Component({
   selector: 'ut-moderacao',
-  imports: [RouterLink, PageHeaderComponent, PaginationComponent, EmptyStateComponent, ErrorStateComponent, DatePipe, RelativePipe],
+  imports: [RouterLink, PageHeaderComponent, PaginationComponent, EmptyStateComponent, ErrorStateComponent, DatePipe, RelativePipe, TranslatePipe],
   template: `
     <div class="pagina">
-      <ut-cabecalho-pagina title="Moderação" description="Denúncias da comunidade, conteúdo ocultado e sinais de spam. Ocultar não apaga: o registro fica guardado e a ação vai para o histórico administrativo." />
-      <div class="segmentado abas" role="tablist" aria-label="Seções da moderação">
+      <ut-cabecalho-pagina [title]="'auto.mcc2696fc53' | translate" [description]="'auto.mc9b4352d3d' | translate" />
+      <div class="segmentado abas" role="tablist" [aria-label]="'auto.mfbd508695e' | translate">
         @for (t of tabs; track t.id) {
           <button type="button" role="tab" [attr.aria-selected]="tab() === t.id" (click)="open(t.id)">{{ t.label }}@if (t.id === 'denuncias' && openReports() > 0) { <span class="n">{{ openReports() }}</span> }@if (t.id === 'foruns' && pending()?.length) { <span class="n">{{ pending()!.length }}</span> }</button>
         }
@@ -28,31 +29,31 @@ type Tab = 'denuncias' | 'foruns' | 'ocultos' | 'spam' | 'atividade';
 
       @switch (tab()) {
         @case ('denuncias') {
-          <div class="segmentado sub" role="group" aria-label="Situação das denúncias">
+          <div class="segmentado sub" role="group" [aria-label]="'auto.m0d8022d8ec' | translate">
             @for (s of reportStatuses; track s.id) { <button type="button" [attr.aria-pressed]="rStatus() === s.id" (click)="rStatus.set(s.id); loadReports(1)">{{ s.label }}</button> }
           </div>
-          @if (reports() === null) { <p class="carregando">Carregando denúncias…</p> }
-          @else if (reports()!.length === 0) { <ut-vazio icon="check" title="Nenhuma denúncia aqui" [text]="rStatus() === 'aberta' ? 'Quando alguém denunciar um conteúdo, ele aparece nesta fila.' : 'Ainda não há denúncias com esta decisão.'" /> }
+          @if (reports() === null) { <p class="carregando">{{ 'auto.m140e929f2a' | translate }}</p> }
+          @else if (reports()!.length === 0) { <ut-vazio icon="check" [title]="'auto.m97fa5de52d' | translate" [text]="rStatus() === 'aberta' ? 'Quando alguém denunciar um conteúdo, ele aparece nesta fila.' : 'Ainda não há denúncias com esta decisão.'" /> }
           @else {
             <ul class="lista">
               @for (g of reports(); track g.content.type + g.content.id) {
                 <li class="painel card">
-                  <p class="topo"><span class="selo-texto">{{ g.content.label }}</span> <strong>{{ g.reports }} {{ g.reports === 1 ? 'denúncia' : 'denúncias' }}</strong> <span class="muted">· primeira {{ g.firstAt | relativo }}</span>
-                    @if (g.content.hiddenAt) { <span class="selo-texto interna">Oculto</span> }
+                  <p class="topo"><span class="selo-texto">{{ g.content.label }}</span> <strong>{{ g.reports }} {{ g.reports === 1 ? ('auto.m192704cc24' | translate) : ('auto.m3c8c228608' | translate) }}</strong> <span class="muted">· primeira {{ g.firstAt | relativo }}</span>
+                    @if (g.content.hiddenAt) { <span class="selo-texto interna">{{ 'auto.md5e7c4ef05' | translate }}</span> }
                   </p>
                   <blockquote>{{ g.content.text }}</blockquote>
-                  <p class="dica">Autor: {{ g.content.authorName ?? 'sem autor' }} · publicado {{ g.content.createdAt | data: true }} · <a [routerLink]="path(g.content.link)" [fragment]="frag(g.content.link)">ver no contexto</a></p>
+                  <p class="dica">Autor: {{ g.content.authorName ?? ('auto.m5a38c70a8b' | translate) }} · publicado {{ g.content.createdAt | data: true }} · <a [routerLink]="path(g.content.link)" [fragment]="frag(g.content.link)">{{ 'auto.m806f75dde9' | translate }}</a></p>
                   <p class="motivos">@for (r of g.reasons; track r.reason) { <span class="selo-texto">{{ r.label }} ({{ r.count }})</span> }</p>
                   @if (g.details.length) { <ul class="detalhes">@for (d of g.details; track $index) { <li>“{{ d }}”</li> }</ul> }
                   @if (rStatus() === 'aberta') {
                     <div class="decidir">
-                      <label class="sr-only" [for]="'mot-' + g.content.type + g.content.id">Motivo para ocultar</label>
+                      <label class="sr-only" [for]="'mot-' + g.content.type + g.content.id">{{ 'auto.m1047df240e' | translate }}</label>
                       <select class="entrada" [id]="'mot-' + g.content.type + g.content.id" (change)="reason.set($any($event.target).value)">
-                        <option value="">Motivo para ocultar…</option>
+                        <option value="">{{ 'auto.m3ccfe1a291' | translate }}</option>
                         @for (r of reasons; track r.id) { <option [value]="r.id">{{ r.label }}</option> }
                       </select>
-                      <button type="button" class="btn btn-perigo btn-sm" [disabled]="busy()" (click)="decide(g, 'ocultar')">Ocultar</button>
-                      <button type="button" class="btn btn-secundario btn-sm" [disabled]="busy()" (click)="decide(g, 'manter')">Manter publicado</button>
+                      <button type="button" class="btn btn-perigo btn-sm" [disabled]="busy()" (click)="decide(g, 'ocultar')">{{ 'auto.m4f58415a4d' | translate }}</button>
+                      <button type="button" class="btn btn-secundario btn-sm" [disabled]="busy()" (click)="decide(g, 'manter')">{{ 'auto.m8a040b7ee8' | translate }}</button>
                     </div>
                   }
                 </li>
@@ -62,21 +63,21 @@ type Tab = 'denuncias' | 'foruns' | 'ocultos' | 'spam' | 'atividade';
           }
         }
         @case ('foruns') {
-          @if (pending() === null) { <p class="carregando">Carregando…</p> }
+          @if (pending() === null) { <p class="carregando">{{ 'auto.mbca482b745' | translate }}</p> }
           @else if (pending()!.length === 0) {
-            <ut-vazio icon="check" title="Nenhum fórum aguardando aprovação" [text]="approvalOn() ? 'Quando alguém criar um fórum, ele aparece aqui antes de ficar público.' : 'A aprovação prévia está desligada: fóruns novos aparecem na hora. A administração pode ligá-la em Configurações › Fóruns.'" />
+            <ut-vazio icon="check" [title]="'auto.mb62a16e7e7' | translate" [text]="approvalOn() ? 'Quando alguém criar um fórum, ele aparece aqui antes de ficar público.' : 'A aprovação prévia está desligada: fóruns novos aparecem na hora. A administração pode ligá-la em Configurações › Fóruns.'" />
           } @else {
             <ul class="lista">
               @for (f of pending(); track f.id) {
                 <li class="painel card">
-                  <p class="topo"><span class="selo-texto">{{ f.theme.name }}</span>@if (f.neighborhoodName) { <span class="selo-texto">{{ f.neighborhoodName }}</span> } <strong>{{ f.name }}</strong> <span class="muted">· criado {{ f.createdAt | relativo }} por {{ f.creatorFullName ?? 'conta removida' }}</span></p>
+                  <p class="topo"><span class="selo-texto">{{ f.theme.name }}</span>@if (f.neighborhoodName) { <span class="selo-texto">{{ f.neighborhoodName }}</span> } <strong>{{ f.name }}</strong> <span class="muted">· criado {{ f.createdAt | relativo }} por {{ f.creatorFullName ?? ('auto.ma36ea04459' | translate) }}</span></p>
                   <blockquote>{{ f.description }}</blockquote>
                   @if (f.tags.length) { <p class="motivos">@for (t of f.tags; track t) { <span class="selo-texto">#{{ t }}</span> }</p> }
                   @if (f.rules) { <p class="dica">Regras: {{ f.rules }}</p> }
                   <div class="decidir">
-                    <a class="btn btn-texto btn-sm" [routerLink]="['/comunidade/f', f.slug]">Abrir</a>
-                    <button type="button" class="btn btn-primario btn-sm" [disabled]="busy()" (click)="review(f.id, 'aprovar')">Aprovar</button>
-                    <button type="button" class="btn btn-secundario btn-sm" [disabled]="busy()" (click)="review(f.id, 'recusar')">Recusar</button>
+                    <a class="btn btn-texto btn-sm" [routerLink]="['/comunidade/f', f.slug]">{{ 'auto.mbf763df731' | translate }}</a>
+                    <button type="button" class="btn btn-primario btn-sm" [disabled]="busy()" (click)="review(f.id, 'aprovar')">{{ 'auto.mbd9c26bef5' | translate }}</button>
+                    <button type="button" class="btn btn-secundario btn-sm" [disabled]="busy()" (click)="review(f.id, 'recusar')">{{ 'auto.m34d9f2bda1' | translate }}</button>
                   </div>
                 </li>
               }
@@ -84,16 +85,16 @@ type Tab = 'denuncias' | 'foruns' | 'ocultos' | 'spam' | 'atividade';
           }
         }
         @case ('ocultos') {
-          @if (hidden() === null) { <p class="carregando">Carregando…</p> }
-          @else if (hidden()!.length === 0) { <ut-vazio icon="check" title="Nenhum conteúdo oculto pela moderação" /> }
+          @if (hidden() === null) { <p class="carregando">{{ 'auto.mbca482b745' | translate }}</p> }
+          @else if (hidden()!.length === 0) { <ut-vazio icon="check" [title]="'auto.m95b1c9c9b0' | translate" /> }
           @else {
             <ul class="lista">
               @for (h of hidden(); track h.type + h.id) {
                 <li class="painel card">
                   <p class="topo"><span class="selo-texto">{{ h.label }}</span> <span class="selo-texto interna">{{ reasonLabel(h.hiddenReason) }}</span> <span class="muted">ocultado {{ h.hiddenAt! | relativo }}{{ h.moderatorName ? ' por ' + h.moderatorName : '' }}</span></p>
                   <blockquote>{{ h.text }}</blockquote>
-                  <p class="dica">Autor: {{ h.authorName ?? 'sem autor' }}</p>
-                  <button type="button" class="btn btn-secundario btn-sm" [disabled]="busy()" (click)="restore(h)">Restaurar</button>
+                  <p class="dica">Autor: {{ h.authorName ?? ('auto.m5a38c70a8b' | translate) }}</p>
+                  <button type="button" class="btn btn-secundario btn-sm" [disabled]="busy()" (click)="restore(h)">{{ 'auto.mf9cdc1b4a7' | translate }}</button>
                 </li>
               }
             </ul>
@@ -102,8 +103,8 @@ type Tab = 'denuncias' | 'foruns' | 'ocultos' | 'spam' | 'atividade';
         @case ('spam') {
           @if (spam(); as s) {
             <p class="muted">Últimos 30 dias, desde {{ s.since | data }}. São só sinais: confira antes de ocultar.</p>
-            <h2 class="sec">Mesmo texto publicado várias vezes</h2>
-            @if (s.repeated.length === 0) { <p class="muted">Nenhum texto repetido encontrado.</p> }
+            <h2 class="sec">{{ 'auto.m6c51de359f' | translate }}</h2>
+            @if (s.repeated.length === 0) { <p class="muted">{{ 'auto.m2262245d91' | translate }}</p> }
             <ul class="lista">
               @for (r of s.repeated; track r.text) {
                 <li class="painel card">
@@ -113,26 +114,26 @@ type Tab = 'denuncias' | 'foruns' | 'ocultos' | 'spam' | 'atividade';
                 </li>
               }
             </ul>
-            <h2 class="sec">Muitas publicações na mesma hora</h2>
-            @if (s.bursts.length === 0) { <p class="muted">Nenhuma conta com 10 ou mais publicações numa mesma hora.</p> }
+            <h2 class="sec">{{ 'auto.ma310c7d382' | translate }}</h2>
+            @if (s.bursts.length === 0) { <p class="muted">{{ 'auto.me675a5b746' | translate }}</p> }
             @else {
-              <table class="tabela painel"><thead><tr><th>Conta</th><th class="num">Publicações</th><th>Hora</th></tr></thead>
+              <table class="tabela painel"><thead><tr><th>{{ 'auto.m4d07517575' | translate }}</th><th class="num">{{ 'auto.m3847926a1d' | translate }}</th><th>{{ 'auto.mf07dc29284' | translate }}</th></tr></thead>
                 <tbody>@for (b of s.bursts; track b.name + b.hourStart) { <tr><td>{{ b.name }}</td><td class="num">{{ b.count }}</td><td>{{ b.hourStart | data: true }}</td></tr> }</tbody>
               </table>
             }
-          } @else { <p class="carregando">Analisando…</p> }
+          } @else { <p class="carregando">{{ 'auto.m162c67a3df' | translate }}</p> }
         }
         @case ('atividade') {
           @if (activity(); as a) {
             <table class="tabela painel atividade">
-              <caption class="sr-only">Atividade da comunidade</caption>
-              <thead><tr><th>Indicador</th><th class="num">Últimos 7 dias</th><th class="num">Últimos 30 dias</th></tr></thead>
+              <caption class="sr-only">{{ 'auto.m68616596e8' | translate }}</caption>
+              <thead><tr><th>{{ 'auto.m9635da2665' | translate }}</th><th class="num">{{ 'auto.m0c7f53c76f' | translate }}</th><th class="num">{{ 'auto.mae8ad765b4' | translate }}</th></tr></thead>
               <tbody>
                 @for (row of activityRows; track row.key) { <tr><td>{{ row.label }}</td><td class="num">{{ val(a.week, row.key) }}</td><td class="num">{{ val(a.month, row.key) }}</td></tr> }
               </tbody>
             </table>
-            <p class="dica">Contagens diretas do banco. "Pessoas ativas" soma quem publicou, comentou, propôs ou votou, sem repetir a mesma pessoa. Conteúdo de apoio do UrbanTalk não entra.</p>
-          } @else { <p class="carregando">Carregando…</p> }
+            <p class="dica">{{ 'auto.m14b26fd764' | translate }}</p>
+          } @else { <p class="carregando">{{ 'auto.mbca482b745' | translate }}</p> }
         }
       }
     </div>

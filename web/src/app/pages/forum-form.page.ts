@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@ngx-translate/core';
 import { ChangeDetectionStrategy, Component, OnInit, inject, input, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { toApiError } from '../core/api-error';
@@ -13,73 +14,73 @@ import { splitTags } from './forum.page';
 // criar fórum (qualquer conta) ou editar as configurações básicas (quem criou ou a administração)
 @Component({
   selector: 'ut-forum-form',
-  imports: [RouterLink, IconComponent, NeighborhoodInputComponent, ErrorStateComponent],
+  imports: [RouterLink, IconComponent, NeighborhoodInputComponent, ErrorStateComponent, TranslatePipe],
   template: `
-    <nav class="trilha" aria-label="Você está em">
-      <a routerLink="/comunidade/foruns">Fóruns</a><span aria-hidden="true" class="sep"> › </span>
-      @if (editing()) { <a [routerLink]="['/comunidade/f', slug()]">{{ original()?.name ?? '…' }}</a><span aria-hidden="true" class="sep"> › </span><span>Editar</span> } @else { <span>Criar fórum</span> }
+    <nav class="trilha" [aria-label]="'auto.m8fb521bd83' | translate">
+      <a routerLink="/comunidade/foruns">{{ 'auto.m17f0d26d2c' | translate }}</a><span aria-hidden="true" class="sep"> › </span>
+      @if (editing()) { <a [routerLink]="['/comunidade/f', slug()]">{{ original()?.name ?? '…' }}</a><span aria-hidden="true" class="sep"> › </span><span>{{ 'auto.m2b5f23437f' | translate }}</span> } @else { <span>{{ 'auto.ma97e989a61' | translate }}</span> }
     </nav>
 
     @if (loadError(); as e) {
       <ut-erro [message]="e" [retryable]="false" />
     } @else if (editing() && !original()) {
-      <p class="carregando">Carregando…</p>
+      <p class="carregando">{{ 'auto.mbca482b745' | translate }}</p>
     } @else {
       <div class="grade">
         <form class="painel form" (submit)="$event.preventDefault(); save()" novalidate>
-          <h2>{{ editing() ? 'Editar fórum' : 'Criar um fórum' }}</h2>
+          <h2>{{ editing() ? ('auto.m85c7c1fdc1' | translate) : ('auto.mc82faa3ab4' | translate) }}</h2>
           <div class="campo">
-            <label for="ff-nome">Nome</label>
+            <label for="ff-nome">{{ 'auto.m13030dd962' | translate }}</label>
             <input id="ff-nome" class="entrada" maxlength="60" [value]="name()" (input)="name.set($any($event.target).value)" [disabled]="editing() && !canRename()" [attr.aria-invalid]="!!fields()['name']" aria-describedby="ff-nome-d" />
-            <span class="dica" id="ff-nome-d">{{ editing() && !canRename() ? 'O nome só pode ser trocado pela administração, para não confundir quem já participa.' : 'De 5 a 60 caracteres. Ex.: Ciclistas da Zona Norte.' }}</span>
+            <span class="dica" id="ff-nome-d">{{ editing() && !canRename() ? ('auto.m09720d305a' | translate) : ('auto.m2e01632654' | translate) }}</span>
             @if (fields()['name']) { <span class="erro">{{ fields()['name'] }}</span> }
           </div>
           <div class="campo">
-            <label for="ff-desc">Finalidade</label>
+            <label for="ff-desc">{{ 'auto.m55593ee5d8' | translate }}</label>
             <textarea id="ff-desc" class="entrada" rows="3" maxlength="300" [value]="description()" (input)="description.set($any($event.target).value)" [attr.aria-invalid]="!!fields()['description']" aria-describedby="ff-desc-d"></textarea>
             <span class="dica tabular" id="ff-desc-d">Para que serve o fórum e quem deveria participar. {{ description().trim().length }}/300</span>
             @if (fields()['description']) { <span class="erro">{{ fields()['description'] }}</span> }
           </div>
           <div class="duas">
             <div class="campo">
-              <label for="ff-tema">Tema</label>
+              <label for="ff-tema">{{ 'auto.m6ae1bcaff6' | translate }}</label>
               <select id="ff-tema" class="entrada" (change)="theme.set($any($event.target).value)" [attr.aria-invalid]="!!fields()['theme']">
-                <option value="" [selected]="!theme()">Escolha…</option>
+                <option value="" [selected]="!theme()">{{ 'auto.m4bdddd2bf6' | translate }}</option>
                 @for (t of themes(); track t.id) { <option [value]="t.id" [selected]="theme() === t.id">{{ t.name }}</option> }
               </select>
               @if (fields()['theme']) { <span class="erro">{{ fields()['theme'] }}</span> }
             </div>
             <div class="campo">
-              <label for="ff-bairro">Bairro <span class="muted">(opcional)</span></label>
-              <ut-bairro inputId="ff-bairro" placeholder="Deixe em branco se não for de um bairro" [value]="neighborhood()" (valueChange)="neighborhood.set($event)" [invalid]="!!fields()['neighborhoodName']" />
+              <label for="ff-bairro">{{ 'auto.m49f7179a65' | translate }} <span class="muted">{{ 'auto.m813486d257' | translate }}</span></label>
+              <ut-bairro inputId="ff-bairro" [placeholder]="'auto.md485e00c4d' | translate" [value]="neighborhood()" (valueChange)="neighborhood.set($event)" [invalid]="!!fields()['neighborhoodName']" />
               @if (fields()['neighborhoodName']) { <span class="erro">{{ fields()['neighborhoodName'] }}</span> }
             </div>
           </div>
           <div class="campo">
-            <label for="ff-tags">Tags <span class="muted">(opcional)</span></label>
-            <input id="ff-tags" class="entrada" maxlength="140" placeholder="Ex.: bicicleta, ciclovia" [value]="tags()" (input)="tags.set($any($event.target).value)" [attr.aria-invalid]="!!fields()['tags']" />
-            <span class="dica">Até 5, separadas por vírgula. Ajudam outras pessoas a encontrar o fórum.</span>
+            <label for="ff-tags">{{ 'auto.m848eed0fbd' | translate }} <span class="muted">{{ 'auto.m813486d257' | translate }}</span></label>
+            <input id="ff-tags" class="entrada" maxlength="140" [placeholder]="'auto.m7457667d3d' | translate" [value]="tags()" (input)="tags.set($any($event.target).value)" [attr.aria-invalid]="!!fields()['tags']" />
+            <span class="dica">{{ 'auto.m70e9ca271c' | translate }}</span>
             @if (fields()['tags']) { <span class="erro">{{ fields()['tags'] }}</span> }
           </div>
           <div class="campo">
-            <label for="ff-regras">Regras <span class="muted">(opcional)</span></label>
-            <textarea id="ff-regras" class="entrada" rows="4" maxlength="1500" [value]="rules()" (input)="rules.set($any($event.target).value)" [attr.aria-invalid]="!!fields()['rules']" placeholder="Ex.: Só assuntos de mobilidade. Sem propaganda."></textarea>
-            <span class="dica">Somam-se aos combinados gerais da Comunidade.</span>
+            <label for="ff-regras">{{ 'auto.mc3aec15974' | translate }} <span class="muted">{{ 'auto.m813486d257' | translate }}</span></label>
+            <textarea id="ff-regras" class="entrada" rows="4" maxlength="1500" [value]="rules()" (input)="rules.set($any($event.target).value)" [attr.aria-invalid]="!!fields()['rules']" [placeholder]="'auto.m0d9ba3e1bb' | translate"></textarea>
+            <span class="dica">{{ 'auto.md35dd54247' | translate }}</span>
             @if (fields()['rules']) { <span class="erro">{{ fields()['rules'] }}</span> }
           </div>
           @if (formError()) { <p class="aviso aviso-erro" role="alert"><ut-icon name="alert" />{{ formError() }}</p> }
           <div class="acoes">
-            <a class="btn btn-secundario" [routerLink]="editing() ? ['/comunidade/f', slug()] : ['/comunidade/foruns']">Cancelar</a>
-            <button type="submit" class="btn btn-primario" [disabled]="saving()">{{ saving() ? 'Salvando…' : editing() ? 'Salvar alterações' : 'Criar fórum' }}</button>
+            <a class="btn btn-secundario" [routerLink]="editing() ? ['/comunidade/f', slug()] : ['/comunidade/foruns']">{{ 'auto.mc111e0ab9d' | translate }}</a>
+            <button type="submit" class="btn btn-primario" [disabled]="saving()">{{ saving() ? ('auto.m87ef46e99f' | translate) : editing() ? ('auto.m3bbd538880' | translate) : ('auto.ma97e989a61' | translate) }}</button>
           </div>
         </form>
         <aside class="painel ajuda">
-          <h2>Antes de criar</h2>
+          <h2>{{ 'auto.me2ff387f53' | translate }}</h2>
           <ul>
-            <li>Procure se já existe um fórum parecido: é melhor juntar as pessoas num lugar só.</li>
-            <li>Quem cria cuida da descrição, das tags e das regras. A equipe pode moderar e remover fóruns que fujam dos combinados.</li>
-            <li>Fóruns não substituem reclamações: para a equipe acompanhar um problema, <a routerLink="/registrar">registre uma reclamação</a>.</li>
-            <li>Cada pessoa pode criar até 3 fóruns por dia.</li>
+            <li>{{ 'auto.m4183e79711' | translate }}</li>
+            <li>{{ 'auto.m6f7645a659' | translate }}</li>
+            <li>{{ 'auto.mb61582ff63' | translate }} <a routerLink="/registrar">{{ 'auto.m144a514c70' | translate }}</a>.</li>
+            <li>{{ 'auto.mf60f3bfdd5' | translate }}</li>
           </ul>
         </aside>
       </div>

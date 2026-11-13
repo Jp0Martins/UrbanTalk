@@ -1,0 +1,124 @@
+{
+  "nav": {
+    "explore": "Explore",
+    "map": "Incident map",
+    "proposals": "Proposals",
+    "community": "Community",
+    "staff": "Staff area",
+    "home": "Go to home",
+    "login": "Log in",
+    "register": "Create account"
+  },
+  "auth": {
+    "staffLogin": "Log in to the staff area",
+    "staffHint": "Use the staff account enabled for you by an administrator.",
+    "loginHint": "Use your UrbanTalk email address and password.",
+    "loginAs": "Log in as",
+    "staff": "Staff member",
+    "citizen": "Citizen",
+    "hide": "Hide",
+    "show": "Show",
+    "loggingIn": "Logging in…",
+    "creating": "Creating account…",
+    "createCitizen": "Create citizen account"
+  },
+  "shell": {
+    "closeMenu": "Close menu",
+    "openMenu": "Open menu",
+    "admin": "Administration",
+    "view": "Overview"
+  },
+  "home": {
+    "hero": {
+      "title": "Seen a problem on your street? Report it, confirm it, and follow it through to a solution.",
+      "description": "UrbanTalk brings reports of potholes, street lighting, sidewalks, litter, signage, and bus stops in Sorocaba into one place, with photos and precise locations. Our team organizes the reports by neighborhood and forwards them to the responsible authorities.",
+      "report": "Report a problem",
+      "map": "View the full map"
+    },
+    "mapEmpty": "There are no incidents on the map yet. Yours could be the first.",
+    "how": {
+      "title": "How it works",
+      "step1": "Report",
+      "step1Text": "Choose the type of problem, take a photo, and mark the location on the map. It takes less than two minutes.",
+      "step2": "Others confirm",
+      "step2Text": "People who pass by the same place confirm the report. This shows which issues affect more people.",
+      "step3": "The team forwards it",
+      "step3Text": "Reports are grouped by neighborhood and category, then manually sent to the responsible authorities.",
+      "step4": "Follow up",
+      "step4Text": "Each incident shows its status and change history, from report to resolution."
+    },
+    "status": {
+      "title": "What each status means",
+      "text": "UrbanTalk is not automatically connected to city government. The project team changes a status after sending a report or checking a resolution. Citizen confirmations do not change the status on their own."
+    },
+    "recent": {
+      "title": "Recent reports",
+      "all": "View all",
+      "loading": "Loading reports…",
+      "first": "Report the first issue"
+    },
+    "team": {
+      "title": "Meet the team",
+      "text": "We are EcoGestor, a community extension group at Centro Universitário Facens responsible for UrbanTalk.",
+      "gustavo": "Database and reports",
+      "henrik": "Back end and API",
+      "joao": "Front end and integration",
+      "pedro": "Quality and testing",
+      "vinicius": "Requirements, design, and documentation",
+      "yasmin": "Management and data analysis",
+      "previous": "Previous team member",
+      "next": "Next team member",
+      "pause": "Pause",
+      "play": "Play"
+    },
+    "privacy": {
+      "title": "Privacy and Brazil’s LGPD",
+      "text1": "Your data helps us maintain your account and track reports. Your email address is not public; in the Community, we show only your first name and the initial of your surname.",
+      "text2": "You can request access to, correction of, or deletion of your data. Read the full notice to learn how we use information and what rights you have under Brazil’s LGPD.",
+      "contact": "Ask about my data"
+    },
+    "contact": {
+      "title": "Contact the team",
+      "text": "Questions, suggestions, or requests about UrbanTalk? Send us a WhatsApp message.",
+      "button": "Chat on WhatsApp"
+    },
+    "footer": {
+      "text": "UrbanTalk is a community extension project by EcoGestor at Centro Universitário Facens, Sorocaba, 2026. There is no automatic integration with Sorocaba city government: reports are forwarded manually.",
+      "map": "Map: data from OpenStreetMap contributors.",
+      "team": "Team",
+      "contact": "Contact"
+    }
+  },
+  "privacy": {
+    "readMore": "Read the full privacy notice",
+    "back": "Back to the home page",
+    "title": "Privacy and data protection",
+    "intro": "This notice explains what data UrbanTalk uses, what is public, and how to request information or corrections. It describes the current version of the platform.",
+    "updated": "Updated November 12, 2026",
+    "operatorTitle": "Who operates UrbanTalk",
+    "operatorText": "UrbanTalk is a community extension project by the EcoGestor group at Centro Universitário Facens in Sorocaba. The team operates the platform and receives personal data requests through the channel below. This project is not an official city government channel and has no automatic integration with it.",
+    "dataTitle": "What data we use and why",
+    "dataAccount": "Account: name, email address, hashed password, and access role for registration, authentication, and permissions.",
+    "dataIncidents": "Incidents: category, description, optional photo, neighborhood, street, and map point supplied by the user, plus dates and history, to publish and track urban issues.",
+    "dataCommunity": "Participation: posts, comments, proposals, votes, confirmations, reports, and moderation actions to run community features and preserve their history. Neighborhoods of interest in your profile are private.",
+    "dataSecurity": "Operation: a session cookie and technical data needed for security and rate limits. The “near you” feature uses browser location only for that query; the location is not saved to your profile.",
+    "publicTitle": "What other people can see",
+    "publicText": "Incidents, photos, map points, and public interactions can be seen by visitors. The name and email address of an incident author are not shown on its public page. In the Community, the first name and surname initial are shown. Please do not include other people’s data, faces, or private information in the text or photos you post.",
+    "sharingText": "The published version is hosted on Render and uses OpenStreetMap maps; these services may receive technical access data. The team may manually forward consolidated reports to the responsible authorities. Opening WhatsApp contact takes you to a service outside UrbanTalk.",
+    "retentionTitle": "Retention and deletion",
+    "retentionText": "The current version has no self-service account deletion or automatic schedule for deleting incidents. Content hidden by moderation and action records may remain to preserve history. The team reviews deletion requests case by case, considering the purpose of processing and lawful retention grounds, and informs the requester of the outcome.",
+    "rightsTitle": "Your rights and requests",
+    "rightsText": "Under Brazil’s LGPD, where the law applies, your rights include confirmation of processing, access, correction, information about sharing, and anonymization, blocking, or deletion of unnecessary or unlawfully processed data. You may also request deletion of data processed on the basis of consent, subject to legal exceptions.",
+    "requestsText": "To exercise these rights, describe your request to the team through the WhatsApp link below. We may ask for information needed to confirm that the data is yours before disclosing or changing it. Requests are reviewed and answered under the LGPD.",
+    "requestButton": "Contact the team about my data",
+    "securityTitle": "Security and responsibility",
+    "securityText": "UrbanTalk uses hashed passwords, a session cookie, role-based access, and photo re-encoding to remove metadata. These measures reduce risk but cannot guarantee absolute security.",
+    "responsibilityText": "People who post should avoid other people’s personal data and content that violates their rights. The team may moderate posts under the Community rules. This notice does not remove statutory rights or guarantee a response from public authorities.",
+    "sourcesTitle": "Legal references",
+    "sourcesText": "This notice draws on the principles and transparency duties of Brazil’s General Data Protection Law (Law 13,709/2018, particularly articles 6 and 9) and the rights and retention provisions of articles 16 and 18. See the official sources:",
+    "lgpdLink": "Brazilian General Data Protection Law — official text",
+    "anpdLink": "ANPD — data subject rights",
+    "limitsTitle": "Service limits",
+    "limitsText": "UrbanTalk organizes reports submitted by residents for tracking and reporting. It is not an emergency service and does not replace official public channels. Reports may appear before team review; the platform cannot guarantee the accuracy of every post, that every case will be forwarded, or that third parties will resolve it. The team may correct or moderate content without limiting rights and duties under the law."
+  }
+}

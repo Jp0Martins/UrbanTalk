@@ -1,19 +1,20 @@
+import { TranslatePipe } from '@ngx-translate/core';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { IconComponent } from './icon.component';
 
 // explicação fixa sobre o significado dos votos e das fases
 @Component({
   selector: 'ut-explica-voto',
-  imports: [IconComponent],
+  imports: [IconComponent, TranslatePipe],
   template: `
     <details class="aviso aviso-info explica">
-      <summary><ut-icon name="info" [size]="18" /><span><strong>Apoio não é aprovação oficial.</strong> Entenda os votos e as fases</span></summary>
+      <summary><ut-icon name="info" [size]="18" /><span><strong>{{ 'auto.m53176b4c4e' | translate }}</strong> {{ 'auto.mde80f84805' | translate }}</span></summary>
       <ul>
-        <li>Cada morador apoia uma proposta uma única vez e pode retirar o apoio enquanto ela não chega a uma fase final.</li>
-        <li>O número de apoios mostra a demanda da comunidade. Ele não obriga a Prefeitura nem qualquer órgão a executar a proposta.</li>
-        <li>"Priorizada pela comunidade" quer dizer que a proposta teve muito apoio, não que foi aprovada.</li>
-        <li>"Aceita", "Recusada" e "Implementada" só são usadas quando a equipe do UrbanTalk recebe uma resposta do órgão responsável, e a fonte fica registrada no histórico.</li>
-        <li>Contas de funcionário não votam, para o apoio refletir só a opinião dos moradores.</li>
+        <li>{{ 'auto.m3203fb4c0c' | translate }}</li>
+        <li>{{ 'auto.mf9853e26e4' | translate }}</li>
+        <li>{{ 'auto.m5dfb1bb3a2' | translate }}</li>
+        <li>{{ 'auto.ma389ed5115' | translate }}</li>
+        <li>{{ 'auto.m98532f2aab' | translate }}</li>
       </ul>
     </details>
   `,

@@ -8,6 +8,7 @@ export const routes: Routes = [
     path: '',
     component: ShellComponent,
     children: [
+      { path: 'privacidade', title: 'Privacidade e LGPD – UrbanTalk', loadComponent: () => import('./pages/privacy.page').then((m) => m.PrivacyPage) },
       { path: 'entrar', title: 'Entrar – UrbanTalk', canActivate: [guestGuard], loadComponent: () => import('./pages/auth.pages').then((m) => m.LoginPage) },
       { path: 'cadastro', title: 'Criar conta – UrbanTalk', canActivate: [guestGuard], loadComponent: () => import('./pages/auth.pages').then((m) => m.RegisterPage) },
       { path: 'mapa', title: 'Mapa de ocorrências – UrbanTalk', loadComponent: () => import('./pages/map.page').then((m) => m.MapPage) },

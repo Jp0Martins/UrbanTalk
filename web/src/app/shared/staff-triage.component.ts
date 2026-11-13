@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@ngx-translate/core';
 import { ChangeDetectionStrategy, Component, effect, inject, input, output, signal, untracked } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AdminApi } from '../core/admin.api';
@@ -12,66 +13,66 @@ import { IconComponent } from './icon.component';
 // triagem: responsável, prioridade justificada e possíveis duplicatas
 @Component({
   selector: 'ut-triagem',
-  imports: [RouterLink, IconComponent, StatusBadgeComponent, RelativePipe],
+  imports: [RouterLink, IconComponent, StatusBadgeComponent, RelativePipe, TranslatePipe],
   template: `
     @let o = occ();
     <div class="sub-bloco">
-      <h3>Responsável</h3>
+      <h3>{{ 'auto.mb1ce0b05fa' | translate }}</h3>
       <p>
-        @if (o.assignee; as a) { <strong>{{ a.name }}</strong> <span class="dica">desde {{ a.since | relativo }}</span> } @else { <span class="muted">Ninguém atribuído.</span> }
+        @if (o.assignee; as a) { <strong>{{ a.name }}</strong> <span class="dica">desde {{ a.since | relativo }}</span> } @else { <span class="muted">{{ 'auto.mae17426d1c' | translate }}</span> }
       </p>
       <div class="linha">
-        <label class="sr-only" for="resp">Atribuir a</label>
+        <label class="sr-only" for="resp">{{ 'auto.mc10575a611' | translate }}</label>
         <select id="resp" class="entrada" (change)="assignTo.set($any($event.target).value)">
-          <option value="">Escolha um funcionário…</option>
+          <option value="">{{ 'auto.m2b1d366aa7' | translate }}</option>
           @for (m of members(); track m.id) { <option [value]="m.id" [disabled]="m.id === o.assignee?.id">{{ m.name }}{{ m.id === session.user()?.id ? ' (você)' : '' }}</option> }
         </select>
-        <button type="button" class="btn btn-secundario btn-sm" [disabled]="!assignTo() || busy()" (click)="assign(+assignTo())">Atribuir</button>
+        <button type="button" class="btn btn-secundario btn-sm" [disabled]="!assignTo() || busy()" (click)="assign(+assignTo())">{{ 'auto.m2ca9b02c36' | translate }}</button>
       </div>
       <div class="linha">
-        @if (o.assignee?.id !== session.user()?.id) { <button type="button" class="btn btn-texto btn-sm" [disabled]="busy()" (click)="assign(session.user()!.id)">Atribuir a mim</button> }
-        @if (o.assignee) { <button type="button" class="btn btn-texto btn-sm" [disabled]="busy()" (click)="assign(null)">Remover responsável</button> }
+        @if (o.assignee?.id !== session.user()?.id) { <button type="button" class="btn btn-texto btn-sm" [disabled]="busy()" (click)="assign(session.user()!.id)">{{ 'auto.maec96dfd61' | translate }}</button> }
+        @if (o.assignee) { <button type="button" class="btn btn-texto btn-sm" [disabled]="busy()" (click)="assign(null)">{{ 'auto.ma543baf946' | translate }}</button> }
       </div>
     </div>
 
     <div class="sub-bloco">
-      <h3>Prioridade</h3>
+      <h3>{{ 'auto.mc8c122c31c' | translate }}</h3>
       <p>
         @if (o.priority) { <strong>{{ names[o.priority] }}</strong> @if (o.priorityReason) { <span class="dica">· {{ o.priorityReason }}</span> } }
-        @else { <span class="muted">Ainda não avaliada.</span> }
+        @else { <span class="muted">{{ 'auto.ma911085e17' | translate }}</span> }
       </p>
       <div class="campo">
-        <label for="prio-n">Nova prioridade</label>
+        <label for="prio-n">{{ 'auto.ma8f4bac547' | translate }}</label>
         <select id="prio-n" class="entrada" (change)="prio.set($any($event.target).value)">
-          <option value="">Escolha…</option>
-          <option value="alta">Alta</option>
-          <option value="media">Média</option>
-          <option value="baixa">Baixa</option>
-          @if (o.priority) { <option value="nenhuma">Remover prioridade</option> }
+          <option value="">{{ 'auto.m4bdddd2bf6' | translate }}</option>
+          <option value="alta">{{ 'auto.mef9168c3d7' | translate }}</option>
+          <option value="media">{{ 'auto.md8a313d337' | translate }}</option>
+          <option value="baixa">{{ 'auto.m35ddaf4ab0' | translate }}</option>
+          @if (o.priority) { <option value="nenhuma">{{ 'auto.m6f8c2389ae' | translate }}</option> }
         </select>
       </div>
       @if (prio() && prio() !== 'nenhuma') {
         <div class="campo">
-          <label for="prio-m">Motivo (obrigatório)</label>
-          <textarea id="prio-m" class="entrada" rows="2" maxlength="300" placeholder="Com base no que foi verificado: fotos, vistoria, resposta do cidadão…" [value]="reason()" (input)="reason.set($any($event.target).value)"></textarea>
-          <span class="dica">Fica só para a equipe. Não chame de perigoso ou urgente sem evidência.</span>
+          <label for="prio-m">{{ 'auto.mc9c30cad17' | translate }}</label>
+          <textarea id="prio-m" class="entrada" rows="2" maxlength="300" [placeholder]="'auto.m7959ab9e88' | translate" [value]="reason()" (input)="reason.set($any($event.target).value)"></textarea>
+          <span class="dica">{{ 'auto.m459097e1ad' | translate }}</span>
         </div>
       }
-      <button type="button" class="btn btn-secundario btn-sm" [disabled]="!prio() || busy() || (prio() !== 'nenhuma' && reason().trim().length < 10)" (click)="savePriority()">Salvar prioridade</button>
+      <button type="button" class="btn btn-secundario btn-sm" [disabled]="!prio() || busy() || (prio() !== 'nenhuma' && reason().trim().length < 10)" (click)="savePriority()">{{ 'auto.mec6f4a0dd3' | translate }}</button>
     </div>
 
     <div class="sub-bloco">
-      <h3>Possíveis duplicatas</h3>
+      <h3>{{ 'auto.m0de7d81ede' | translate }}</h3>
       @if (o.duplicateOf; as d) {
-        <p class="aviso aviso-info"><ut-icon name="list" [size]="16" /><span>Marcada como duplicata de <a [routerLink]="['/ocorrencias', d]">UT-{{ pad(d) }}</a>. Nada foi apagado.</span></p>
-        <button type="button" class="btn btn-texto btn-sm" [disabled]="busy()" (click)="dup(null)">Desfazer marcação</button>
+        <p class="aviso aviso-info"><ut-icon name="list" [size]="16" /><span>{{ 'auto.m615f82b7be' | translate }} <a [routerLink]="['/ocorrencias', d]">UT-{{ pad(d) }}</a>{{ 'auto.m9ebd909522' | translate }}</span></p>
+        <button type="button" class="btn btn-texto btn-sm" [disabled]="busy()" (click)="dup(null)">{{ 'auto.m7065dbb4b4' | translate }}</button>
       }
       @if (similar() === null) {
-        <p class="carregando">Procurando reclamações parecidas…</p>
+        <p class="carregando">{{ 'auto.me20a220aee' | translate }}</p>
       } @else if (similar()!.length === 0) {
-        <p class="dica">Nenhuma reclamação da mesma categoria a até 200 m, registrada em até 90 dias de diferença.</p>
+        <p class="dica">{{ 'auto.m5849abb469' | translate }}</p>
       } @else {
-        <p class="dica">Mesma categoria, a até 200 m e registradas em até 90 dias de diferença. É só uma sugestão: confira antes de marcar.</p>
+        <p class="dica">{{ 'auto.md9dd928ee2' | translate }}</p>
         <ul class="similares">
           @for (s of similar(); track s.id) {
             <li>

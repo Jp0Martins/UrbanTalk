@@ -1,14 +1,15 @@
+import { TranslatePipe } from '@ngx-translate/core';
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 // a marca é uma placa de rua: nome em cima, cidade na linha de baixo
 @Component({
   selector: 'ut-logo',
-  imports: [RouterLink],
+  imports: [RouterLink, TranslatePipe],
   template: `
-    <a [routerLink]="link()" class="logo" [class.sobre-escuro]="onDark()" aria-label="UrbanTalk, página inicial">
-      <span class="nome">UrbanTalk</span>
-      <span class="cidade">Sorocaba, SP</span>
+    <a [routerLink]="link()" class="logo" [class.sobre-escuro]="onDark()" [aria-label]="'auto.mea19bde40c' | translate">
+      <span class="nome">{{ 'auto.m8f9b0df230' | translate }}</span>
+      <span class="cidade">{{ 'auto.mc52963aab7' | translate }}</span>
     </a>
   `,
   styles: `

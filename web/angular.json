@@ -29,6 +29,7 @@
               "node_modules/leaflet/dist/leaflet.css",
               "src/styles.css"
             ],
+            "serviceWorker": "ngsw-config.json",
             "allowedCommonJsDependencies": [
               "leaflet"
             ]
